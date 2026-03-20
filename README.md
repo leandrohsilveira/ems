@@ -15,16 +15,22 @@ A monorepo containing everything needed to run the application (except external 
 
 ```
 ems/
-├── apps/                     # Frontend and backend applications
-│   └── <app_name>/           # Apps that start a server or process
-├── packages/                 # Agnostic packages (shared utils, DB, UI components)
-├── domain/                   # Domain business logic
-│   ├── backend/
+├── apps/
+│   └── <app_name>/           # Frontend and backend apps (start a server or process)
+├── packages/
+│   └── <package_name>/       # Agnostic packages (shared utils, DB, UI components)
+├── domain/
+│   └── backend/
+│       └── <domain_name>/     # Domain related to backend
 │   └── frontend/
-├── types/                    # TypeScript type definitions
-│   ├── backend/
-│   ├── frontend/
+│       └── <domain_name>/     # Domain related to frontend
+├── types/
+│   └── backend/
+│       └── <package_name>/   # Types related to backend
+│   └── frontend/
+│       └── <package_name>/   # Types related to frontend
 │   └── shared/
+│       └── <package_name>/   # Shared types
 └── PRODUCT.md                # Product specification
 ```
 
