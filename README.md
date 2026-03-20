@@ -31,6 +31,7 @@ ems/
 │       └── <package_name>/   # Types related to frontend
 │   └── shared/
 │       └── <package_name>/   # Shared types
+├── prisma/                   # Prisma models
 └── PRODUCT.md                # Product specification
 ```
 
