@@ -1,0 +1,24 @@
+{
+  "name": "ems",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "domain/backend/*",
+    "domain/frontend/*",
+    "types/backend/*",
+    "types/frontend/*",
+    "types/shared/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3"
+  }
+}
