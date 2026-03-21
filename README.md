@@ -35,6 +35,20 @@ ems/
 └── PRODUCT.md                # Product specification
 ```
 
+## Filename Convention
+
+All files must use kebab-case (e.g., `auth-plugin.js`, `index.js`, `my-component.svelte`).
+
+## Package Name Convention
+
+- Apps: `@tms/app-<name>`
+- Domain Backend: `@tms/domain-backend-<name>`
+- Domain Frontend: `@tms/domain-frontend-<name>`
+- Types Backend: `@tms/types-backend-<name>`
+- Types Frontend: `@tms/types-frontend-<name>`
+- Types Shared: `@tms/types-shared-<name>`
+- Packages: `@tms/package-<name>`
+
 ## Getting Started
 
 ### Prerequisites
