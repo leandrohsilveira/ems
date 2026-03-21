@@ -1,0 +1,15 @@
+{
+    "name": "@ems/domain-backend-auth",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.js"
+    },
+    "scripts": {
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "fastify": "^5.2.0"
+    }
+}

@@ -30,6 +30,8 @@ fastify.get('/', helloWorldOptions, async () => {
     return { message: 'Hello World' }
 })
 
+await fastify.register(import('@ems/domain-backend-auth'), { prefix: '/auth' })
+
 const start = async () => {
     try {
         await fastify.listen({
