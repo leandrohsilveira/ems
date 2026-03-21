@@ -2,6 +2,7 @@
   "name": "ems",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
     "packages/*",
@@ -12,10 +13,10 @@
     "types/shared/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "build": "turbo run build"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
@@ -31,6 +32,7 @@
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.4.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "turbo": "^2.8.20",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-devtools-json": "^1.0.0",
