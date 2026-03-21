@@ -6,4 +6,16 @@ import { defineConfig } from 'eslint/config'
 
 const gitignorePath = path.resolve(import.meta.dirname, '.gitignore')
 
-export default defineConfig([includeIgnoreFile(gitignorePath), ...ts.configs.recommended], prettier)
+export default defineConfig([
+    includeIgnoreFile(gitignorePath),
+    {
+        extends: ts.configs.recommended,
+        files: ['**/*.ts'],
+        languageOptions: {
+            parserOptions: {
+                tsconfigRootDir: import.meta.dirname
+            }
+        }
+    },
+    prettier
+])

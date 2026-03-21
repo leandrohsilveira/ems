@@ -13,6 +13,7 @@
     "types/shared/*"
   ],
   "scripts": {
+    "clean": "rm -Rf ./.turbo/cache",
     "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "turbo run lint",
