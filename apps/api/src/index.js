@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import appPlugin from './plugin.js'
 
 const fastify = Fastify({
     logger: {
@@ -12,25 +13,7 @@ const fastify = Fastify({
     }
 })
 
-/** @type {import('fastify').RouteShorthandOptions} */
-const helloWorldOptions = {
-    schema: {
-        response: {
-            200: {
-                type: 'object',
-                properties: {
-                    message: { type: 'string' }
-                }
-            }
-        }
-    }
-}
-
-fastify.get('/', helloWorldOptions, async () => {
-    return { message: 'Hello World' }
-})
-
-await fastify.register(import('@ems/domain-backend-auth'), { prefix: '/auth' })
+await fastify.register(appPlugin)
 
 const start = async () => {
     try {
