@@ -14,7 +14,6 @@ A monorepo containing everything needed to run the application (except external 
 ## Project Structure
 
 ```
-ems/
 ├── apps/
 │   └── <app_name>/           # Frontend and backend apps (start a server or process)
 ├── packages/

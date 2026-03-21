@@ -14,6 +14,13 @@
      - **Authentication work** → Read the Authentication section
      - **General/architecture** → Read Paradigms and Development sections
 
+## Before Implementation
+- Create tests using Test Driven Development (TDD) approach.
+- Run tests to confirm it fails.
+- Proceed with the implementation to make the tests pass.
+- Look for refactoring opportunities and refactor.
+- Check tests again.
+
 ## Feature Implementation
 
 When implementing a new feature, check the `specs` folder for a feature specification:
