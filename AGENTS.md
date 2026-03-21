@@ -2,10 +2,7 @@
 
 ## Before Starting Any Task
 
-1. **Read `README.md`** first to understand:
-   - Workspace structure (apps/, packages/, domain/, types/)
-   - Conventions (kebab-case filenames, package naming rules)
-   - Development commands (dev, test, lint, build)
+1. **Read `README.md`** for project overview and links to relevant documentation
 
 2. **Read `STACK.md`** when you need context on the tech stack:
    - Focus on the relevant section based on your task:
@@ -15,11 +12,16 @@
      - **General/architecture** → Read Paradigms and Development sections
 
 ## Before Implementation
-- Create tests using Test Driven Development (TDD) approach.
-- Run tests to confirm it fails.
-- Proceed with the implementation to make the tests pass.
-- Look for refactoring opportunities and refactor.
-- Check tests again.
+
+1. **Read `CONVENTIONS.md`** for code style and naming conventions
+2. **Understand existing code** relevant to your task
+3. **Write tests first** (TDD is the default approach):
+   - Use Vitest for unit tests
+   - Use `vi.fn()`, `vi.mock()`, `vi.spyOn()` for mocking
+   - Skip tests only when explicitly told TDD isn't required
+4. **Implement** the feature or fix
+5. **Refactor** for clarity and maintainability
+6. **Verify** by running the full test suite
 
 ## Feature Implementation
 
@@ -31,5 +33,5 @@ When implementing a new feature, check the `specs` folder for a feature specific
 
 ## After Modifying Files
 
-- **Always run lint** on TypeScript or JavaScript files
-- **Always run tests** when modifying JavaScript files (implementation)
+- **Always run lint** on JavaScript files
+- **Always run tests** when modifying implementation files
