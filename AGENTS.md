@@ -35,3 +35,4 @@ When implementing a new feature, check the `specs` folder for a feature specific
 
 - **Always run lint** on JavaScript files
 - **Always run tests** when modifying implementation files
+- **Update documentation** if implementation changes behavior, APIs, or adds new features
