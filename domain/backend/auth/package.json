@@ -10,7 +10,9 @@
     },
     "scripts": {
         "lint": "prettier --check . && eslint .",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "test": "vitest run --passWithNoTests",
+        "test:unit": "vitest --passWithNoTests"
     },
     "dependencies": {
         "fastify": "^5.2.0"
