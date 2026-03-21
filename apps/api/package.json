@@ -1,15 +1,17 @@
 {
-  "name": "api",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "node src/index.js"
-  },
-  "dependencies": {
-    "fastify": "^5.2.0"
-  },
-  "devDependencies": {
-    "pino-pretty": "^13.0.0"
-  }
+	"name": "api",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "node src/index.js",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"dependencies": {
+		"fastify": "^5.2.0"
+	},
+	"devDependencies": {
+		"pino-pretty": "^13.0.0"
+	}
 }

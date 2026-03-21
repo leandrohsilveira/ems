@@ -21,6 +21,7 @@
   "devDependencies": {
     "@eslint/compat": "^2.0.2",
     "@eslint/js": "^9.39.2",
+    "eslint-plugin-jsdoc": "^50.6.3",
     "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^25.5.0",
     "@vitest/browser-playwright": "^4.1.0",
