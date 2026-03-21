@@ -1,0 +1,10 @@
+{
+    "name": "@ems/types-backend-auth",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": "./src/index.ts",
+    "scripts": {
+        "lint": "prettier --check . && tsc --noEmit && eslint .",
+        "format": "prettier --write ."
+    }
+}
