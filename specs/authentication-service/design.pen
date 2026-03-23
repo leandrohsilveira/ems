@@ -1,0 +1,296 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "Ie0BV",
+      "x": 0,
+      "y": 0,
+      "name": "Login Page",
+      "width": 800,
+      "height": 600,
+      "fill": "#ffffff",
+      "layout": "vertical",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "RqgZU",
+          "name": "Login Card",
+          "width": 420,
+          "fill": "#ffffff",
+          "cornerRadius": 16,
+          "stroke": {
+            "align": "inside",
+            "thickness": 1,
+            "fill": "#e5e5e5"
+          },
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#0000000a",
+            "offset": {
+              "x": 0,
+              "y": 10
+            },
+            "blur": 8.75
+          },
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "qJnp0",
+              "name": "Header",
+              "width": "fill_container",
+              "height": 100,
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RdKxT",
+                  "name": "Logo Badge",
+                  "width": 48,
+                  "height": 48,
+                  "fill": "#3b82f6",
+                  "cornerRadius": 9999,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "5JOjv",
+                      "name": "logoText",
+                      "fill": "#ffffff",
+                      "content": "EMS",
+                      "lineHeight": 1.4286,
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "W7tBW",
+                  "name": "title",
+                  "fill": "#1a1a1a",
+                  "content": "EMS",
+                  "lineHeight": 1.5556,
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "CwpaF",
+              "name": "usernameLabel",
+              "fill": "#1a1a1a",
+              "content": "Username",
+              "lineHeight": 1.4286,
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "4ka81",
+              "name": "Input",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "#f5f5f5",
+              "cornerRadius": 9999,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#d4d4d4"
+              },
+              "padding": [
+                18,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eRuVB",
+                  "name": "usernamePlaceholder",
+                  "fill": "#000000",
+                  "content": "Username",
+                  "lineHeight": 1.4286,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "sga92",
+              "name": "passwordLabel",
+              "fill": "#1a1a1a",
+              "content": "Password",
+              "lineHeight": 1.4286,
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "WM2As",
+              "name": "Input",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "#f5f5f5",
+              "cornerRadius": 9999,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#d4d4d4"
+              },
+              "padding": [
+                18,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zjcTQ",
+                  "name": "passwordPlaceholder",
+                  "fill": "#000000",
+                  "content": "Password",
+                  "lineHeight": 1.4286,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QRz8D",
+              "name": "Remember Me",
+              "width": "fill_container",
+              "height": 24,
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VkwPr",
+                  "name": "Checkbox",
+                  "width": 16,
+                  "height": 16,
+                  "fill": "#ffffff",
+                  "cornerRadius": 4,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "#d4d4d4"
+                  },
+                  "layout": "none"
+                },
+                {
+                  "type": "text",
+                  "id": "M0hqM",
+                  "name": "rememberMeLabel",
+                  "fill": "#000000",
+                  "content": "Remember Me",
+                  "lineHeight": 1.4286,
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Mnp0H",
+              "name": "Sign In Button",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#3b82f6",
+              "cornerRadius": 9999,
+              "padding": [
+                16,
+                24
+              ],
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Rx31e",
+                  "name": "signInText",
+                  "fill": "#ffffff",
+                  "content": "Sign In",
+                  "lineHeight": 1.5556,
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "--accent": {
+      "type": "color",
+      "value": "#f5f5f5"
+    },
+    "--background": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "--border": {
+      "type": "color",
+      "value": "#e5e5e5"
+    },
+    "--card": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "--card-foreground": {
+      "type": "color",
+      "value": "#1a1a1a"
+    },
+    "--foreground": {
+      "type": "color",
+      "value": "#1a1a1a"
+    },
+    "--input": {
+      "type": "color",
+      "value": "#d4d4d4"
+    },
+    "--muted-foreground": {
+      "type": "color",
+      "value": "#737373"
+    },
+    "--primary": {
+      "type": "color",
+      "value": "#3b82f6"
+    },
+    "--primary-foreground": {
+      "type": "color",
+      "value": "#ffffff"
+    },
+    "--white": {
+      "type": "color",
+      "value": "#ffffff"
+    }
+  }
+}
