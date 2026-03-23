@@ -42,4 +42,4 @@ All files must use kebab-case (e.g., `auth-plugin.js`, `index.js`, `my-component
 - Types Backend: `@tms/types-backend-<name>`
 - Types Frontend: `@tms/types-frontend-<name>`
 - Types Shared: `@tms/types-shared-<name>`
-- Packages: `@tms/package-<name>`
+- Packages: `@tms/<name>`

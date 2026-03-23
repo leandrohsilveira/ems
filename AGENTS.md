@@ -58,6 +58,47 @@ When implementing frontend features, use Pencil MCP to access design files:
    - Export design screenshots for comparison
    - Check spacing, colors, and typography match the design tokens
 
+### Design System Component Creation
+
+Design system components live in `packages/ui/src/lib/components/` and must follow TDD.
+
+**1. Create component folder and files:**
+
+```
+packages/ui/src/lib/components/<component-name>/
+├── <component-name>.svelte
+└── index.js
+```
+
+**2. Write tests first** (TDD approach):
+
+- Create test file alongside component: `<component-name>.test.ts`
+- Use Vitest with `vi.fn()`, `vi.mock()`, `vi.spyOn()` for mocking
+- Test component behavior, props, and interactions
+
+**3. Implement the component**:
+
+- Use `pencil_open_document` to open `design-system.pen` for design tokens and patterns
+- Use `skill` tool to load `svelte-code-writer` skill for Svelte 5 patterns
+- Use `skill` tool to load `svelte-core-bestpractices` skill for best practices
+- **Tailwind CSS is mandatory** for styling
+- Follow existing patterns:
+  - Use `$props()` rune for props
+  - Use `cn()` utility from `../../utils` for class merging
+  - Add JSDoc type hints for props
+- Keep component focused and reusable
+
+**4. Create Storybook story**:
+
+- Create `*.stories.ts` file in the component folder
+- Document all component states and variants
+
+**5. Export from barrel file** (`index.js`):
+
+```js
+export { default } from "./<component-name>.svelte";
+```
+
 ## After Modifying Files
 
 - **Always run lint** on JavaScript files
