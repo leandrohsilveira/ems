@@ -46,6 +46,7 @@
     ],
     "dependencies": {
         "@ems/types-frontend-ui": "*",
+        "@fontsource/inter": "^5.0.0",
         "clsx": "^2.1.1",
         "tailwind-merge": "^3.5.0"
     }

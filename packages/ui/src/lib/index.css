@@ -1,4 +1,9 @@
 @import 'tailwindcss';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
@@ -6,4 +11,62 @@
 
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Colors - Light mode (default) */
+    --color-background: #ffffff;
+    --color-foreground: #2a2933;
+    --color-card: #ffffff;
+    --color-card-foreground: #2a2933;
+    --color-popover: #ffffff;
+    --color-popover-foreground: #2a2933;
+    --color-primary: #5749f4;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #d9d9db;
+    --color-secondary-foreground: #2a2933;
+    --color-muted: #f5f5f5;
+    --color-muted-foreground: #616167;
+    --color-accent: #f5f5f5;
+    --color-accent-foreground: #2a2933;
+    --color-destructive: #cc3314;
+    --color-destructive-foreground: #ffffff;
+    --color-border: #c5c5cb;
+    --color-input: #c5c5cb;
+    --color-ring: #e1e2e5;
+    --color-success: #a1e5a1;
+    --color-success-foreground: #003300;
+    --color-warning: #ffd9b2;
+    --color-warning-foreground: #4d2700;
+    --color-error: #ffbfb2;
+    --color-error-foreground: #590f00;
+    --color-info: #c9d6f0;
+    --color-info-foreground: #001133;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-background: #131124;
+        --color-foreground: #e8e8ea;
+        --color-card: #1a182e;
+        --color-card-foreground: #ffffff;
+        --color-popover: #1a182e;
+        --color-popover-foreground: #ffffff;
+        --color-secondary: #403f51;
+        --color-secondary-foreground: #ffffff;
+        --color-muted: #2e2e2e;
+        --color-muted-foreground: #888799;
+        --color-accent: #131124;
+        --color-accent-foreground: #f2f3f0;
+        --color-border: #2b283d;
+        --color-input: #2b283d;
+        --color-ring: #666666;
+        --color-success: #3b4748;
+        --color-success-foreground: #a1e5a1;
+        --color-warning: #53484f;
+        --color-warning-foreground: #ffd9b2;
+        --color-error: #53424f;
+        --color-error-foreground: #ffbfb2;
+        --color-info: #404562;
+        --color-info-foreground: #b2ccff;
+    }
 }
