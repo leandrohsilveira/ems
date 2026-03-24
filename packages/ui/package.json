@@ -46,6 +46,7 @@
 		"svelte"
 	],
 	"dependencies": {
+		"@ems/types-frontend-ui": "*",
 		"clsx": "^2.1.1",
 		"tailwind-merge": "^3.5.0"
 	}

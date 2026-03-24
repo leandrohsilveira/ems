@@ -1,5 +1,5 @@
 <script>
-    import './layout.css'
+    import '@ems/ui/index.css'
     import favicon from '$lib/assets/favicon.svg'
 
     let { children } = $props()
