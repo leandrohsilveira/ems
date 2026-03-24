@@ -90,7 +90,8 @@ packages/ui/src/lib/components/<component-name>/
 
 **4. Create Storybook story**:
 
-- Create `*.stories.ts` file in the component folder
+- Use the `storybook-story-creator` skill to create stories
+- Create `*.stories.svelte` file in the component folder (same folder as component)
 - Document all component states and variants
 
 **5. Export from barrel file** (`index.js`):
