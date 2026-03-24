@@ -14,9 +14,10 @@ const helloWorldOptions = {
 
 /**
  * @param {import('fastify').FastifyInstance} fastify
- * @param {object} options
+ * @param {object} _options
  */
-export default async function appPlugin(fastify, options) {
+// eslint-disable-next-line no-unused-vars
+export default async function appPlugin(fastify, _options) {
     fastify.get('/', helloWorldOptions, async () => {
         return { message: 'Hello World' }
     })

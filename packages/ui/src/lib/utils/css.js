@@ -2,8 +2,8 @@
  * @import { ClassValue } from "clsx"
  */
 
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 /**
  * Combines and merges Tailwind CSS class names, resolving conflicts
@@ -12,5 +12,5 @@ import { twMerge } from 'tailwind-merge';
  * @returns {string} Merged class string with conflicts resolved
  */
 export function cn(...classNames) {
-  return twMerge(clsx(classNames));
+    return twMerge(clsx(classNames))
 }
