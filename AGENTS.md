@@ -102,6 +102,6 @@ export { default } from "./<component-name>.svelte";
 
 ## After Modifying Files
 
-- **Always run lint** on JavaScript files
+- **Always run lint and check** scripts on JavaScript files
 - **Always run tests** when modifying implementation files
 - **Update documentation** if implementation changes behavior, APIs, or adds new features

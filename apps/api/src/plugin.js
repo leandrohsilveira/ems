@@ -22,5 +22,8 @@ export default async function appPlugin(fastify, _options) {
         return { message: 'Hello World' }
     })
 
-    await fastify.register(import('@ems/domain-backend-auth'), { prefix: '/auth' })
+    await fastify.register(import('@ems/domain-backend-auth'), {
+        prefix: '/auth',
+        jwtSecret: /** @type {string} */ (process.env.JWT_SECRET)
+    })
 }

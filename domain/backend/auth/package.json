@@ -9,12 +9,20 @@
         }
     },
     "scripts": {
+        "check": "tsc --noEmit --project jsconfig.json",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
         "test": "vitest run --passWithNoTests",
         "test:unit": "vitest --passWithNoTests"
     },
     "dependencies": {
-        "fastify": "^5.2.0"
+        "@ems/types-backend-auth": "*",
+        "fastify": "^5.2.0",
+        "jsonwebtoken": "^9.0.2",
+        "bcrypt": "^5.1.1"
+    },
+    "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.5",
+        "@types/bcrypt": "^5.0.2"
     }
 }

@@ -4,7 +4,8 @@
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
-    "lint": "prettier --check . && tsc --noEmit && eslint .",
+    "check": "tsc --noEmit",
+    "lint": "prettier --check . && eslint .",
     "format": "prettier --write ."
   }
 }
