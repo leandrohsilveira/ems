@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import createAppConfig from '@ems/domain-backend-config'
 
 /**
  * Starts the API Server
@@ -16,7 +17,8 @@ export default async function start() {
         }
     })
 
-    await fastify.register(import('./plugin.js'))
+    const appConfig = createAppConfig(process.env)
+    await fastify.register(import('./plugin.js'), { appConfig })
 
     try {
         await fastify.listen({

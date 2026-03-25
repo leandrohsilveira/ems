@@ -1,0 +1,21 @@
+{
+    "name": "@ems/domain-backend-config",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.js"
+        }
+    },
+    "scripts": {
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test": "vitest run --passWithNoTests",
+        "test:unit": "vitest --passWithNoTests"
+    },
+    "dependencies": {
+        "@ems/types-backend-config": "*"
+    }
+}

@@ -5,8 +5,9 @@ import appPlugin from './plugin.js'
 describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {
         const fastify = Fastify()
-        process.env.JWT_SECRET = 'test-secret'
-        await fastify.register(appPlugin)
+        await fastify.register(appPlugin, {
+            appConfig: { jwtSecret: 'test-secret' }
+        })
         await fastify.ready()
 
         const response = await fastify.inject({

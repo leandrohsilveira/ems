@@ -12,18 +12,20 @@ const helloWorldOptions = {
     }
 }
 
+/** @import { AppConfig } from '@ems/types-backend-config' */
+
 /**
  * @param {import('fastify').FastifyInstance} fastify
- * @param {object} _options
+ * @param {object} options
+ * @param {AppConfig} options.appConfig - Required app configuration
  */
-// eslint-disable-next-line no-unused-vars
-export default async function appPlugin(fastify, _options) {
+export default async function appPlugin(fastify, options) {
     fastify.get('/', helloWorldOptions, async () => {
         return { message: 'Hello World' }
     })
 
     await fastify.register(import('@ems/domain-backend-auth'), {
         prefix: '/auth',
-        jwtSecret: /** @type {string} */ (process.env.JWT_SECRET)
+        jwtSecret: options.appConfig.jwtSecret
     })
 }
