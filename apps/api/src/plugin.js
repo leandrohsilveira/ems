@@ -1,3 +1,5 @@
+import authPlugin from '@ems/domain-backend-auth'
+
 /** @type {import('fastify').RouteShorthandOptions} */
 const helloWorldOptions = {
     schema: {
@@ -19,13 +21,13 @@ const helloWorldOptions = {
  * @param {object} options
  * @param {AppConfig} options.appConfig - Required app configuration
  */
-export default async function appPlugin(fastify, options) {
+export default async function appPlugin(fastify, { appConfig }) {
     fastify.get('/', helloWorldOptions, async () => {
         return { message: 'Hello World' }
     })
 
-    await fastify.register(import('@ems/domain-backend-auth'), {
+    await fastify.register(authPlugin, {
         prefix: '/auth',
-        jwtSecret: options.appConfig.jwtSecret
+        config: appConfig.auth
     })
 }

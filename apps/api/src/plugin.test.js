@@ -6,7 +6,9 @@ describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {
         const fastify = Fastify()
         await fastify.register(appPlugin, {
-            appConfig: { jwtSecret: 'test-secret' }
+            appConfig: {
+                auth: { jwtSecret: 'test-secret' }
+            }
         })
         await fastify.ready()
 

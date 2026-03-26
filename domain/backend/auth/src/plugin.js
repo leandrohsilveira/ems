@@ -1,28 +1,12 @@
-import { createAuthRoutes } from './routes/auth.routes.js'
-/** @import { AuthConfig } from '@ems/types-backend-auth' */
+/** @import { AuthConfig } from '@ems/types-backend-config' */
 
 /**
  * Auth plugin for Fastify
  * @param {import('fastify').FastifyInstance} fastify
- * @param {AuthConfig} options
+ * @param {object} options
+ * @param {AuthConfig} options.config
  */
-export default async function authPlugin(fastify, options) {
-    const config = {
-        jwtSecret: options.jwtSecret,
-        accessTokenTtl: options.accessTokenTtl || 900,
-        refreshTokenTtl: options.refreshTokenTtl || 604800
-    }
-
-    if (!config.jwtSecret) {
-        throw new Error('jwtSecret is required for auth plugin')
-    }
-
-    const authRoutes = createAuthRoutes(config)
-    await authRoutes(fastify)
+// eslint-disable-next-line no-unused-vars
+export default async function authPlugin(fastify, { config }) {
+    fastify.get('/', (request, reply) => reply.status(200).send({ message: 'Hello' }))
 }
-
-export { authService } from './services/auth.service.js'
-export { userStore, seedUsers } from './services/user.store.js'
-export { tokenStore, clearTokens } from './services/token.store.js'
-export { authMiddleware } from './middleware/auth.middleware.js'
-export { createAuthRoutes } from './routes/auth.routes.js'
