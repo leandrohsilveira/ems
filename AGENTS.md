@@ -11,6 +11,12 @@
      - **Authentication work** → Read the Authentication section
      - **General/architecture** → Read Paradigms and Development sections
 
+3. **Read `ARCHITECTURE.md`** to understand the project structure and architectural principles:
+   - Applications (API Gateway, Web)
+   - Domain packages organization
+   - Types packages
+   - Clean Architecture principles (vertical/horizontal boundaries, dependency rule)
+
 ## Before Implementation
 
 1. **Read `CONVENTIONS.md`** for code style and naming conventions
