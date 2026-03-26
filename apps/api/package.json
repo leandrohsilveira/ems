@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "check": "tsc --noEmit --project jsconfig.json",
-        "dev": "node --watch --watch-preserve-output --env-file=.env --env-file=.env.secret src/index.js",
+        "dev": "node --watch --watch-preserve-output --env-file=.env.dev --env-file=.env.secret src/index.js",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
         "test": "vitest run --passWithNoTests",
