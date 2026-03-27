@@ -1,7 +1,4 @@
-/**
- * JWT Access token payload
- */
-export type AccessTokenPayload = {
+export type AccessTokenPayloadDTO = {
     sub: string
     username: string
     role: string
@@ -11,10 +8,7 @@ export type AccessTokenPayload = {
     type: 'access'
 }
 
-/**
- * JWT Refresh token payload
- */
-export type RefreshTokenPayload = {
+export type RefreshTokenPayloadDTO = {
     sub: string
     jti: string
     sessionId: string

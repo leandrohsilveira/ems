@@ -13,20 +13,20 @@ import assert from 'node:assert'
  * @overload
  * @param {JwtPayload | string | undefined} payload
  * @param {'access'} type
- * @returns {import('@ems/types-backend-auth').AccessTokenPayload}
+ * @returns {import('@ems/types-backend-auth').AccessTokenPayloadDTO}
  */
 
 /**
  * @overload
  * @param {JwtPayload | string | undefined} payload
  * @param {'refresh'} type
- * @returns {import('@ems/types-backend-auth').RefreshTokenPayload}
+ * @returns {import('@ems/types-backend-auth').RefreshTokenPayloadDTO}
  */
 
 /**
  * @param {JwtPayload | string | undefined} payload
  * @param {'access' | 'refresh'} type
- * @returns {import('@ems/types-backend-auth').AccessTokenPayload | import('@ems/types-backend-auth').RefreshTokenPayload}
+ * @returns {import('@ems/types-backend-auth').AccessTokenPayloadDTO | import('@ems/types-backend-auth').RefreshTokenPayloadDTO}
  */
 function parseTokenPayload(payload, type) {
     if (typeof payload === 'string' || !payload) {
@@ -68,7 +68,7 @@ function parseTokenPayload(payload, type) {
  */
 export function createTokenService(config) {
     return {
-        /** @param {import('@ems/types-backend-auth').Session} session */
+        /** @param {import('@ems/types-backend-auth').SessionDTO} session */
         generateAccessToken(session) {
             const payload = {
                 sub: session.userId,
@@ -82,7 +82,7 @@ export function createTokenService(config) {
             })
         },
 
-        /** @param {import('@ems/types-backend-auth').Session} session */
+        /** @param {import('@ems/types-backend-auth').SessionDTO} session */
         generateRefreshToken(session) {
             const payload = {
                 sub: session.userId,

@@ -1,11 +1,11 @@
-import type { AccessTokenPayload, RefreshTokenPayload } from './jwt-payload.js'
-import type { Session } from './session.js'
+import type { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from './jwt-payload.js'
+import type { SessionDTO } from './session.js'
 
 export interface TokenService {
-    generateAccessToken(session: Session): string
-    generateRefreshToken(session: Session): string
-    verifyAccessToken(token: string): AccessTokenPayload
-    verifyRefreshToken(token: string): RefreshTokenPayload
+    generateAccessToken(session: SessionDTO): string
+    generateRefreshToken(session: SessionDTO): string
+    verifyAccessToken(token: string): AccessTokenPayloadDTO
+    verifyRefreshToken(token: string): RefreshTokenPayloadDTO
     hashPassword(password: string): Promise<string>
     comparePassword(password: string, hash: string): Promise<boolean>
 }

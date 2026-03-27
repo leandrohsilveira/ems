@@ -1,13 +1,4 @@
-/**
- * Response containing authentication tokens
- * @typedef {Object} TokenResponse
- * @property {string} accessToken
- * @property {string} refreshToken
- * @property {number} expiresIn
- * @property {string} issuedAt
- * @property {"Bearer"} tokenType
- */
-export type TokenResponse = {
+export type TokenResponseDTO = {
     accessToken: string
     refreshToken: string
     expiresIn: number

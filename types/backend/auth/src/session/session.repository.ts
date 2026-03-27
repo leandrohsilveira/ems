@@ -1,11 +1,14 @@
-import type { Prisma, Session } from '@ems/database'
-
-export type SessionCreateInput = Prisma.SessionUncheckedCreateInput
-export type SessionUpdateInput = Prisma.SessionUncheckedUpdateInput
+import type {
+    Session,
+    SessionWithUser,
+    SessionCreateInput,
+    SessionUpdateInput
+} from '@ems/database'
 
 export interface SessionRepository {
-    findByJti(jti: string, includeUser?: boolean): Promise<Session | null>
-    findByUserId(userId: string, includeUser?: boolean): Promise<Session[]>
+    findByJti(jti: string): Promise<SessionWithUser | null>
+    findByUserId(userId: string): Promise<SessionWithUser[]>
+
     create(data: SessionCreateInput): Promise<Session>
     update(id: string, data: SessionUpdateInput): Promise<Session>
     delete(id: string): Promise<void>

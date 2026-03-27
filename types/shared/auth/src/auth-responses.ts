@@ -1,9 +1,9 @@
-import type { TokenResponse } from './token.js'
-import type { UserResponse } from './user.js'
-import type { MessageResponse } from './message.js'
+import type { TokenResponseDTO } from './token.js'
+import type { UserResponseDTO } from './user.js'
+import type { MessageResponseDTO } from './message.js'
 
-export type LoginResponse = TokenResponse
-export type RefreshResponse = TokenResponse
-export type LogoutResponse = MessageResponse
-export type RevokeAllResponse = MessageResponse
-export type MeResponse = UserResponse
+export type LoginResponseDTO = TokenResponseDTO
+export type RefreshResponseDTO = TokenResponseDTO
+export type LogoutResponseDTO = MessageResponseDTO
+export type RevokeAllResponseDTO = MessageResponseDTO
+export type MeResponseDTO = UserResponseDTO

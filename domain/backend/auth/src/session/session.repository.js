@@ -11,32 +11,30 @@ export function createSessionRepository(db) {
         /**
          * Find session by jti
          * @param {string} jti
-         * @param {boolean} [includeUser]
-         * @returns {Promise<import('@ems/database').Session | null>}
+         * @returns {Promise<import('@ems/database').SessionWithUser | null>}
          */
-        async findByJti(jti, includeUser = false) {
+        async findByJti(jti) {
             return db.session.findUnique({
                 where: { jti },
-                include: includeUser ? { user: true } : undefined
+                include: { user: true }
             })
         },
 
         /**
          * Find all sessions for a user
          * @param {string} userId
-         * @param {boolean} [includeUser]
-         * @returns {Promise<import('@ems/database').Session[]>}
+         * @returns {Promise<import('@ems/database').SessionWithUser[]>}
          */
-        async findByUserId(userId, includeUser = false) {
+        async findByUserId(userId) {
             return db.session.findMany({
                 where: { userId },
-                include: includeUser ? { user: true } : undefined
+                include: { user: true }
             })
         },
 
         /**
          * Create a new session
-         * @param {import('@ems/types-backend-auth').SessionCreateInput} data
+         * @param {import('@ems/database').SessionCreateInput} data
          * @returns {Promise<import('@ems/database').Session>}
          */
         async create(data) {
@@ -46,7 +44,7 @@ export function createSessionRepository(db) {
         /**
          * Update a session
          * @param {string} id
-         * @param {import('@ems/types-backend-auth').SessionUpdateInput} data
+         * @param {import('@ems/database').SessionUpdateInput} data
          * @returns {Promise<import('@ems/database').Session>}
          */
         async update(id, data) {

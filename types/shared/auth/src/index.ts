@@ -1,16 +1,16 @@
-export type { MessageResponse } from './message.js'
-export type { User, UserResponse } from './user.js'
-export type { TokenResponse } from './token.js'
+export type { MessageResponseDTO } from './message.js'
+export type { UserDTO, UserResponseDTO } from './user.js'
+export type { TokenResponseDTO } from './token.js'
 export type {
-    LoginRequest,
-    RefreshRequest,
-    LogoutRequest,
-    RevokeAllRequest
+    LoginRequestDTO,
+    RefreshRequestDTO,
+    LogoutRequestDTO,
+    RevokeAllRequestDTO
 } from './auth-requests.js'
 export type {
-    LoginResponse,
-    RefreshResponse,
-    LogoutResponse,
-    RevokeAllResponse,
-    MeResponse
+    LoginResponseDTO,
+    RefreshResponseDTO,
+    LogoutResponseDTO,
+    RevokeAllResponseDTO,
+    MeResponseDTO
 } from './auth-responses.js'

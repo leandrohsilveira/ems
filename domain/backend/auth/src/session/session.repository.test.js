@@ -41,24 +41,11 @@ describe('createSessionRepository', () => {
     })
 
     describe('findByJti', () => {
-        it('should return session when found', async () => {
-            const mockSession = { id: 'sess-1', userId: 'user-1', jti: 'token-123' }
-            mockFindUnique.mockResolvedValue(mockSession)
-
-            const result = await sessionRepository.findByJti('token-123')
-
-            expect(result).toEqual(mockSession)
-            expect(mockFindUnique).toHaveBeenCalledWith({
-                where: { jti: 'token-123' },
-                include: undefined
-            })
-        })
-
-        it('should return session with user when includeUser is true', async () => {
+        it('should return session with user when found', async () => {
             const mockSession = { id: 'sess-1', userId: 'user-1', jti: 'token-123', user: {} }
             mockFindUnique.mockResolvedValue(mockSession)
 
-            const result = await sessionRepository.findByJti('token-123', true)
+            const result = await sessionRepository.findByJti('token-123')
 
             expect(result).toEqual(mockSession)
             expect(mockFindUnique).toHaveBeenCalledWith({
@@ -77,10 +64,10 @@ describe('createSessionRepository', () => {
     })
 
     describe('findByUserId', () => {
-        it('should return sessions for user', async () => {
+        it('should return sessions with user for user', async () => {
             const mockSessions = [
-                { id: 'sess-1', userId: 'user-1' },
-                { id: 'sess-2', userId: 'user-1' }
+                { id: 'sess-1', userId: 'user-1', user: {} },
+                { id: 'sess-2', userId: 'user-1', user: {} }
             ]
             mockFindMany.mockResolvedValue(mockSessions)
 
@@ -89,7 +76,7 @@ describe('createSessionRepository', () => {
             expect(result).toEqual(mockSessions)
             expect(mockFindMany).toHaveBeenCalledWith({
                 where: { userId: 'user-1' },
-                include: undefined
+                include: { user: true }
             })
         })
     })

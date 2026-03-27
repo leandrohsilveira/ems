@@ -1,8 +1,3 @@
-/**
- * Generic message response
- * @typedef {Object} MessageResponse
- * @property {string} message
- */
-export type MessageResponse = {
+export type MessageResponseDTO = {
     message: string
 }
