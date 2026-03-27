@@ -16,13 +16,13 @@
         "test:unit": "vitest --passWithNoTests"
     },
     "dependencies": {
+        "@ems/database": "*",
         "@ems/types-backend-auth": "*",
         "bcrypt": "^6.0.0",
         "fastify": "^5.2.0",
         "jsonwebtoken": "^9.0.2"
     },
     "devDependencies": {
-        "@prisma/client": "^7.5.0",
         "@types/bcrypt": "^5.0.2",
         "@types/jsonwebtoken": "^9.0.5"
     }

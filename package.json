@@ -10,7 +10,8 @@
     "domain/frontend/*",
     "types/backend/*",
     "types/frontend/*",
-    "types/shared/*"
+    "types/shared/*",
+    "prisma"
   ],
   "scripts": {
     "clean": "rm -Rf ./.turbo/cache",
@@ -22,7 +23,8 @@
     "db:migrate": "dotenvx run -f apps/api/.env.dev -- prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "postdb:generate": "npm run build -w=@ems/database"
   },
   "overrides": {
     "cookie": ">=0.7.0",

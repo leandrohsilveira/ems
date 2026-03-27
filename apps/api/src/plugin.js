@@ -1,5 +1,7 @@
 import authPlugin from '@ems/domain-backend-auth'
 
+/** @import { PrismaClient } from '@ems/database' */
+
 /** @type {import('fastify').RouteShorthandOptions} */
 const helloWorldOptions = {
     schema: {
@@ -20,14 +22,16 @@ const helloWorldOptions = {
  * @param {import('fastify').FastifyInstance} fastify
  * @param {object} options
  * @param {AppConfig} options.appConfig - Required app configuration
+ * @param {PrismaClient} options.db The database client
  */
-export default async function appPlugin(fastify, { appConfig }) {
+export default async function appPlugin(fastify, { appConfig, db }) {
     fastify.get('/', helloWorldOptions, async () => {
         return { message: 'Hello World' }
     })
 
     await fastify.register(authPlugin, {
         prefix: '/auth',
-        config: appConfig.auth
+        config: appConfig.auth,
+        db
     })
 }

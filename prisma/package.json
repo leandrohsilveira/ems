@@ -1,0 +1,20 @@
+{
+  "name": "@ems/database",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "db:generate": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@ems/types-backend-config": "*",
+    "@prisma/adapter-better-sqlite3": "^7.5.0",
+    "@prisma/client": "*"
+  }
+}

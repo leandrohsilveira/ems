@@ -1,6 +1,7 @@
 import Fastify from 'fastify'
 import createAppConfig from '@ems/domain-backend-config'
 import appPlugin from './plugin'
+import { createDatabaseClient } from '@ems/database'
 
 /**
  * Starts the API Server
@@ -19,7 +20,9 @@ export default async function start() {
     })
 
     const appConfig = createAppConfig(process.env)
-    await fastify.register(appPlugin, { appConfig })
+    const db = createDatabaseClient(appConfig.db)
+
+    await fastify.register(appPlugin, { appConfig, db })
 
     try {
         await fastify.listen({
