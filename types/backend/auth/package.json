@@ -3,6 +3,9 @@
     "version": "0.0.0",
     "type": "module",
     "exports": "./src/index.ts",
+    "dependencies": {
+        "@ems/types-shared-auth": "*"
+    },
     "scripts": {
         "check": "tsc --noEmit",
         "lint": "prettier --check . && eslint .",
