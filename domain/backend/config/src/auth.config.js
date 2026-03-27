@@ -10,6 +10,9 @@ import { requireEnv } from './utils'
  */
 export default function createAuthConfig(env) {
     return {
-        jwtSecret: requireEnv(env, 'AUTH_JWT_SECRET')
+        jwtSecret: requireEnv(env, 'AUTH_JWT_SECRET'),
+        accessTokenTTL: Number(env.AUTH_ACCESS_TOKEN_TTL || '300'),
+        refreshTokenTTL: Number(env.AUTH_REFRESH_TOKEN_TTL || '1800'),
+        refreshTokenMobileTTL: Number(env.AUTH_REFRESH_TOKEN_MOBILE_TTL || '604800')
     }
 }

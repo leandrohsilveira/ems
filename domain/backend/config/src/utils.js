@@ -1,6 +1,7 @@
 /** @import {EnvObject} from "@ems/types-backend-config" */
 
 /**
+ * Requires an environment variable to be present
  * @param {EnvObject} env
  * @param {string} name the name of the env variable to require
  * @returns {string} the env value

@@ -6,3 +6,4 @@ export type {
     SessionUpdateInput
 } from './session/session.repository.js'
 export type { AccessTokenPayload, RefreshTokenPayload } from './session/jwt-payload.js'
+export type { TokenService } from './session/token.service.js'
