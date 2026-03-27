@@ -1,11 +1,9 @@
-import type { User } from '@ems/types-shared-auth'
-
 /**
  * Session entity from database (with user relation)
  * @typedef {Object} Session
  * @property {string} id
  * @property {string} userId
- * @property {User} user
+ * @property {import("@ems/types-shared-auth").User} user
  * @property {string} jti
  * @property {Date} lastRefresh
  * @property {Date} expiresAt
@@ -13,7 +11,7 @@ import type { User } from '@ems/types-shared-auth'
 export type Session = {
     id: string
     userId: string
-    user: User
+    user: import('@ems/types-shared-auth').User
     jti: string
     lastRefresh: Date
     expiresAt: Date
