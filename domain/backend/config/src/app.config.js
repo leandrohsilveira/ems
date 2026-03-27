@@ -1,6 +1,7 @@
 /** @import { AppConfig, EnvObject } from '@ems/types-backend-config' */
 
 import createAuthConfig from './auth.config'
+import createDatabaseConfig from './database.config'
 
 /**
  * Creates app configuration from env object (dependency inversion)
@@ -9,6 +10,7 @@ import createAuthConfig from './auth.config'
  */
 export default function createAppConfig(env) {
     return {
-        auth: createAuthConfig(env)
+        auth: createAuthConfig(env),
+        db: createDatabaseConfig(env)
     }
 }
