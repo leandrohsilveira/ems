@@ -29,22 +29,22 @@ The Expense Management System requires secure user authentication to protect fin
 2. **Session Management**
    - Create session on login with userId, jti, lastRefresh, and expiresAt
    - Update session's jti and lastRefresh on token refresh
-   - Validate session jti matches refresh token jti to invalidate previous tokens
+   - Validate session jti matches access token jti and refresh token jti to invalidate previous tokens
    - Delete session on logout
    - Delete all user sessions on revoke-all
 
 3. **Token Management**
-   - Generate JWT access tokens with userId, username, and role claim
+   - Generate JWT access tokens with userId, username, role claim, and unique token ID (jti)
    - Generate refresh tokens with unique token ID (jti) and sessionId claim
    - Support token refresh with rotation (new refresh token on each use)
-   - Invalidate previous refresh tokens by updating session jti
+   - Invalidate previous tokens by updating session jti
    - Stateless refresh tokens - session tracked in database
 
 4. **Token Validation**
    - Verify JWT signature using HS256 algorithm
    - Check token expiration
    - Extract and validate user claims
-   - Validate session exists, is not expired, and jti matches
+   - Validate session exists, is not expired, and jti matches access token jti
    - Middleware for protecting API routes
 
 ### Non-Functional Requirements
@@ -77,7 +77,7 @@ The Expense Management System requires secure user authentication to protect fin
 {
   id: string,
   userId: string,
-  jti: string,           // Current valid refresh token ID
+  jti: string,           // Current valid token ID (validates both access and refresh tokens)
   lastRefresh: DateTime,
   expiresAt: DateTime
 }
@@ -90,6 +90,7 @@ The Expense Management System requires secure user authentication to protect fin
   sub: "userId",
   username: "string",
   role: "string",
+  jti: "unique-token-id",
   iat: number,
   exp: number,
   type: "access"
@@ -138,7 +139,8 @@ Response (200):
 {
   "accessToken": "string",
   "refreshToken": "string",
-  "expiresIn": 900,
+  "expiresIn": 300,
+  "issuedAt": "2024-01-01T00:00:00Z",
   "tokenType": "Bearer"
 }
 ```
@@ -159,7 +161,8 @@ Response (200):
 {
   "accessToken": "string",
   "refreshToken": "string",
-  "expiresIn": 900,
+  "expiresIn": 300,
+  "issuedAt": "2024-01-01T00:00:00Z",
   "tokenType": "Bearer"
 }
 ```
@@ -226,18 +229,19 @@ Response (200):
 
 ### Configuration
 
-| Variable               | Default    | Description                                |
-| ---------------------- | ---------- | ------------------------------------------ |
-| AUTH_JWT_SECRET        | (required) | Secret key for signing tokens              |
-| AUTH_ACCESS_TOKEN_TTL  | 900        | Access token lifetime in seconds (15 min)  |
-| AUTH_REFRESH_TOKEN_TTL | 604800     | Refresh token lifetime in seconds (7 days) |
+| Variable                      | Default    | Description                                       |
+| ----------------------------- | ---------- | ------------------------------------------------- |
+| AUTH_JWT_SECRET               | (required) | Secret key for signing tokens                     |
+| AUTH_ACCESS_TOKEN_TTL         | 300        | Access token lifetime in seconds (5 min)          |
+| AUTH_REFRESH_TOKEN_TTL        | 1800       | Refresh token lifetime in seconds (30 min)        |
+| AUTH_REFRESH_TOKEN_MOBILE_TTL | 604800     | Mobile refresh token lifetime in seconds (7 days) |
 
 ## Dependencies
 
 - `jsonwebtoken`: JWT generation and verification
 - `bcrypt`: Password hashing
 - `@prisma/client`: Database access
-- Database: PostgreSQL with User and Session models
+- Database: User and Session models
 
 ## Risks & Mitigations
 
@@ -257,12 +261,13 @@ Response (200):
 - [ ] Valid refresh token can be exchanged for new token pair
 - [ ] Refresh token rotation works (new refresh token issued, old invalidated via jti)
 - [ ] Session is updated with new jti and lastRefresh on token refresh
-- [ ] Previous refresh tokens become invalid after refresh (jti mismatch)
+- [ ] Previous access and refresh tokens become invalid after refresh (jti mismatch)
 - [ ] Logout deletes the session immediately
 - [ ] All user sessions can be revoked at once by admin
+- [ ] Specific session can be revoked by jti
 - [ ] Protected endpoints reject requests without valid access token
 - [ ] Protected endpoints reject requests when session is expired, deleted, or jti mismatch
-- [ ] Token claims (userId, username, role) are correctly extracted from access token
+- [ ] Token claims (userId, username, role, jti) are correctly extracted from access token
 
 ## Out of Scope
 
