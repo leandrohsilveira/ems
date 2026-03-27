@@ -4,7 +4,8 @@
     "type": "module",
     "exports": "./src/index.ts",
     "dependencies": {
-        "@ems/types-shared-auth": "*"
+        "@ems/types-shared-auth": "*",
+        "@ems/database": "*"
     },
     "scripts": {
         "check": "tsc --noEmit",

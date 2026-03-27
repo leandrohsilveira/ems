@@ -1,0 +1,11 @@
+model Session {
+  id         String   @id @default(uuid())
+  userId     String
+  jti        String   @unique
+  lastRefresh DateTime
+  expiresAt  DateTime
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([jti])
+}
