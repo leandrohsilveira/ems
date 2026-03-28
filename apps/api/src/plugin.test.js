@@ -9,7 +9,12 @@ describe('Hello World endpoint', () => {
 
         /** @type {import('@ems/types-backend-config').AppConfig} */
         const appConfig = {
-            auth: { jwtSecret: 'test-secret' },
+            auth: {
+                jwtSecret: 'test-secret',
+                accessTokenTTL: 300,
+                refreshTokenTTL: 3600,
+                refreshTokenMobileTTL: 86400
+            },
             db: { url: ':memory:' }
         }
         const fastify = Fastify()

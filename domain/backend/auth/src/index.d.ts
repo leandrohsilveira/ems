@@ -1,1 +1,6 @@
 export { default } from './plugin.js'
+export { default as authMiddleware } from './auth.middleware.js'
+export { createUserRepository } from './user/user.repository.js'
+export { createSessionRepository } from './session/session.repository.js'
+export { createTokenService } from './session/token.service.js'
+export { createAuthService } from './auth.service.js'

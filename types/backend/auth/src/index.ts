@@ -5,3 +5,4 @@ export type { SessionWithUser, SessionCreateInput, SessionUpdateInput } from '@e
 export type { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from './session/jwt-payload.js'
 export type { TokenService } from './session/token.service.js'
 export type { AuthService } from './auth.service.js'
+export type * from './fastify.js'
