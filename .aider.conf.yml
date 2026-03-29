@@ -1,0 +1,11 @@
+map-tokens: 4096
+read:
+  - ARCHITECTURE.md
+  - AGENTS.md
+  - CONVENTIONS.md
+  - STACK.md
+
+auto-commits: false
+auto-accept-architect: false
+gitignore: false
+auto-test: true

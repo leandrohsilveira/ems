@@ -3,3 +3,5 @@ node_modules/
 
 /.prisma
 *.db
+.aider.*
+!.aider.conf.yml
