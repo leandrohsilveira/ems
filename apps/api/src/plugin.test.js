@@ -1,11 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
+import { mockDeep } from 'vitest-mock-extended'
 import Fastify from 'fastify'
 import appPlugin from './plugin.js'
-import { PrismaClient } from '@ems/database'
 
 describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {
-        const MockedClient = vi.mockObject(PrismaClient)
+        const mockDb = mockDeep()
 
         /** @type {import('@ems/types-backend-config').AppConfig} */
         const appConfig = {
@@ -20,7 +20,7 @@ describe('Hello World endpoint', () => {
         const fastify = Fastify()
         await fastify.register(appPlugin, {
             appConfig,
-            db: new MockedClient({ adapter: vi.mockObject(/** @type {*} */ ({})) })
+            db: mockDb
         })
         await fastify.ready()
 

@@ -12,7 +12,7 @@ describe('Paper', () => {
 
     it('renders with children content', () => {
         const children = createRawSnippet(() => ({
-            render: () => 'Content'
+            render: () => '<div>Content</div>'
         }))
         const { container } = render(Paper, { props: { children } })
         const childrenDiv = container.querySelector('.pt-0')
@@ -21,7 +21,7 @@ describe('Paper', () => {
 
     it('renders with header slot', () => {
         const header = createRawSnippet(() => ({
-            render: () => 'Header'
+            render: () => '<div>Header</div>'
         }))
         const { container } = render(Paper, { props: { header } })
         const headerEl = container.querySelector('[data-header]')
@@ -30,7 +30,7 @@ describe('Paper', () => {
 
     it('renders with footer slot', () => {
         const footer = createRawSnippet(() => ({
-            render: () => 'Footer'
+            render: () => '<div>Footer</div>'
         }))
         const { container } = render(Paper, { props: { footer } })
         const footerEl = container.querySelector('[data-footer]')

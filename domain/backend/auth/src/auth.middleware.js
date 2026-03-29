@@ -1,5 +1,5 @@
 import fastifyPlugin from 'fastify-plugin'
-import '@ems/types-backend-auth'
+import { getErrorMessage } from './utils/error.js'
 
 /** @import { FastifyInstance } from 'fastify' */
 /** @import { AuthService } from '@ems/types-backend-auth' */
@@ -10,31 +10,33 @@ export default fastifyPlugin(
      * @param {{ authService: AuthService }} opts
      */
     async function authMiddleware(fastify, { authService }) {
+        // Apenas decora o request com user null por padrão
         fastify.decorateRequest('user', null)
-        fastify.addHook('preHandler', async (request, reply) => {
+
+        // Cria o decorator authenticate que valida o token
+        fastify.decorate('authenticate', async function (request, reply) {
             const authHeader = request.headers.authorization
 
             if (!authHeader) {
-                request.user = null
-                return
+                return reply.status(401).send({ error: 'Authorization header required' })
             }
 
             if (!authHeader.startsWith('Bearer ')) {
-                request.user = null
-                return
+                return reply.status(401).send({ error: 'Invalid authorization format' })
             }
 
             const accessToken = authHeader.slice(7).trim()
             if (!accessToken) {
-                request.user = null
-                return
+                return reply.status(401).send({ error: 'Token missing' })
             }
 
             try {
                 const session = await authService.me(accessToken)
                 request.user = session.user
-            } catch {
-                return reply.status(401).send({ error: 'Invalid or expired token' })
+            } catch (error) {
+                return reply
+                    .status(401)
+                    .send({ error: 'Invalid or expired token', message: getErrorMessage(error) })
             }
         })
     }

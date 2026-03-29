@@ -15,12 +15,18 @@ describe('authMiddleware', () => {
         mockAuthService = /** @type {*} */ ({ me: mockMe })
         fastify = Fastify()
         await fastify.register(authMiddleware, { authService: mockAuthService })
-        await fastify.get('/test', async (/** @type {import('fastify').FastifyRequest} */ req) => {
-            return { user: req.user }
-        })
+        await fastify.get(
+            '/test',
+            {
+                preHandler: fastify.authenticate
+            },
+            async (/** @type {import('fastify').FastifyRequest} */ req) => {
+                return { user: req.user }
+            }
+        )
     })
 
-    it('should set req.user to null when no authorization header', async () => {
+    it('should return 401 when no authorization header', async () => {
         await fastify.ready()
 
         const response = await fastify.inject({
@@ -29,11 +35,11 @@ describe('authMiddleware', () => {
         })
 
         expect(mockMe).not.toHaveBeenCalled()
-        expect(response.statusCode).toBe(200)
-        expect(response.json()).toEqual({ user: null })
+        expect(response.statusCode).toBe(401)
+        expect(response.json()).toEqual({ error: 'Authorization header required' })
     })
 
-    it('should set req.user to null when authorization header is not Bearer', async () => {
+    it('should return 401 when authorization header is not Bearer', async () => {
         await fastify.ready()
 
         const response = await fastify.inject({
@@ -43,11 +49,11 @@ describe('authMiddleware', () => {
         })
 
         expect(mockMe).not.toHaveBeenCalled()
-        expect(response.statusCode).toBe(200)
-        expect(response.json()).toEqual({ user: null })
+        expect(response.statusCode).toBe(401)
+        expect(response.json()).toEqual({ error: 'Invalid authorization format' })
     })
 
-    it('should set req.user to null when Bearer token is empty', async () => {
+    it('should return 401 when Bearer token is empty', async () => {
         await fastify.ready()
 
         const response = await fastify.inject({
@@ -57,8 +63,8 @@ describe('authMiddleware', () => {
         })
 
         expect(mockMe).not.toHaveBeenCalled()
-        expect(response.statusCode).toBe(200)
-        expect(response.json()).toEqual({ user: null })
+        expect(response.statusCode).toBe(401)
+        expect(response.json()).toEqual({ error: 'Token missing' })
     })
 
     it('should set req.user when valid Bearer token and authService.me succeeds', async () => {
@@ -99,6 +105,9 @@ describe('authMiddleware', () => {
 
         expect(mockMe).toHaveBeenCalledWith('invalid-token')
         expect(response.statusCode).toBe(401)
-        expect(response.json()).toEqual({ error: 'Invalid or expired token' })
+        expect(response.json()).toEqual({
+            error: 'Invalid or expired token',
+            message: 'Invalid token'
+        })
     })
 })

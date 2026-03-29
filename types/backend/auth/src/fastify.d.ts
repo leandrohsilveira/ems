@@ -4,4 +4,8 @@ declare module 'fastify' {
     interface FastifyRequest {
         user: UserDTO | null
     }
+
+    interface FastifyInstance {
+        authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void> | void
+    }
 }

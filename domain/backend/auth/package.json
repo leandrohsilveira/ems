@@ -12,8 +12,8 @@
         "check": "tsc --noEmit --project jsconfig.json",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
-        "test": "vitest run --passWithNoTests",
-        "test:unit": "vitest --passWithNoTests"
+        "test": "vitest run",
+        "test:unit": "vitest --run"
     },
     "dependencies": {
         "@ems/database": "*",

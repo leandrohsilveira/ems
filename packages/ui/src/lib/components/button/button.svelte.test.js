@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render } from 'vitest-browser-svelte'
+import { createRawSnippet } from 'svelte'
 import Button from './button.svelte'
 
 describe('Button', () => {
@@ -62,6 +63,15 @@ describe('Button', () => {
         const { container } = render(Button)
         const button = container.querySelector('button')
         expect(button).toBeTruthy()
+    })
+
+    it('renders with children content', () => {
+        const children = createRawSnippet(() => ({
+            render: () => '<span>Click me</span>'
+        }))
+        const { container } = render(Button, { props: { children } })
+        const button = container.querySelector('button')
+        expect(button?.textContent).toContain('Click me')
     })
 
     it('renders in disabled state', () => {
