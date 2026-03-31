@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createUserRepository } from './user.repository.js'
+import { createUserRepository } from './user.repository'
 
 describe('createUserRepository', () => {
     /** @type {import('@ems/types-backend-auth').UserRepository} */

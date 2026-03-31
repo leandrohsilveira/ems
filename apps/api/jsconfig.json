@@ -9,7 +9,8 @@
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
-        "target": "ESNext"
+        "target": "ESNext",
+        "types": ["vite/client"]
     },
     "include": ["src/*.js", "src/**/*.js"],
     "exclude": ["node_modules"]

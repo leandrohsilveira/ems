@@ -6,7 +6,7 @@ import type {
     LogoutResponseDTO,
     RevokeAllResponseDTO
 } from '@ems/types-shared-auth'
-import type { SessionDTO } from './session/session.js'
+import type { SessionDTO } from './session/session'
 
 export interface AuthService {
     login(request: LoginRequestDTO): Promise<LoginResponseDTO>

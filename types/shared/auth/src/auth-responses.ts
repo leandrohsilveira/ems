@@ -1,6 +1,6 @@
-import type { TokenResponseDTO } from './token.js'
-import type { UserResponseDTO } from './user.js'
-import type { MessageResponseDTO } from './message.js'
+import type { TokenResponseDTO } from './token'
+import type { UserResponseDTO } from './user'
+import type { MessageResponseDTO } from './message'
 
 export type LoginResponseDTO = TokenResponseDTO
 export type RefreshResponseDTO = TokenResponseDTO
