@@ -1,26 +1,12 @@
 import { randomUUID } from 'crypto'
+import logger from 'pino'
+import { parseUser } from './user/user.js'
 
 /** @import { AuthService } from '@ems/types-backend-auth' */
 /** @import { UserRepository } from '@ems/types-backend-auth' */
 /** @import { SessionRepository } from '@ems/types-backend-auth' */
 /** @import { TokenService } from '@ems/types-backend-auth' */
 /** @import { AuthConfig } from '@ems/types-backend-config' */
-
-/**
- * Parse Prisma User to clean UserDTO type (excludes password)
- * @param {import('@ems/database').User} userModel
- * @returns {import('@ems/types-shared-auth').UserDTO}
- */
-function parseUser(userModel) {
-    return {
-        userId: userModel.id,
-        username: userModel.username,
-        firstName: userModel.firstName,
-        lastName: userModel.lastName,
-        email: userModel.email,
-        role: userModel.role
-    }
-}
 
 /**
  * @param {UserRepository} userRepository
@@ -30,11 +16,17 @@ function parseUser(userModel) {
  * @returns {AuthService}
  */
 export function createAuthService(userRepository, sessionRepository, tokenService, config) {
+    const log = logger({ name: 'AuthService' })
     return {
         /** @param {import('@ems/types-shared-auth').LoginRequestDTO} request */
         async login(request) {
+            log.info({ username: request.username }, 'Login attempt')
             const user = await userRepository.findByUsername(request.username)
             if (!user) {
+                log.error(
+                    { username: request.username },
+                    'Login failed: invalid credentials (username)'
+                )
                 throw new Error('Invalid credentials')
             }
 
@@ -43,6 +35,10 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
                 user.password
             )
             if (!isValidPassword) {
+                log.error(
+                    { username: request.username },
+                    'Login failed: invalid credentials (password)'
+                )
                 throw new Error('Invalid credentials')
             }
 
@@ -65,6 +61,7 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
             const accessToken = tokenService.generateAccessToken(sessionWithUser)
             const refreshToken = tokenService.generateRefreshToken(sessionWithUser)
 
+            log.info({ username: request.username }, 'Login successful')
             return {
                 accessToken,
                 refreshToken,

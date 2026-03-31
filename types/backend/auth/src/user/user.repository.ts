@@ -1,4 +1,4 @@
-import type { User } from '@ems/database'
+import type { User, UserCreateInput } from '@ems/database'
 
 /**
  * User repository interface
@@ -7,4 +7,9 @@ import type { User } from '@ems/database'
 export interface UserRepository {
     findByUsername(username: string): Promise<User | null>
     findById(id: string): Promise<User | null>
+
+    // NEW METHODS:
+    create(data: UserCreateInput): Promise<User>
+    findByEmail(email: string): Promise<User | null>
+    findByUsernameOrEmail(username: string, email: string): Promise<User | null>
 }

@@ -5,23 +5,10 @@ import appPlugin from './plugin'
 
 describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {
-        const mockDb = mockDeep()
+        const authService = mockDeep()
 
-        /** @type {import('@ems/types-backend-config').AppConfig} */
-        const appConfig = {
-            auth: {
-                jwtSecret: 'test-secret',
-                accessTokenTTL: 300,
-                refreshTokenTTL: 3600,
-                refreshTokenMobileTTL: 86400
-            },
-            db: { url: ':memory:' }
-        }
         const fastify = Fastify()
-        await fastify.register(appPlugin, {
-            appConfig,
-            db: mockDb
-        })
+        await fastify.register(appPlugin, { authService })
         await fastify.ready()
 
         const response = await fastify.inject({

@@ -24,6 +24,38 @@ export function createUserRepository(db) {
          */
         async findById(id) {
             return db.user.findUnique({ where: { id } })
+        },
+
+        /**
+         * Create a new user
+         * @param {import('@ems/database').UserCreateInput} data
+         * @returns {Promise<import('@ems/database').User>}
+         */
+        async create(data) {
+            return db.user.create({ data })
+        },
+
+        /**
+         * Find user by email
+         * @param {string} email
+         * @returns {Promise<import('@ems/database').User | null>}
+         */
+        async findByEmail(email) {
+            return db.user.findUnique({ where: { email } })
+        },
+
+        /**
+         * Find user by username or email
+         * @param {string} username
+         * @param {string} email
+         * @returns {Promise<import('@ems/database').User | null>}
+         */
+        async findByUsernameOrEmail(username, email) {
+            return db.user.findFirst({
+                where: {
+                    OR: [{ username }, { email }]
+                }
+            })
         }
     }
 }

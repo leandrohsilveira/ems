@@ -1,5 +1,5 @@
-import type { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from './jwt-payload'
-import type { SessionDTO } from './session'
+import type { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from '../session/jwt-payload'
+import type { SessionDTO } from '../session/session'
 
 export interface TokenService {
     generateAccessToken(session: SessionDTO): string
