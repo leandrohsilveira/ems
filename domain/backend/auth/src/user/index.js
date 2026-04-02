@@ -1,2 +1,2 @@
-export { createUserRepository } from './user.repository'
-export { createUserService } from './user.service'
+export { createUserRepository } from './user.repository.js'
+export { createUserService } from './user.service.js'

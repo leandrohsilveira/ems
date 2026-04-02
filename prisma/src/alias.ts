@@ -1,4 +1,4 @@
-import type { Prisma, Session, User } from "./gen/client";
+import type { Prisma, Session, User } from "./gen/client.js";
 
 export type SessionWithUser = Session & { user: User };
 

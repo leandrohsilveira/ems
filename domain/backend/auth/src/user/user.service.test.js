@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
-import { createUserService } from './user.service'
+import { createUserService } from './user.service.js'
 import { createMockUser, createMockUserCreateDTO, createMockUserDTO } from '../testing/user.js'
 import { Prisma } from '@ems/database'
 

@@ -1,1 +1,1 @@
-export { default } from './app.config'
+export { default } from './app.config.js'

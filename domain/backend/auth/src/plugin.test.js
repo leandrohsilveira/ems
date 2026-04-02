@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import Fastify from 'fastify'
-import authPlugin from './plugin'
+import authPlugin from './plugin.js'
 
 /** @import { AuthService } from '@ems/types-backend-auth' */
 /** @import { MockedObject } from 'vitest' */

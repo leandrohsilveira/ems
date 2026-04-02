@@ -3,10 +3,9 @@ import {
     createUserRepository,
     createSessionRepository,
     createTokenService,
-    createAuthService,
-    createUserService
+    createAuthService
 } from '@ems/domain-backend-auth'
-import appPlugin from './plugin'
+import appPlugin from './plugin.js'
 import { createDatabaseClient } from '@ems/database'
 
 /**
@@ -27,20 +26,6 @@ export default async function start(fastify, isProd) {
             tokenService,
             config.auth
         )
-
-        const userService = createUserService(userRepository, tokenService)
-
-        // Seed users if SEED_USER_PASSWORD is set
-        if (process.env.SEED_USER_PASSWORD) {
-            try {
-                const { seedUsers } = await import('./seeds/seed-users.js')
-                await seedUsers(userService, process.env.SEED_USER_PASSWORD)
-                fastify.log.info('User seed completed successfully')
-            } catch (error) {
-                fastify.log.warn(`Seed execution failed: ${String(error)}`)
-                // Don't fail startup
-            }
-        }
 
         await fastify.register(appPlugin, { authService })
 

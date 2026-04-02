@@ -1,2 +1,2 @@
-export type { UserRepository } from './user.repository'
-export type { UserService, UserCreateDTO } from './user.service'
+export type { UserRepository } from './user.repository.js'
+export type { UserService, UserCreateDTO } from './user.service.js'

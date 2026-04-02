@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Fastify from 'fastify'
-import authMiddleware from './auth.middleware'
+import authMiddleware from './auth.middleware.js'
 
 describe('authMiddleware', () => {
     /** @type {ReturnType<typeof Fastify>} */

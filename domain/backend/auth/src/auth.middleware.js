@@ -1,5 +1,5 @@
 import fastifyPlugin from 'fastify-plugin'
-import { getErrorMessage } from './utils/error'
+import { getErrorMessage } from './utils/error.js'
 
 /** @import { FastifyInstance } from 'fastify' */
 /** @import { AuthService } from '@ems/types-backend-auth' */

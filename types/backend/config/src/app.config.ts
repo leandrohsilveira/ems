@@ -1,5 +1,5 @@
-import { AuthConfig } from './auth.config'
-import { DatabaseConfig } from './database.config'
+import { AuthConfig } from './auth.config.js'
+import { DatabaseConfig } from './database.config.js'
 
 export interface AppConfig {
     auth: AuthConfig

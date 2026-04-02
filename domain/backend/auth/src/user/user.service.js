@@ -6,7 +6,6 @@ import { parseUser } from './user.js'
 /** @import { UserService } from '@ems/types-backend-auth' */
 /** @import { UserRepository } from '@ems/types-backend-auth' */
 /** @import { TokenService } from '@ems/types-backend-auth' */
-/** @import { AuthConfig } from '@ems/types-backend-config' */
 
 /**
  * Creates a user service

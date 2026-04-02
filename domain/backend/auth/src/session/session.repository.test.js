@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createSessionRepository } from './session.repository'
+import { createSessionRepository } from './session.repository.js'
 
 describe('createSessionRepository', () => {
     /** @type {ReturnType<typeof createSessionRepository>} */

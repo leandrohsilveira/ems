@@ -1,1 +1,1 @@
-export type { TokenService } from './token.service'
+export type { TokenService } from './token.service.js'

@@ -1,1 +1,1 @@
-export { createTokenService } from './token.service'
+export { createTokenService } from './token.service.js'

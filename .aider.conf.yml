@@ -1,11 +1,21 @@
-map-tokens: 4096
 read:
   - ARCHITECTURE.md
   - AGENTS.md
   - CONVENTIONS.md
   - STACK.md
 
+cache-prompts: true
+map-tokens: 4096
+
+gitignore: false
 auto-commits: false
 auto-accept-architect: false
-gitignore: false
+
 auto-test: true
+test-cmd:
+  - npm run test
+
+auto-lint: true
+lint-cmd:
+  - npm run lint
+  - npm run check

@@ -15,16 +15,18 @@
   ],
   "scripts": {
     "clean": "rm -Rf ./.turbo/cache",
-    "dev": "turbo run dev",
+    "dev": "dotenvx run -f .env -f .env.local -- turbo run dev --env-mode=loose",
     "test": "turbo run test",
     "lint": "turbo run lint",
     "check": "turbo run check",
     "build": "turbo run build",
-    "db:migrate": "dotenvx run -- prisma migrate dev",
+    "db:migrate": "dotenvx run -f .env -f .env.local -- prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "dotenvx run -- prisma studio",
+    "db:studio": "dotenvx run -f .env -f .env.local -- prisma studio",
     "db:generate": "prisma generate",
-    "postdb:generate": "npm run build -w=@ems/database"
+    "postdb:generate": "npm run build -w=@ems/database",
+    "predb:seed": "npm run db:generate",
+    "db:seed": "dotenvx run -f .env -f .env.local -- npm run seed -w=@ems/database"
   },
   "overrides": {
     "cookie": ">=0.7.0",

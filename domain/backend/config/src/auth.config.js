@@ -1,6 +1,6 @@
 /** @import { AuthConfig, EnvObject } from '@ems/types-backend-config' */
 
-import { requireEnv } from './utils'
+import { requireEnv } from './utils.js'
 
 /**
  * Creates auth configuration from env object (dependency inversion)

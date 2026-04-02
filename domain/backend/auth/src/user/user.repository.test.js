@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
-import { createUserRepository } from './user.repository'
+import { createUserRepository } from './user.repository.js'
 import { createMockUser } from '../testing/user.js'
 
 describe('createUserRepository', () => {

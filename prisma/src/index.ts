@@ -1,3 +1,3 @@
-export * from "./gen/client";
-export * from "./factory";
-export * from "./alias";
+export * from "./gen/client.js";
+export * from "./factory.js";
+export * from "./alias.js";

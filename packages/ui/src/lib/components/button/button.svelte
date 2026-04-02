@@ -1,5 +1,5 @@
 <script>
-    import { cn } from '../../utils'
+    import { cn } from '../../utils/index.js'
 
     /** @import { ButtonProps } from '@ems/types-frontend-ui' */
 

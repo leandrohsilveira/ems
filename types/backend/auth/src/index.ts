@@ -1,10 +1,10 @@
-export type { UserRepository, UserService, UserCreateDTO } from './user'
+export type { UserRepository, UserService, UserCreateDTO } from './user/index.js'
 export type {
     SessionDTO,
     SessionRepository,
     AccessTokenPayloadDTO,
     RefreshTokenPayloadDTO
-} from './session'
-export type { TokenService } from './token'
-export type { AuthService } from './auth.service'
-export type * from './fastify'
+} from './session/index.js'
+export type { TokenService } from './token/index.js'
+export type { AuthService } from './auth.service.js'
+export type * from './fastify.js'

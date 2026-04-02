@@ -1,1 +1,1 @@
-export { createSessionRepository } from './session.repository'
+export { createSessionRepository } from './session.repository.js'

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createTokenService } from './token.service'
+import { createTokenService } from './token.service.js'
 
 vi.mock('jsonwebtoken', () => ({
     default: {

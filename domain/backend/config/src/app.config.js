@@ -1,7 +1,7 @@
 /** @import { AppConfig, EnvObject } from '@ems/types-backend-config' */
 
-import createAuthConfig from './auth.config'
-import createDatabaseConfig from './database.config'
+import createAuthConfig from './auth.config.js'
+import createDatabaseConfig from './database.config.js'
 
 /**
  * Creates app configuration from env object (dependency inversion)

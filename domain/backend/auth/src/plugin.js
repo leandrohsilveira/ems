@@ -1,5 +1,5 @@
-import authMiddleware from './auth.middleware'
-import { getErrorMessage } from './utils/error'
+import authMiddleware from './auth.middleware.js'
+import { getErrorMessage } from './utils/error.js'
 
 /**
  * Auth plugin for Fastify

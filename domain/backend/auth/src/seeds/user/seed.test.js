@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
-import { seedUsers } from './seed-users.js'
+import { seedUsers } from './seed.js'
 
 describe('seedUsers', () => {
     /** @type {import('vitest-mock-extended').DeepMockProxy<import('@ems/types-backend-auth').UserService>} */

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
 import Fastify from 'fastify'
-import appPlugin from './plugin'
+import appPlugin from './plugin.js'
 
 describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {

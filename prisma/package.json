@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "db:generate": "npm run build"
+    "seed": "node ./src/seeds/index.js"
   },
   "exports": {
     ".": {

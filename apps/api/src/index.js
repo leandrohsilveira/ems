@@ -1,5 +1,5 @@
 import Fastify from 'fastify'
-import start from './server'
+import start from './server.js'
 
 export const app = Fastify({
     logger: {

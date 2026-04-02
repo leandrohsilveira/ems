@@ -1,4 +1,4 @@
-/** @type {import('./$types').Actions} */
+/** @type {import('./$types.js').Actions} */
 export const actions = {
     default: async ({ request, cookies }) => {
         const formData = await request.formData()
@@ -49,7 +49,7 @@ export const actions = {
     }
 }
 
-/** @type {import('./$types').PageServerLoad} */
+/** @type {import('./$types.js').PageServerLoad} */
 export const load = async ({ cookies }) => {
     const accessToken = cookies.get('accessToken')
 
