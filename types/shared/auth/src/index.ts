@@ -5,12 +5,14 @@ export type {
     LoginRequestDTO,
     RefreshRequestDTO,
     LogoutRequestDTO,
-    RevokeAllRequestDTO
+    RevokeAllRequestDTO,
+    SignUpRequestDTO
 } from './auth-requests.js'
 export type {
     LoginResponseDTO,
     RefreshResponseDTO,
     LogoutResponseDTO,
     RevokeAllResponseDTO,
-    MeResponseDTO
+    MeResponseDTO,
+    SignUpResponseDTO
 } from './auth-responses.js'

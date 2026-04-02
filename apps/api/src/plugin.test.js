@@ -6,9 +6,10 @@ import appPlugin from './plugin.js'
 describe('Hello World endpoint', () => {
     it('GET / returns Hello World message', async () => {
         const authService = mockDeep()
+        const userService = mockDeep()
 
         const fastify = Fastify()
-        await fastify.register(appPlugin, { authService })
+        await fastify.register(appPlugin, { authService, userService })
         await fastify.ready()
 
         const response = await fastify.inject({

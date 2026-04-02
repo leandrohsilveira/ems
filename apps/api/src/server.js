@@ -3,7 +3,8 @@ import {
     createUserRepository,
     createSessionRepository,
     createTokenService,
-    createAuthService
+    createAuthService,
+    createUserService
 } from '@ems/domain-backend-auth'
 import appPlugin from './plugin.js'
 import { createDatabaseClient } from '@ems/database'
@@ -26,8 +27,9 @@ export default async function start(fastify, isProd) {
             tokenService,
             config.auth
         )
+        const userService = createUserService(userRepository, tokenService)
 
-        await fastify.register(appPlugin, { authService })
+        await fastify.register(appPlugin, { authService, userService })
 
         if (isProd)
             await fastify.listen({

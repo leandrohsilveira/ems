@@ -1,4 +1,4 @@
-import type { UserDTO } from '@ems/types-shared-auth'
+import type { UserDTO, SignUpRequestDTO } from '@ems/types-shared-auth'
 
 export interface UserCreateDTO {
     firstName: string | null
@@ -11,5 +11,6 @@ export interface UserCreateDTO {
 
 export interface UserService {
     createUser(data: UserCreateDTO): Promise<UserDTO>
+    signup(data: SignUpRequestDTO): Promise<UserDTO>
     findByUsernameOrEmail(username: string, email: string): Promise<UserDTO | null>
 }

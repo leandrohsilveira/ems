@@ -14,6 +14,7 @@
         "test:unit": "vitest --passWithNoTests"
     },
     "dependencies": {
+        "@ems/backend-utils": "*",
         "@ems/database": "*",
         "@ems/domain-backend-auth": "*",
         "@ems/domain-backend-config": "*",

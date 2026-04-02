@@ -7,3 +7,4 @@ export type RefreshResponseDTO = TokenResponseDTO
 export type LogoutResponseDTO = MessageResponseDTO
 export type RevokeAllResponseDTO = MessageResponseDTO
 export type MeResponseDTO = UserResponseDTO
+export type SignUpResponseDTO = UserResponseDTO

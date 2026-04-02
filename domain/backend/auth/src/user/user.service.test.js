@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
 import { createUserService } from './user.service.js'
-import { createMockUser, createMockUserCreateDTO, createMockUserDTO } from '../testing/user.js'
+import {
+    createMockUser,
+    createMockUserCreateDTO,
+    createMockUserDTO,
+    createMockSignUpRequestDTO
+} from '../testing/user.js'
 import { Prisma } from '@ems/database'
 
 describe('createUserService', () => {
@@ -296,6 +301,192 @@ describe('createUserService', () => {
             expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
                 'test',
                 'test@example.com'
+            )
+        })
+    })
+
+    describe('signup', () => {
+        it('should sign up user successfully with valid data', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const mockUser = createMockUser()
+            const expectedUserDTO = createMockUserDTO()
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockResolvedValue(mockUser)
+
+            // Act
+            const result = await userService.signup(signupData)
+
+            // Assert
+            expect(result).toEqual(expectedUserDTO)
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
+            expect(mockUserRepository.create).toHaveBeenCalledWith({
+                firstName: signupData.firstName,
+                lastName: signupData.lastName,
+                email: signupData.email,
+                username: signupData.username,
+                password: 'hashed-password',
+                role: 'USER' // Default role for signup
+            })
+        })
+
+        it('should throw error when user with username already exists', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const existingUser = createMockUser({ username: signupData.username })
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
+
+            // Act & Assert
+            await expect(userService.signup(signupData)).rejects.toThrow(
+                'User with this username or email already exists'
+            )
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
+            expect(mockUserRepository.create).not.toHaveBeenCalled()
+        })
+
+        it('should throw error when user with email already exists', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const existingUser = createMockUser({ email: signupData.email })
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
+
+            // Act & Assert
+            await expect(userService.signup(signupData)).rejects.toThrow(
+                'User with this username or email already exists'
+            )
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
+            expect(mockUserRepository.create).not.toHaveBeenCalled()
+        })
+
+        it('should handle Prisma unique constraint error for username', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const constraintError = new Prisma.PrismaClientKnownRequestError(
+                'Unique constraint failed on the fields: (`username`)',
+                { code: 'P2002', clientVersion: '7.5.0' }
+            )
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockRejectedValue(constraintError)
+
+            // Act & Assert
+            await expect(userService.signup(signupData)).rejects.toThrow(
+                'User with this username or email already exists'
+            )
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
+            expect(mockUserRepository.create).toHaveBeenCalled()
+        })
+
+        it('should handle Prisma unique constraint error for email', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const constraintError = new Prisma.PrismaClientKnownRequestError(
+                'Unique constraint failed on the fields: (`email`)',
+                { code: 'P2002', clientVersion: '7.5.0' }
+            )
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockRejectedValue(constraintError)
+
+            // Act & Assert
+            await expect(userService.signup(signupData)).rejects.toThrow(
+                'User with this username or email already exists'
+            )
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
+            expect(mockUserRepository.create).toHaveBeenCalled()
+        })
+
+        it('should handle other database errors', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const databaseError = new Error('Database connection failed')
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockRejectedValue(databaseError)
+
+            // Act & Assert
+            await expect(userService.signup(signupData)).rejects.toThrow(
+                'Database connection failed'
+            )
+            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
+                signupData.username,
+                signupData.email
+            )
+            expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
+            expect(mockUserRepository.create).toHaveBeenCalled()
+        })
+
+        it('should accept null firstName and lastName', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO({
+                firstName: null,
+                lastName: null
+            })
+            const mockUser = createMockUser({ firstName: null, lastName: null })
+            const expectedUserDTO = createMockUserDTO({ firstName: null, lastName: null })
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockResolvedValue(mockUser)
+
+            // Act
+            const result = await userService.signup(signupData)
+
+            // Assert
+            expect(result).toEqual(expectedUserDTO)
+            expect(mockUserRepository.create).toHaveBeenCalledWith({
+                firstName: null,
+                lastName: null,
+                email: signupData.email,
+                username: signupData.username,
+                password: 'hashed-password',
+                role: 'USER'
+            })
+        })
+
+        it('should always set role to USER for signup', async () => {
+            // Arrange
+            const signupData = createMockSignUpRequestDTO()
+            const mockUser = createMockUser({ role: 'USER' }) // Should always be USER
+
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockUserRepository.create.mockResolvedValue(mockUser)
+
+            // Act
+            const result = await userService.signup(signupData)
+
+            // Assert
+            expect(result.role).toBe('USER')
+            expect(mockUserRepository.create).toHaveBeenCalledWith(
+                expect.objectContaining({ role: 'USER' })
             )
         })
     })

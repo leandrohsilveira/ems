@@ -49,3 +49,19 @@ export function createMockUserDTO(overrides = {}) {
         ...overrides
     }
 }
+
+/**
+ * Create mock signup request DTO for tests
+ * @param {Partial<import('@ems/types-shared-auth').SignUpRequestDTO>} overrides
+ * @returns {import('@ems/types-shared-auth').SignUpRequestDTO}
+ */
+export function createMockSignUpRequestDTO(overrides = {}) {
+    return {
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test@example.com',
+        username: 'testuser',
+        password: 'Password123',
+        ...overrides
+    }
+}
