@@ -106,6 +106,100 @@ packages/ui/src/lib/components/<component-name>/
 export { default } from "./<component-name>.svelte";
 ```
 
+## Workflow Enforcement
+
+**Read `WORKFLOW.md` file** to have a better understanding of the workflow implementation.
+
+### Decision Protocol
+
+Before implementing any task, agents MUST follow this decision protocol:
+
+1. **Check for Feature Specification**:
+   - Look for matching spec in `specs/` folder (by name pattern and content)
+   - If feature spec exists → **Apply workflow automatically** (no asking)
+
+2. **Assess File Impact for Fixes**:
+   - Count affected files (including tests and stories)
+   - 1-3 files → **Ask user about workflow**
+   - 4+ files → **Recommend workflow**
+   - Single file → **Direct implementation**
+
+3. **Present Workflow Option** (when applicable):
+
+   ```
+   I'll help you with [task description]. This affects [X] files.
+
+   **AI-Assisted Workflow Option:**
+   - Creates detailed implementation plan with micro-cycles
+   - Follows TDD approach where applicable
+   - Includes code review phase
+   - Ensures quality gates (lint, test, check)
+
+   Would you like to use the structured AI-assisted workflow for this task?
+
+   [✅ Yes, use structured workflow]
+   [❌ No, proceed with direct implementation]
+   ```
+
+### Workflow Execution
+
+When workflow is applied:
+
+1. **Create Plan Directory**:
+   - `mkdir -p plans/<feature-slug>/`
+   - Create `PLAN.md` using template
+   - Create `DECISIONS.md` for deviation tracking
+
+2. **Plan Approval**:
+   - Present plan to user for review
+   - Get explicit approval before implementation
+   - Enter Build/Editor mode only after approval
+
+3. **Cycle Implementation**:
+   - Execute cycles in dependency order (inner layers first)
+   - Follow TDD: write tests → implement → refactor
+   - After each step, ask user if implementation is satisfactory
+
+4. **Deviation Management**:
+   - If deviation from plan is needed:
+     - Document in `DECISIONS.md` with original plan, problem, and solution
+     - Ask user for approval
+     - If approved → update `PLAN.md` immediately
+     - If rejected → seek alternative solution
+
+5. **Quality Gates**:
+   - Run lint, tests, and type checks after each cycle
+   - Fix any issues before proceeding
+   - User approval for test/architecture changes
+
+6. **Code Review**:
+   - Perform GitHub PR-style review
+   - Provide suggestions with file:line references and code snippets
+   - User selects which suggestions to apply
+   - Apply approved changes
+
+### File Counting Rules
+
+**Count as separate files:**
+
+- Implementation file (`.svelte`, `.ts`, `.js`)
+- Test file (`.test.ts`, `.spec.ts`)
+- Story file (`.stories.svelte`)
+- Configuration file affecting implementation
+
+**Examples:**
+
+- `Button.svelte` + `Button.test.ts` + `Button.stories.svelte` = **3 files**
+- `auth.service.ts` + `auth.service.test.ts` = **2 files**
+- Single file (any type) = **1 file**
+
+### Integration with Existing Guidelines
+
+- **Before Starting Any Task**: Include workflow decision check
+- **Feature Implementation**: Reference workflow for features with specs
+- **Design System Components**: Always use workflow for new components
+- **After Modifying Files**: Include plan updates for deviations
+
 ## After Modifying Files
 
 - **Always run lint and check** scripts on JavaScript files

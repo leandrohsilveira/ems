@@ -12,8 +12,7 @@ auto-commits: false
 auto-accept-architect: false
 
 auto-test: true
-test-cmd:
-  - npm run test
+test-cmd: npm run test
 
 auto-lint: true
 lint-cmd:
