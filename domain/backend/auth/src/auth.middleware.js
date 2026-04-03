@@ -57,9 +57,12 @@ export default fastifyPlugin(
                     return reply.status(401).send({ error: 'User not authenticated' })
                 }
 
+                // Store user in variable after null check
+                const user = request.user
+
                 // Check if user has at least one of the required permissions
                 const hasPermission = permissions.some((permission) =>
-                    roleHasPermission(request.user.role, permission)
+                    roleHasPermission(user.role, permission)
                 )
 
                 if (!hasPermission) {
