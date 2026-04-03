@@ -23,7 +23,7 @@
 2. **Understand existing code** relevant to your task
 3. **Write tests first** (TDD is the default approach):
    - Use Vitest for unit tests
-   - Use `vi.fn()`, `vi.mock()`, `vi.spyOn()` for mocking
+   - Use `vitest-mock-extended`, `vi.fn()`, `vi.mock()` and `vi.spyOn()` for mocking
    - Skip tests only when explicitly told TDD isn't required
 4. **Implement** the feature or fix
 5. **Refactor** for clarity and maintainability
