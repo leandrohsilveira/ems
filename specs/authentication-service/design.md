@@ -1,4 +1,3 @@
-```markdown
 # Login Page Design — EMS Minimal
 
 Status: implemented
@@ -95,4 +94,3 @@ Implementation notes
 - All form fields use consistent gap-4 (16px)
 - Input fields and Sign In button use rounded-full (pill-shaped)
 - Checkbox uses rounded (subtle radius) to distinguish from inputs while remaining checkbox-like
-```
