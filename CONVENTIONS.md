@@ -1,13 +1,8 @@
 # Conventions
 
-## Tech Stack
-
-- **Language:** JavaScript with JSDoc (no TypeScript in implementation, types only)
-- **Runtime:** Node.js
-- **Package Manager:** npm workspaces
-- **Approach:** Spec Driven Development (SDD) with Test Driven Development (TDD)
-
 ## Project Structure
+
+The project structure should match the following convention:
 
 ```
 ├── apps/
@@ -27,19 +22,22 @@
 │   └── shared/
 │       └── <package_name>/   # Shared types
 ├── prisma/                   # Prisma models
-└── specs/                    # Feature specifications
+├── specs/                    # Feature specifications
+└── plans/                    # Implementation plans and decisions
 ```
 
 ## Filename Convention
 
 All files must use kebab-case (e.g., `auth-plugin.js`, `index.js`, `my-component.svelte`).
 
+Also, files can have suffixes like `service`, `api`, `repository` that appears like an extension (e.g., `auth.service.js`, `auth.api.js`).
+
 ## Package Name Convention
 
-- Apps: `@tms/app-<name>`
-- Domain Backend: `@tms/domain-backend-<name>`
-- Domain Frontend: `@tms/domain-frontend-<name>`
-- Types Backend: `@tms/types-backend-<name>`
-- Types Frontend: `@tms/types-frontend-<name>`
-- Types Shared: `@tms/types-shared-<name>`
-- Packages: `@tms/<name>`
+- Apps: `@ems/app-<name>`
+- Domain Backend: `@ems/domain-backend-<name>`
+- Domain Frontend: `@ems/domain-frontend-<name>`
+- Types Backend: `@ems/types-backend-<name>`
+- Types Frontend: `@ems/types-frontend-<name>`
+- Types Shared: `@ems/types-shared-<name>`
+- Packages: `@ems/<name>`

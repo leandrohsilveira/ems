@@ -1,4 +1,5 @@
 {
+    "$schema": "http://json.schemastore.org/tsconfig",
     "extends": "./.svelte-kit/tsconfig.json",
     "compilerOptions": {
         "allowJs": true,
@@ -8,7 +9,8 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "moduleResolution": "NodeNext"
+        "moduleResolution": "NodeNext",
+        "resolveJsonModule": true
     }
     // Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
     // except $lib which is handled by https://svelte.dev/docs/kit/configuration#files

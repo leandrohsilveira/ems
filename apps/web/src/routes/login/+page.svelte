@@ -16,7 +16,7 @@
 </svelte:head>
 
 <div class="bg-background flex min-h-screen items-center justify-center p-4">
-    <Paper class="w-[420px]">
+    <Paper class="w-full max-w-[420px]">
         {#snippet header()}
             <div class="flex flex-col items-center gap-4">
                 <div

@@ -1,4 +1,5 @@
 <script>
+    import { asArray } from '@ems/utils'
     import { cn } from '../../utils/index.js'
 
     /** @import { InputProps } from '@ems/types-frontend-ui' */
@@ -56,8 +57,10 @@
     {/if}
 
     {#if error}
-        <p id="{inputId}-description" class="text-destructive text-sm" role="alert">
-            {error}
-        </p>
+        {#each asArray(error) as err (err)}
+            <p id="{inputId}-description" class="text-destructive text-sm" role="alert">
+                {err}
+            </p>
+        {/each}
     {/if}
 </div>

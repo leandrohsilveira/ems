@@ -6,3 +6,4 @@ export {
 } from "./button.js";
 export { type CheckboxProps } from "./checkbox.js";
 export { type PaperProps } from "./paper.js";
+export { type FormEnhancerAction } from "./enhance.js";

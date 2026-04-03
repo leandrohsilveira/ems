@@ -4,92 +4,90 @@ import { createRawSnippet } from 'svelte'
 import Button from './button.svelte'
 
 describe('Button', () => {
-    it('renders button element', () => {
-        const { container } = render(Button)
-        const button = container.querySelector('button')
-        expect(button).toBeTruthy()
+    it('renders button element', async () => {
+        const screen = render(Button)
+        await expect.element(screen.getByRole('button')).toBeVisible()
     })
 
-    it('renders with default variant', () => {
-        const { container } = render(Button, { props: { variant: 'default' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('bg-primary')
+    it('renders with default variant', async () => {
+        const screen = render(Button, { props: { variant: 'default' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/bg-primary/)
     })
 
-    it('renders with secondary variant', () => {
-        const { container } = render(Button, { props: { variant: 'secondary' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('bg-secondary')
+    it('renders with secondary variant', async () => {
+        const screen = render(Button, { props: { variant: 'secondary' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/bg-secondary/)
     })
 
-    it('renders with destructive variant', () => {
-        const { container } = render(Button, { props: { variant: 'destructive' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('bg-destructive')
+    it('renders with destructive variant', async () => {
+        const screen = render(Button, { props: { variant: 'destructive' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/bg-destructive/)
     })
 
-    it('renders with outline variant', () => {
-        const { container } = render(Button, { props: { variant: 'outline' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('border')
+    it('renders with outline variant', async () => {
+        const screen = render(Button, { props: { variant: 'outline' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/border/)
     })
 
-    it('renders with ghost variant', () => {
-        const { container } = render(Button, { props: { variant: 'ghost' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('bg-accent')
+    it('renders with ghost variant', async () => {
+        const screen = render(Button, { props: { variant: 'ghost' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/bg-accent/)
     })
 
-    it('renders with large size', () => {
-        const { container } = render(Button, { props: { size: 'large' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('h-12')
+    it('renders with large size', async () => {
+        const screen = render(Button, { props: { size: 'large' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/h-12/)
     })
 
-    it('renders with default size', () => {
-        const { container } = render(Button, { props: { size: 'default' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('h-10')
+    it('renders with default size', async () => {
+        const screen = render(Button, { props: { size: 'default' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/h-10/)
     })
 
-    it('renders with icon size', () => {
-        const { container } = render(Button, { props: { size: 'icon' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('h-10')
-        expect(button?.className).toContain('w-10')
+    it('renders with icon size', async () => {
+        const screen = render(Button, { props: { size: 'icon' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/h-10/)
+        await expect.element(button).toHaveClass(/w-10/)
     })
 
-    it('renders with text content via slot', () => {
-        const { container } = render(Button)
-        const button = container.querySelector('button')
-        expect(button).toBeTruthy()
+    it('renders with text content via slot', async () => {
+        const screen = render(Button)
+        await expect.element(screen.getByRole('button')).toBeVisible()
     })
 
-    it('renders with children content', () => {
+    it('renders with children content', async () => {
         const children = createRawSnippet(() => ({
             render: () => '<span>Click me</span>'
         }))
-        const { container } = render(Button, { props: { children } })
-        const button = container.querySelector('button')
-        expect(button?.textContent).toContain('Click me')
+        const screen = render(Button, { props: { children } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveTextContent(/Click me/)
     })
 
-    it('renders in disabled state', () => {
-        const { container } = render(Button, { props: { disabled: true } })
-        const button = container.querySelector('button')
-        expect(button?.disabled).toBe(true)
+    it('renders in disabled state', async () => {
+        const screen = render(Button, { props: { disabled: true } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toBeDisabled()
     })
 
-    it('renders in loading state', () => {
-        const { container } = render(Button, { props: { loading: true } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('pointer-events-none')
-        expect(button?.className).toContain('opacity-50')
+    it('renders in loading state', async () => {
+        const screen = render(Button, { props: { loading: true } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/pointer-events-none/)
+        await expect.element(button).toHaveClass(/opacity-50/)
     })
 
-    it('applies custom class', () => {
-        const { container } = render(Button, { props: { class: 'custom-class' } })
-        const button = container.querySelector('button')
-        expect(button?.className).toContain('custom-class')
+    it('applies custom class', async () => {
+        const screen = render(Button, { props: { class: 'custom-class' } })
+        const button = screen.getByRole('button')
+        await expect.element(button).toHaveClass(/custom-class/)
     })
 })

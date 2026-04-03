@@ -10,5 +10,5 @@ export type InputProps = HTMLInputAttributes & {
   /** Helper text displayed below the input */
   description?: string;
   /** Error message to display (shows destructive styling) */
-  error?: string;
+  error?: string | string[] | undefined;
 };

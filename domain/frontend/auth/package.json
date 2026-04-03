@@ -1,0 +1,63 @@
+{
+    "name": "@ems/domain-frontend-auth",
+    "version": "0.0.0",
+    "scripts": {
+        "serve": "vite dev",
+        "dev": "svelte-package --watch",
+        "build": "vite build && npm run prepack",
+        "preview": "vite preview",
+        "prepare": "svelte-kit sync || echo ''",
+        "prepack": "svelte-kit sync && svelte-package && publint",
+        "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test:dev": "vitest  --passWithNoTests",
+        "test": "npm run test:dev -- --run"
+    },
+    "files": [
+        "dist",
+        "!dist/**/*.test.*",
+        "!dist/**/*.spec.*"
+    ],
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "types": "./dist/index.d.ts",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "svelte": "./dist/index.js"
+        },
+        "./components/*": {
+            "types": "./dist/components/*/index.d.ts",
+            "svelte": "./dist/components/*/index.js"
+        },
+        "./server/actions/*": {
+            "types": "./dist/server/actions/*.d.ts",
+            "svelte": "./dist/server/actions/*.js"
+        }
+    },
+    "peerDependencies": {
+        "svelte": "^5.0.0"
+    },
+    "keywords": [
+        "svelte",
+        "auth",
+        "domain"
+    ],
+    "dependencies": {
+        "@ems/domain-shared-api": "*",
+        "@ems/domain-shared-auth": "*",
+        "@ems/domain-shared-schema": "*",
+        "@ems/ui": "*",
+        "@ems/icons": "*",
+        "@ems/utils": "*",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@ems/types-shared-api": "*",
+        "@ems/types-shared-auth": "*"
+    }
+}

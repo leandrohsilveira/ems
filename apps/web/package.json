@@ -16,6 +16,8 @@
         "test": "npm run test:unit -- --run"
     },
     "dependencies": {
-        "@ems/ui": "*"
+        "@ems/ui": "*",
+        "@ems/domain-frontend-auth": "*",
+        "@ems/domain-shared-api": "*"
     }
 }

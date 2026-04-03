@@ -1,0 +1,3 @@
+@import '../src/lib/index.css';
+
+@source '../src/**/*.{svelte,js}';

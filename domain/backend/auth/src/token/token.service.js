@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import assert from 'node:assert'
+import { assert } from '@ems/utils'
 
 /** @import { TokenService } from '@ems/types-backend-auth' */
 /** @import { AuthConfig } from '@ems/types-backend-config' */

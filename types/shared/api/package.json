@@ -1,0 +1,16 @@
+{
+    "name": "@ems/types-shared-api",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": "./src/index.ts",
+    "scripts": {
+        "check": "tsc --noEmit",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write ."
+    },
+    "devDependencies": {
+        "@types/node": "^25.5.0",
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.0"
+    }
+}

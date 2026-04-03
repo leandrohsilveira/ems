@@ -12,4 +12,5 @@ export type PaperProps = {
   footer?: Snippet;
   /** Additional CSS classes */
   class?: string;
+  testId?: string;
 };

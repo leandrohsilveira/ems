@@ -36,6 +36,10 @@
         "./components/*": {
             "types": "./dist/components/*/index.d.ts",
             "svelte": "./dist/components/*/index.js"
+        },
+        "./testing": {
+            "types": "./dist/testing/index.d.ts",
+            "svelte": "./dist/testing/index.js"
         }
     },
     "peerDependencies": {
@@ -46,6 +50,7 @@
     ],
     "dependencies": {
         "@ems/types-frontend-ui": "*",
+        "@ems/utils": "*",
         "@fontsource/inter": "^5.0.0",
         "clsx": "^2.1.1",
         "tailwind-merge": "^3.5.0"

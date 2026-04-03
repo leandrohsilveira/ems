@@ -4,42 +4,45 @@ import { createRawSnippet } from 'svelte'
 import Paper from './paper.svelte'
 
 describe('Paper', () => {
-    it('renders div element', () => {
-        const { container } = render(Paper)
-        const div = container.querySelector('div')
-        expect(div).toBeTruthy()
+    it('renders paper root element', async () => {
+        const screen = render(Paper)
+        const paperRoot = screen.getByTestId('paper-root')
+        await expect.element(paperRoot).toBeInTheDocument()
     })
 
-    it('renders with children content', () => {
+    it('renders with children content', async () => {
         const children = createRawSnippet(() => ({
             render: () => '<div>Content</div>'
         }))
-        const { container } = render(Paper, { props: { children } })
-        const childrenDiv = container.querySelector('.pt-0')
-        expect(childrenDiv?.textContent).toBe('Content')
+        const screen = render(Paper, { props: { children } })
+        const paperContent = screen.getByTestId('paper-content')
+        await expect.element(paperContent).toBeVisible()
+        await expect.element(paperContent).toHaveTextContent('Content')
     })
 
-    it('renders with header slot', () => {
+    it('renders with header slot', async () => {
         const header = createRawSnippet(() => ({
             render: () => '<div>Header</div>'
         }))
-        const { container } = render(Paper, { props: { header } })
-        const headerEl = container.querySelector('[data-header]')
-        expect(headerEl?.textContent).toBe('Header')
+        const screen = render(Paper, { props: { header } })
+        const paperHeader = screen.getByTestId('paper-header')
+        await expect.element(paperHeader).toBeVisible()
+        await expect.element(paperHeader).toHaveTextContent('Header')
     })
 
-    it('renders with footer slot', () => {
+    it('renders with footer slot', async () => {
         const footer = createRawSnippet(() => ({
             render: () => '<div>Footer</div>'
         }))
-        const { container } = render(Paper, { props: { footer } })
-        const footerEl = container.querySelector('[data-footer]')
-        expect(footerEl?.textContent).toBe('Footer')
+        const screen = render(Paper, { props: { footer } })
+        const paperFooter = screen.getByTestId('paper-footer')
+        await expect.element(paperFooter).toBeVisible()
+        await expect.element(paperFooter).toHaveTextContent('Footer')
     })
 
-    it('applies custom class', () => {
-        const { container } = render(Paper, { props: { class: 'custom-class' } })
-        const div = container.querySelector('div')
-        expect(div?.className).toContain('custom-class')
+    it('applies custom class', async () => {
+        const screen = render(Paper, { props: { class: 'custom-class' } })
+        const paperRoot = screen.getByTestId('paper-root')
+        await expect.element(paperRoot).toHaveClass(/custom-class/)
     })
 })

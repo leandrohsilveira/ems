@@ -237,6 +237,51 @@ If a component needs to run async API calls (like an autocomplete component), it
 - **Technologies:** JavaScript, JSDoc, Svelte 5, TailwindCSS
 - **Tools:** Prettier, ESLint, SvelteCheck, Vite
 
+#### Component implementation
+
+When a package have components they will be placed in `src/lib/components/` folder and must follow TDD.
+
+**1. Create component folder and files:**
+
+```
+src/lib/components/<component-name>/
+├── <component-name>.stories.svelte  # Component storybook stories
+├── <component-name>.svelte          # Component implementation
+├── <component-name>.svelte.test.js  # Component tests
+└── index.js                         # Barrel file
+```
+
+**2. Write tests first** (TDD approach):
+
+- Create test file alongside component: `<component-name>.svelte.test.ts`
+- Use Vitest with `vi.fn()`, `vi.mock()`, `vi.spyOn()` for mocking
+- Use `vitest-browser-svelte`
+- Test component behavior, props, and interactions
+
+**3. Implement the component**:
+
+- Use `pencil_open_document` to open `design-system.pen` for design tokens and patterns
+- Use `skill` tool to load `svelte-code-writer` skill for Svelte 5 patterns
+- Use `skill` tool to load `svelte-core-bestpractices` skill for best practices
+- **Tailwind CSS is mandatory** for styling
+- Follow existing patterns:
+  - Use `$props()` rune for props
+  - Use `cn()` utility from `packages/ui/src/utils/css.js` (relative imports for `packages/ui` changes or from `@ems/ui` package) for class merging.
+  - Add JSDoc type hints for props
+- Keep component focused and reusable
+
+**4. Create Storybook story**:
+
+- Use the `storybook-story-creator` skill to create stories
+- Create `*.stories.svelte` file in the component folder (same folder as component)
+- Document all component states and variants
+
+**5. Export from barrel file** (`index.js`):
+
+```js
+export { default } from "./<component-name>.svelte";
+```
+
 ## Types Packages
 
 All TypeScript packages must be here. Avoid creating types using JSDoc in other packages and applications. On the other hand, implementations are forbidden—only types are allowed.

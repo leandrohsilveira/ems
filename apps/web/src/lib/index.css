@@ -1,0 +1,3 @@
+@import '@ems/ui/index.css';
+
+@source '../../../../{packages/*,domain/frontend/*}/src/**/*.{svelte,js}';

@@ -1,5 +1,4 @@
 <script module>
-    import '../../index.css'
     import { defineMeta } from '@storybook/addon-svelte-csf'
     import Input from './input.svelte'
 

@@ -1,7 +1,7 @@
 <script module>
-    import '../../index.css'
     import { defineMeta } from '@storybook/addon-svelte-csf'
     import Button from './button.svelte'
+    import { createRawSnippet } from 'svelte'
 
     const { Story } = defineMeta({
         title: 'Components/Button',
@@ -22,20 +22,50 @@
     })
 </script>
 
-<Story name="Default" args={{ variant: 'default', children: 'Button' }} />
+<Story
+    name="Default"
+    args={{ variant: 'default', children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>
 
-<Story name="Secondary" args={{ variant: 'secondary', children: 'Button' }} />
+<Story
+    name="Secondary"
+    args={{ variant: 'secondary', children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>
 
-<Story name="Destructive" args={{ variant: 'destructive', children: 'Button' }} />
+<Story
+    name="Destructive"
+    args={{
+        variant: 'destructive',
+        children: createRawSnippet(() => ({ render: () => 'Button' }))
+    }}
+/>
 
-<Story name="Outline" args={{ variant: 'outline', children: 'Button' }} />
+<Story
+    name="Outline"
+    args={{ variant: 'outline', children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>
 
-<Story name="Ghost" args={{ variant: 'ghost', children: 'Button' }} />
+<Story
+    name="Ghost"
+    args={{ variant: 'ghost', children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>
 
-<Story name="Large" args={{ size: 'large', children: 'Button' }} />
+<Story
+    name="Large"
+    args={{ size: 'large', children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>
 
-<Story name="Icon" args={{ size: 'icon', children: '+' }} />
+<Story
+    name="Icon"
+    args={{ size: 'icon', children: createRawSnippet(() => ({ render: () => '+' })) }}
+/>
 
-<Story name="Loading" args={{ loading: true, children: 'Loading...' }} />
+<Story
+    name="Loading"
+    args={{ loading: true, children: createRawSnippet(() => ({ render: () => 'Loading...' })) }}
+/>
 
-<Story name="Disabled" args={{ disabled: true, children: 'Button' }} />
+<Story
+    name="Disabled"
+    args={{ disabled: true, children: createRawSnippet(() => ({ render: () => 'Button' })) }}
+/>

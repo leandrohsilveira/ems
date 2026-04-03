@@ -1,0 +1,19 @@
+{
+  "name": "@ems/icons",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "postinstall": "npm run build",
+    "prebuild": "rm -rf ./dist",
+    "build": "mkdir -p ./dist && cp ../../node_modules/bootstrap-icons/icons/* ./dist/"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "bootstrap-icons": "^1.13.1"
+  }
+}

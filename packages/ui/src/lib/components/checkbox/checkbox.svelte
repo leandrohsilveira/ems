@@ -17,7 +17,7 @@
     let checkboxId = $derived(id ?? `checkbox-${Math.random().toString(36).slice(2, 9)}`)
 </script>
 
-<div class={cn('flex items-start gap-2', className)}>
+<div data-testid="checkbox-wrapper" class={cn('flex items-start gap-2', className)}>
     <div class="relative flex items-center justify-center">
         <input
             type="checkbox"

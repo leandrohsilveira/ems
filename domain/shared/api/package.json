@@ -1,0 +1,27 @@
+{
+    "name": "@ems/domain-shared-api",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.js"
+        },
+        "./testing": {
+            "types": "./src/testing/index.d.ts",
+            "default": "./src/testing/index.js"
+        }
+    },
+    "scripts": {
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test": "vitest run"
+    },
+    "devDependencies": {
+        "@ems/types-shared-api": "*",
+        "@types/node": "^25.5.0",
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.0"
+    }
+}
