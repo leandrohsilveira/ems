@@ -1,5 +1,6 @@
 import fastifyPlugin from 'fastify-plugin'
 import { getErrorMessage } from './utils/error.js'
+import { roleHasPermission } from './permissions/permissions.js'
 
 /** @import { FastifyInstance } from 'fastify' */
 /** @import { AuthService } from '@ems/types-backend-auth' */
@@ -10,10 +11,10 @@ export default fastifyPlugin(
      * @param {{ authService: AuthService }} opts
      */
     async function authMiddleware(fastify, { authService }) {
-        // Apenas decora o request com user null por padrão
+        // Decorates request with user null by default
         fastify.decorateRequest('user', null)
 
-        // Cria o decorator authenticate que valida o token
+        // Creates authenticate decorator that validates the token
         fastify.decorate('authenticate', async function (request, reply) {
             const authHeader = request.headers.authorization
 
@@ -37,6 +38,33 @@ export default fastifyPlugin(
                 return reply
                     .status(401)
                     .send({ error: 'Invalid or expired token', message: getErrorMessage(error) })
+            }
+        })
+
+        // Creates allowOneOf decorator that validates if user has at least one of the permissions
+        fastify.decorate('allowOneOf', function (permissions) {
+            return async function (request, reply) {
+                // First authenticate the user
+                await fastify.authenticate(request, reply)
+
+                // If authentication failed, return early (authenticate already sent response)
+                if (reply.sent) {
+                    return
+                }
+
+                // Check if user is authenticated
+                if (!request.user) {
+                    return reply.status(401).send({ error: 'User not authenticated' })
+                }
+
+                // Check if user has at least one of the required permissions
+                const hasPermission = permissions.some((permission) =>
+                    roleHasPermission(request.user.role, permission)
+                )
+
+                if (!hasPermission) {
+                    return reply.status(403).send({ error: 'Insufficient permissions' })
+                }
             }
         })
     }

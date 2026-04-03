@@ -178,7 +178,7 @@ describe('Auth Plugin', () => {
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'USER'
+                role: 'ADMIN'
             }
 
             const mockResponse = { message: 'All sessions revoked' }

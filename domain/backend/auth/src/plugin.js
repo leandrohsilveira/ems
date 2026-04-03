@@ -1,5 +1,6 @@
 import authMiddleware from './auth.middleware.js'
 import { getErrorMessage } from './utils/error.js'
+import { PERMISSIONS } from './permissions/permissions.js'
 
 /**
  * Auth plugin for Fastify
@@ -11,7 +12,7 @@ import { getErrorMessage } from './utils/error.js'
 export default async function authPlugin(fastify, { authService, userService }) {
     await fastify.register(authMiddleware, { authService })
 
-    // Endpoint de login (não precisa de autenticação)
+    // Login endpoint (no authentication required)
     fastify.post('/login', {
         schema: {
             body: {
@@ -35,7 +36,7 @@ export default async function authPlugin(fastify, { authService, userService }) 
         }
     })
 
-    // Endpoint de signup (não precisa de autenticação)
+    // Signup endpoint (no authentication required)
     fastify.post('/signup', {
         schema: {
             body: {
@@ -115,7 +116,7 @@ export default async function authPlugin(fastify, { authService, userService }) 
         }
     })
 
-    // Endpoint de refresh (não precisa de autenticação)
+    // Refresh endpoint (no authentication required)
     fastify.post('/refresh', {
         schema: {
             body: {
@@ -138,7 +139,7 @@ export default async function authPlugin(fastify, { authService, userService }) 
         }
     })
 
-    // Endpoint de logout (não precisa de autenticação)
+    // Logout endpoint (no authentication required)
     fastify.post('/logout', {
         schema: {
             body: {
@@ -161,9 +162,9 @@ export default async function authPlugin(fastify, { authService, userService }) 
         }
     })
 
-    // Endpoint para revogar todas as sessões do usuário (REQUER autenticação)
+    // Endpoint to revoke all user sessions (REQUIRES auth:revoke-all permission)
     fastify.post('/revoke-all', {
-        preHandler: fastify.authenticate,
+        preHandler: fastify.allowOneOf([PERMISSIONS.AUTH_REVOKE_ALL]),
         schema: {
             body: {
                 type: 'object',
@@ -187,9 +188,9 @@ export default async function authPlugin(fastify, { authService, userService }) 
         }
     })
 
-    // Endpoint para obter informações do usuário atual (REQUER autenticação)
+    // Endpoint to get current user information (REQUIRES auth:me permission)
     fastify.get('/me', {
-        preHandler: fastify.authenticate,
+        preHandler: fastify.allowOneOf([PERMISSIONS.AUTH_ME]),
         handler: async (request, reply) => {
             return reply.send({ user: request.user })
         }

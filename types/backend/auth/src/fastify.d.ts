@@ -7,5 +7,8 @@ declare module 'fastify' {
 
     interface FastifyInstance {
         authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void> | void
+        allowOneOf: (
+            permissions: string[]
+        ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void> | void
     }
 }
