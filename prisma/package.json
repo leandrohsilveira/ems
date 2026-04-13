@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "@ems/types-backend-config": "*",
+    "@ems/domain-backend-config": "*",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "*"
   }

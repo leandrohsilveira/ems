@@ -14,13 +14,8 @@ The project structure should match the following convention:
 │       └── <domain_name>/     # Domain related to backend
 │   └── frontend/
 │       └── <domain_name>/     # Domain related to frontend
-├── types/
-│   └── backend/
-│       └── <package_name>/   # Types related to backend
-│   └── frontend/
-│       └── <package_name>/   # Types related to frontend
 │   └── shared/
-│       └── <package_name>/   # Shared types
+│       └── <package_name>/    # Shared domain
 ├── prisma/                   # Prisma models
 ├── specs/                    # Feature specifications
 └── plans/                    # Implementation plans and decisions
@@ -37,7 +32,5 @@ Also, files can have suffixes like `service`, `api`, `repository` that appears l
 - Apps: `@ems/app-<name>`
 - Domain Backend: `@ems/domain-backend-<name>`
 - Domain Frontend: `@ems/domain-frontend-<name>`
-- Types Backend: `@ems/types-backend-<name>`
-- Types Frontend: `@ems/types-frontend-<name>`
-- Types Shared: `@ems/types-shared-<name>`
+- Domain Shared: `@ems/domain-shared-<name>`
 - Packages: `@ems/<name>`

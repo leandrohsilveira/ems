@@ -55,9 +55,5 @@
         "@ems/icons": "*",
         "@ems/utils": "*",
         "zod": "^4.3.6"
-    },
-    "devDependencies": {
-        "@ems/types-shared-api": "*",
-        "@ems/types-shared-auth": "*"
     }
 }

@@ -14,7 +14,7 @@
 3. **Read `ARCHITECTURE.md`** to understand the project structure and architectural principles:
    - Applications (API Gateway, Web)
    - Domain packages organization
-   - Types packages
+   - For type definitions prefer JSDoc `@exports @typedef <TypeName>` for composing types along with its implementations.
    - Clean Architecture principles (vertical/horizontal boundaries, dependency rule)
 
 ## Before Implementation

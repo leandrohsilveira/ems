@@ -4,7 +4,7 @@ import { createUserRepository } from './user.repository.js'
 import { createMockUser } from '../testing/user.js'
 
 describe('createUserRepository', () => {
-    /** @type {import('@ems/types-backend-auth').UserRepository} */
+    /** @type {import('./user.repository.js').UserRepository} */
     let userRepository
     /** @type {import('vitest-mock-extended').DeepMockProxy<import('@ems/database').PrismaClient>} */
     let mockDb

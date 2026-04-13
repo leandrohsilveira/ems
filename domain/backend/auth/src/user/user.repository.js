@@ -1,5 +1,13 @@
-/** @import { PrismaClient } from '@ems/database' */
-/** @import { UserRepository } from '@ems/types-backend-auth' */
+/** @import { PrismaClient, User, UserCreateInput } from '@ems/database' */
+
+/**
+ * @exports @typedef UserRepository
+ * @property {(username: string) => Promise<User | null>} findByUsername
+ * @property {(id: string) => Promise<User | null>} findById
+ * @property {(email: string) => Promise<User | null>} findByEmail
+ * @property {(username: string, email: string) => Promise<User | null>} findByUsernameOrEmail
+ * @property {(input: UserCreateInput) => Promise<User>} create
+ */
 
 /**
  * Creates a user repository

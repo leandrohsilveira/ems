@@ -14,15 +14,14 @@
         "test:unit": "vitest --passWithNoTests"
     },
     "dependencies": {
-        "@ems/backend-utils": "*",
         "@ems/database": "*",
         "@ems/domain-backend-auth": "*",
         "@ems/domain-backend-config": "*",
+        "@ems/domain-backend-schema": "*",
+        "@ems/domain-shared-schema": "*",
         "fastify": "^5.2.0"
     },
     "devDependencies": {
-        "@ems/types-backend-auth": "*",
-        "@ems/types-backend-config": "*",
         "pino-pretty": "^13.0.0"
     }
 }

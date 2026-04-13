@@ -11,5 +11,15 @@ export const userDtoSchema = z.object({
     role: roleSchema
 })
 
+export const userCreateDtoSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+    firstName: z.string().nullable(),
+    lastName: z.string().nullable(),
+    email: z.email(),
+    role: roleSchema
+})
+
 /** @exports @typedef {z.infer<typeof roleSchema>} Role */
 /** @exports @typedef {z.infer<typeof userDtoSchema>} UserDTO */
+/** @exports @typedef {z.infer<typeof userCreateDtoSchema>} UserCreateDTO */

@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
 import Fastify from 'fastify'
-import { errorHandling } from '@ems/backend-utils'
+import schemaPlugin from '@ems/domain-backend-schema'
 import authPlugin from './plugin.js'
+import { randomUUID } from 'crypto'
 
-/** @import { AuthService } from '@ems/types-backend-auth' */
-/** @import { UserService } from '@ems/types-backend-auth' */
+/**
+ * @import { TokenDTO, UserDTO } from '@ems/domain-shared-auth'
+ * @import { AuthService } from './auth.service.js'
+ * @import { UserService } from './user/index.js'
+ * @import { SessionDTO } from './session/index.js'
+ */
 
 describe('Auth Plugin', () => {
     /** @type {import('vitest-mock-extended').DeepMockProxy<AuthService>} */
@@ -24,7 +29,7 @@ describe('Auth Plugin', () => {
 
     describe('POST /login', () => {
         it('should call authService.login and return 200 on success', async () => {
-            /** @type {import('@ems/types-shared-auth').TokenResponseDTO} */
+            /** @type {TokenDTO} */
             const mockResponse = {
                 accessToken: 'test-access-token',
                 refreshToken: 'test-refresh-token',
@@ -35,7 +40,7 @@ describe('Auth Plugin', () => {
             mockAuthService.login.mockResolvedValue(mockResponse)
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -62,7 +67,7 @@ describe('Auth Plugin', () => {
             mockAuthService.login.mockRejectedValue(new Error('Invalid credentials'))
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -79,14 +84,14 @@ describe('Auth Plugin', () => {
 
             expect(response.statusCode).toBe(401)
             expect(response.json()).toEqual({
-                error: 'Invalid credentials'
+                message: 'Invalid credentials'
             })
         })
     })
 
     describe('POST /refresh', () => {
         it('should call authService.refresh and return 200 on success', async () => {
-            /** @type {import('@ems/types-shared-auth').TokenResponseDTO} */
+            /** @type {TokenDTO} */
             const mockResponse = {
                 accessToken: 'new-access-token',
                 refreshToken: 'new-refresh-token',
@@ -97,7 +102,7 @@ describe('Auth Plugin', () => {
             mockAuthService.refresh.mockResolvedValue(mockResponse)
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -125,7 +130,7 @@ describe('Auth Plugin', () => {
             mockAuthService.logout.mockResolvedValue(mockResponse)
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -139,18 +144,18 @@ describe('Auth Plugin', () => {
                 }
             })
 
-            expect(response.statusCode).toBe(200)
-            expect(response.json()).toEqual(mockResponse)
             expect(mockAuthService.logout).toHaveBeenCalledWith({
                 refreshToken: 'refresh-token-to-logout'
             })
+            expect(response.json()).toEqual(mockResponse)
+            expect(response.statusCode).toBe(200)
         })
     })
 
     describe('POST /revoke-all', () => {
         it('should return 401 when not authenticated', async () => {
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -166,7 +171,7 @@ describe('Auth Plugin', () => {
 
             expect(response.statusCode).toBe(401)
             expect(response.json()).toEqual({
-                error: 'Authorization header required'
+                message: 'Authorization header required'
             })
             expect(mockAuthService.revokeAll).not.toHaveBeenCalled()
         })
@@ -184,7 +189,7 @@ describe('Auth Plugin', () => {
             const mockResponse = { message: 'All sessions revoked' }
             mockAuthService.revokeAll.mockResolvedValue(mockResponse)
             mockAuthService.me.mockResolvedValue(
-                /** @type {import('@ems/types-backend-auth').SessionDTO} */ ({
+                /** @type {SessionDTO} */ ({
                     id: 'session-1',
                     userId: 'user-123',
                     jti: 'jti-1',
@@ -195,7 +200,7 @@ describe('Auth Plugin', () => {
             )
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -215,14 +220,14 @@ describe('Auth Plugin', () => {
             expect(response.statusCode).toBe(200)
             expect(response.json()).toEqual(mockResponse)
             expect(mockAuthService.me).toHaveBeenCalledWith('valid-token')
-            expect(mockAuthService.revokeAll).toHaveBeenCalledWith('user-123')
+            expect(mockAuthService.revokeAll).toHaveBeenCalledWith({ userId: 'user-123' })
         })
     })
 
     describe('GET /me', () => {
         it('should return 401 when not authenticated', async () => {
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -235,13 +240,16 @@ describe('Auth Plugin', () => {
 
             expect(response.statusCode).toBe(401)
             expect(response.json()).toEqual({
-                error: 'Authorization header required'
+                message: 'Authorization header required'
             })
         })
 
         it('should return user info when authenticated', async () => {
+            const userId = crypto.randomUUID()
+
+            /** @type {UserDTO} */
             const mockUser = {
-                userId: 'user-123',
+                userId,
                 username: 'testuser',
                 firstName: 'Test',
                 lastName: 'User',
@@ -250,9 +258,9 @@ describe('Auth Plugin', () => {
             }
 
             mockAuthService.me.mockResolvedValue(
-                /** @type {import('@ems/types-backend-auth').SessionDTO} */ ({
+                /** @type {SessionDTO} */ ({
                     id: 'session-1',
-                    userId: 'user-123',
+                    userId,
                     jti: 'jti-1',
                     lastRefresh: new Date(),
                     expiresAt: new Date(Date.now() + 3600000),
@@ -261,7 +269,7 @@ describe('Auth Plugin', () => {
             )
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -275,17 +283,17 @@ describe('Auth Plugin', () => {
                 }
             })
 
-            expect(response.statusCode).toBe(200)
-            expect(response.json()).toEqual({ user: mockUser })
             expect(mockAuthService.me).toHaveBeenCalledWith('valid-token')
+            expect(response.json()).toEqual({ user: mockUser })
+            expect(response.statusCode).toBe(200)
         })
     })
 
     describe('POST /signup', () => {
         it('should call userService.signup and return 201 on success', async () => {
-            /** @type {import('@ems/types-shared-auth').UserDTO} */
+            /** @type {UserDTO} */
             const mockUser = {
-                userId: 'user-123',
+                userId: randomUUID(),
                 username: 'testuser',
                 email: 'test@example.com',
                 firstName: 'Test',
@@ -295,7 +303,7 @@ describe('Auth Plugin', () => {
             mockUserService.signup.mockResolvedValue(mockUser)
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -314,7 +322,7 @@ describe('Auth Plugin', () => {
             })
 
             expect(response.statusCode).toBe(201)
-            expect(response.json()).toEqual(mockUser)
+            expect(response.json()).toEqual({ user: mockUser })
             expect(mockUserService.signup).toHaveBeenCalledWith({
                 username: 'testuser',
                 email: 'test@example.com',
@@ -326,7 +334,7 @@ describe('Auth Plugin', () => {
 
         it('should return 400 with validation errors when email is invalid', async () => {
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -345,8 +353,12 @@ describe('Auth Plugin', () => {
             })
 
             expect(mockUserService.signup).not.toHaveBeenCalled()
+            expect(response.json()).toEqual({
+                fields: {
+                    email: ['Must enter a valid e-mail address']
+                }
+            })
             expect(response.statusCode).toBe(400)
-            expect(response.json()).toHaveProperty('errors.email')
         })
 
         it('should return 409 on duplicate user error', async () => {
@@ -355,7 +367,7 @@ describe('Auth Plugin', () => {
             )
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -373,17 +385,17 @@ describe('Auth Plugin', () => {
                 }
             })
 
-            expect(response.statusCode).toBe(409)
             expect(response.json()).toEqual({
-                error: 'User with this username or email already exists'
+                message: 'User with this username or email already exists'
             })
+            expect(response.statusCode).toBe(409)
         })
 
         it('should return 500 on other errors', async () => {
             mockUserService.signup.mockRejectedValue(new Error('Database connection failed'))
 
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -401,15 +413,15 @@ describe('Auth Plugin', () => {
                 }
             })
 
-            expect(response.statusCode).toBe(500)
             expect(response.json()).toEqual({
-                error: 'Database connection failed'
+                message: 'Database connection failed'
             })
+            expect(response.statusCode).toBe(500)
         })
 
         it('should validate request body against schema', async () => {
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -421,18 +433,25 @@ describe('Auth Plugin', () => {
                 url: '/signup',
                 payload: {
                     username: 'testuser',
-                    email: 'test@example.com'
-                    // Missing password, firstName, lastName
+                    email: 'test@example.com',
+                    firstName: null,
+                    lastName: null,
+                    password: null
                 }
             })
 
+            expect(mockUserService.signup).not.toHaveBeenCalled()
             expect(response.statusCode).toBe(400)
-            expect(response.json()).toHaveProperty('errors.password')
+            expect(response.json()).toEqual({
+                fields: {
+                    password: ['Must enter a valid password']
+                }
+            })
         })
 
         it('should validate string length constraints', async () => {
             const app = Fastify()
-            await app.register(errorHandling)
+            await app.register(schemaPlugin)
             await app.register(authPlugin, {
                 authService: mockAuthService,
                 userService: mockUserService
@@ -451,8 +470,13 @@ describe('Auth Plugin', () => {
                 }
             })
 
+            expect(mockUserService.signup).not.toHaveBeenCalled()
+            expect(response.json()).toEqual({
+                fields: {
+                    username: ['Username must be at least 3 characters']
+                }
+            })
             expect(response.statusCode).toBe(400)
-            expect(response.json()).toHaveProperty('errors.username')
         })
     })
 })

@@ -2,31 +2,39 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { assert } from '@ems/utils'
 
-/** @import { TokenService } from '@ems/types-backend-auth' */
-/** @import { AuthConfig } from '@ems/types-backend-config' */
+/**
+ * @import { AuthConfig } from '@ems/domain-backend-config'
+ * @import { JwtPayload } from 'jsonwebtoken'
+ * @import { SessionDTO } from "../session/index.js"
+ * @import { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from "./token.js",
+ */
 
 /**
- * @import { JwtPayload } from 'jsonwebtoken'
+ * @exports @typedef TokenService
+ * @property {(session: SessionDTO) => string} generateAccessToken
+ * @property {(session: SessionDTO) => string} generateRefreshToken
+ * @property {(token: string) => AccessTokenPayloadDTO} verifyAccessToken
+ * @property {(token: string) => RefreshTokenPayloadDTO} verifyRefreshToken
+ * @property {(password: string) => Promise<string>} hashPassword
+ * @property {(password: string, hash: string) => Promise<boolean>} comparePassword
  */
 
 /**
  * @overload
  * @param {JwtPayload | string | undefined} payload
  * @param {'access'} type
- * @returns {import('@ems/types-backend-auth').AccessTokenPayloadDTO}
+ * @returns {AccessTokenPayloadDTO}
  */
-
 /**
  * @overload
  * @param {JwtPayload | string | undefined} payload
  * @param {'refresh'} type
- * @returns {import('@ems/types-backend-auth').RefreshTokenPayloadDTO}
+ * @returns {RefreshTokenPayloadDTO}
  */
-
 /**
  * @param {JwtPayload | string | undefined} payload
  * @param {'access' | 'refresh'} type
- * @returns {import('@ems/types-backend-auth').AccessTokenPayloadDTO | import('@ems/types-backend-auth').RefreshTokenPayloadDTO}
+ * @returns {AccessTokenPayloadDTO | RefreshTokenPayloadDTO}
  */
 function parseTokenPayload(payload, type) {
     if (typeof payload === 'string' || !payload) {
@@ -68,7 +76,7 @@ function parseTokenPayload(payload, type) {
  */
 export function createTokenService(config) {
     return {
-        /** @param {import('@ems/types-backend-auth').SessionDTO} session */
+        /** @param {SessionDTO} session */
         generateAccessToken(session) {
             const payload = {
                 sub: session.userId,
@@ -82,7 +90,7 @@ export function createTokenService(config) {
             })
         },
 
-        /** @param {import('@ems/types-backend-auth').SessionDTO} session */
+        /** @param {SessionDTO} session */
         generateRefreshToken(session) {
             const payload = {
                 sub: session.userId,

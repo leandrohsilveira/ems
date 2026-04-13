@@ -1,7 +1,7 @@
 <script>
     import { cn } from '../../utils/index.js'
 
-    /** @import { PaperProps } from '@ems/types-frontend-ui' */
+    /** @import { PaperProps } from './types.js' */
 
     /** @type {PaperProps} */
     let { children, header, footer, class: className, testId = 'paper' } = $props()

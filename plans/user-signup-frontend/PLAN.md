@@ -16,7 +16,7 @@ Implement the frontend part of the user signup feature following the BFF (Backen
 
 - Existing `/auth/signup` API endpoint
 - `@ems/ui` components (input, button, paper)
-- `@ems/types-shared-auth` for type definitions
+- `@ems/domain-shared-auth` for type definitions
 - Existing Tailwind theme configuration
 
 ## Cycles
@@ -77,7 +77,7 @@ Implement the frontend part of the user signup feature following the BFF (Backen
 **Steps**:
 
 1. Create `src/lib/components/signup-form/server/signup.js` with `submitSignupAction(client, formData)` function
-2. Implement type-safe request using `@ems/types-shared-auth`
+2. Implement type-safe request using `@ems/domain-shared-auth`
 3. Add error handling for 400, 409, 500 responses
 4. Return structured error object for BFF
 5. Write tests for API client
@@ -110,7 +110,7 @@ Implement the frontend part of the user signup feature following the BFF (Backen
 - Component accepts separate `errors` and `errorMessage` props (not nested in `form`)
 - Component manages loading state internally via `enhance` callback
 - `loginHref` is required prop for login link navigation
-- Uses `FormEnhancerAction` type for `enhance` prop from `@ems/types-frontend-ui`
+- Uses `FormEnhancerAction` type for `enhance` prop from `@ems/ui`
 - Error type uses `Partial<Record<...>>` to allow missing error fields
 
 **Quality Gates**:

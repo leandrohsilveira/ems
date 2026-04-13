@@ -1,7 +1,7 @@
 <script>
     import { cn } from '../../utils/index.js'
 
-    /** @import { CheckboxProps } from '@ems/types-frontend-ui' */
+    /** @import { CheckboxProps } from './types.js' */
 
     /** @type {CheckboxProps} */
     let {

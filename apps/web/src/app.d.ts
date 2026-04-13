@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { HttpClient } from '@ems/types-shared-api'
+import type { HttpClient } from '@ems/domain-shared-api'
 
 // for information about these interfaces
 declare global {

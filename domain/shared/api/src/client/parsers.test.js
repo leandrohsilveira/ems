@@ -2,6 +2,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { jsonRequest, bearerAuth, jsonResponse, noResponse } from './parsers.js'
 import * as testing from '../testing/index.js'
 
+/**
+ * @import { RequestContext } from "./types.js"
+ */
+
 describe('parser factories', () => {
     describe('jsonRequest', () => {
         it('should create parser that sets JSON body and Content-Type', async () => {
@@ -59,7 +63,7 @@ describe('parser factories', () => {
                 const jsonSpy = vi.spyOn(response, 'json')
 
                 const parser = jsonResponse()
-                /** @type {import('@ems/types-shared-api').RequestContext} */
+                /** @type {RequestContext} */
                 const requestContext = { url: '/test', method: 'GET' }
                 const result = await parser.parse(response, requestContext)
 
@@ -75,7 +79,7 @@ describe('parser factories', () => {
                 })
 
                 const parser = jsonResponse()
-                /** @type {import('@ems/types-shared-api').RequestContext} */
+                /** @type {RequestContext} */
                 const requestContext = { url: '/test', method: 'POST' }
 
                 expect(await parser.parse(response, requestContext)).toMatchObject({
@@ -94,7 +98,7 @@ describe('parser factories', () => {
                 })
 
                 const parser = jsonResponse()
-                /** @type {import('@ems/types-shared-api').RequestContext} */
+                /** @type {RequestContext} */
                 const requestContext = { url: '/test', method: 'GET' }
 
                 expect(await parser.parse(response, requestContext)).toMatchObject({
@@ -112,7 +116,7 @@ describe('parser factories', () => {
                 })
 
                 const parser = jsonResponse()
-                /** @type {import('@ems/types-shared-api').RequestContext} */
+                /** @type {RequestContext} */
                 const requestContext = { url: '/test', method: 'GET' }
 
                 expect(await parser.parse(response, requestContext)).toMatchObject({

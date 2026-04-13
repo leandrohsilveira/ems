@@ -2,12 +2,7 @@
     import Paper from '@ems/ui/components/paper'
     import CheckCircleFill from '@ems/icons/check-circle-fill.svg?component'
 
-    /**
-     * @exports @typedef SignupSuccessProps
-     * @property {string} loginHref
-     */
-
-    /** @type {SignupSuccessProps} */
+    /** @type {import('./types.js').SignupSuccessProps} */
     let { loginHref } = $props()
 </script>
 

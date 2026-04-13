@@ -1,22 +1,28 @@
+import { ROLES } from '@ems/domain-shared-auth'
 import logger from 'pino'
 
 /**
+ * @import { UserCreateDTO } from '@ems/domain-shared-auth'
+ * @import { UserService } from '../../user/index.js'
+ */
+
+/**
  * Seed users with all roles (USER, MANAGER, ADMIN)
- * @param {import('@ems/types-backend-auth').UserService} userService
+ * @param {UserService} userService
  * @param {string} password - Password for all seed users
  * @returns {Promise<void>}
  */
 export async function seedUsers(userService, password) {
     const log = logger({ name: 'SeedUsers' })
 
-    /** @type {import('@ems/types-backend-auth').UserCreateDTO[]} */
+    /** @type {UserCreateDTO[]} */
     const users = [
         {
             firstName: 'John',
             lastName: 'Doe',
             email: 'john.doe@example.com',
             username: 'johndoe',
-            role: 'USER',
+            role: ROLES.USER,
             password
         },
         {
@@ -24,7 +30,7 @@ export async function seedUsers(userService, password) {
             lastName: 'Smith',
             email: 'jane.smith@example.com',
             username: 'janesmith',
-            role: 'MANAGER',
+            role: ROLES.MANAGER,
             password
         },
         {
@@ -32,7 +38,7 @@ export async function seedUsers(userService, password) {
             lastName: 'User',
             email: 'admin@example.com',
             username: 'admin',
-            role: 'ADMIN',
+            role: ROLES.ADMIN,
             password
         }
     ]

@@ -1,6 +1,14 @@
-/** @import { AuthConfig, EnvObject } from '@ems/types-backend-config' */
+import { requireEnv } from '@ems/domain-shared-schema'
 
-import { requireEnv } from './utils.js'
+/** @import { EnvObject } from '@ems/domain-shared-schema' */
+
+/**
+ * @exports @typedef AuthConfig
+ * @property {string} jwtSecret
+ * @property {number} accessTokenTTL
+ * @property {number} refreshTokenTTL
+ * @property {number} refreshTokenMobileTTL
+ */
 
 /**
  * Creates auth configuration from env object (dependency inversion)

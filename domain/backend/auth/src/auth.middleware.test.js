@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Fastify from 'fastify'
+import { PERMISSIONS } from '@ems/domain-shared-auth'
 import authMiddleware from './auth.middleware.js'
-import { PERMISSIONS } from './permissions/permissions.js'
 
 describe('authMiddleware', () => {
     /** @type {ReturnType<typeof Fastify>} */
     let fastify
     /** @type {ReturnType<typeof vi.fn>} */
     let mockMe
-    /** @type {import('@ems/types-backend-auth').AuthService} */
+    /** @type {import('./auth.service.js').AuthService} */
     let mockAuthService
 
     beforeEach(async () => {
@@ -48,7 +48,7 @@ describe('authMiddleware', () => {
 
         expect(mockMe).not.toHaveBeenCalled()
         expect(response.statusCode).toBe(401)
-        expect(response.json()).toEqual({ error: 'Authorization header required' })
+        expect(response.json()).toEqual({ message: 'Authorization header required' })
     })
 
     it('should return 401 when authorization header is not Bearer', async () => {
@@ -62,7 +62,7 @@ describe('authMiddleware', () => {
 
         expect(mockMe).not.toHaveBeenCalled()
         expect(response.statusCode).toBe(401)
-        expect(response.json()).toEqual({ error: 'Invalid authorization format' })
+        expect(response.json()).toEqual({ message: 'Invalid authorization format' })
     })
 
     it('should return 401 when Bearer token is empty', async () => {
@@ -76,7 +76,7 @@ describe('authMiddleware', () => {
 
         expect(mockMe).not.toHaveBeenCalled()
         expect(response.statusCode).toBe(401)
-        expect(response.json()).toEqual({ error: 'Token missing' })
+        expect(response.json()).toEqual({ message: 'Token missing' })
     })
 
     describe('allowOneOf', () => {
@@ -89,7 +89,7 @@ describe('authMiddleware', () => {
             })
 
             expect(response.statusCode).toBe(401)
-            expect(response.json()).toEqual({ error: 'Authorization header required' })
+            expect(response.json()).toEqual({ message: 'Authorization header required' })
         })
 
         it('should return 403 when authenticated user does not have any required permission', async () => {
@@ -114,7 +114,7 @@ describe('authMiddleware', () => {
 
             expect(mockMe).toHaveBeenCalledWith('valid-token')
             expect(response.statusCode).toBe(403)
-            expect(response.json()).toEqual({ error: 'Insufficient permissions' })
+            expect(response.json()).toEqual({ message: 'Insufficient permissions' })
         })
 
         it('should allow access when user has at least one required permission', async () => {
@@ -200,7 +200,7 @@ describe('authMiddleware', () => {
 
             expect(mockMe).toHaveBeenCalledWith('valid-token')
             expect(response.statusCode).toBe(403)
-            expect(response.json()).toEqual({ error: 'Insufficient permissions' })
+            expect(response.json()).toEqual({ message: 'Insufficient permissions' })
         })
 
         it('should handle invalid permission strings gracefully', async () => {
@@ -236,7 +236,7 @@ describe('authMiddleware', () => {
 
             expect(mockMe).toHaveBeenCalledWith('valid-token')
             expect(response.statusCode).toBe(403)
-            expect(response.json()).toEqual({ error: 'Insufficient permissions' })
+            expect(response.json()).toEqual({ message: 'Insufficient permissions' })
         })
     })
 
@@ -279,8 +279,7 @@ describe('authMiddleware', () => {
         expect(mockMe).toHaveBeenCalledWith('invalid-token')
         expect(response.statusCode).toBe(401)
         expect(response.json()).toEqual({
-            error: 'Invalid or expired token',
-            message: 'Invalid token'
+            message: 'Invalid or expired token'
         })
     })
 })

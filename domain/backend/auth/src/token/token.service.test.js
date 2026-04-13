@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createTokenService } from './token.service.js'
+import { ROLES } from '@ems/domain-shared-auth'
 
 vi.mock('jsonwebtoken', () => ({
     default: {
@@ -36,7 +37,7 @@ vi.mock('bcrypt', () => ({
 }))
 
 describe('createTokenService', () => {
-    /** @type {import('@ems/types-backend-auth').TokenService} */
+    /** @type {import('./token.service.js').TokenService} */
     let tokenService
 
     const mockConfig = {
@@ -58,7 +59,7 @@ describe('createTokenService', () => {
             firstName: 'John',
             lastName: 'Doe',
             email: 'test@example.com',
-            role: 'USER'
+            role: ROLES.USER
         }
     }
 

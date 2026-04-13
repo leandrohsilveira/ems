@@ -3,19 +3,7 @@
     import Button from '@ems/ui/components/button'
     import Paper from '@ems/ui/components/paper'
 
-    /** @import { FormEnhancerAction } from '@ems/types-frontend-ui' */
-    /** @import { ValidationErrorDTO } from '@ems/domain-shared-schema' */
-
-    /**
-     * @exports @typedef SignupFormProps
-     * @property {FormEnhancerAction} enhance
-     * @property {string} loginHref
-     * @property {ValidationErrorDTO} [errors]
-     * @property {string} [errorMessage]
-     * @property {string} [action]
-     */
-
-    /** @type {SignupFormProps} */
+    /** @type {import('./types.js').SignupFormProps} */
     let { errors, errorMessage, enhance, action = '/signup', loginHref } = $props()
 
     let loading = $state(false)

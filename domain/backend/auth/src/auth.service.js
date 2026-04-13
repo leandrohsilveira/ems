@@ -2,11 +2,23 @@ import { randomUUID } from 'crypto'
 import logger from 'pino'
 import { parseUser } from './user/user.js'
 
-/** @import { AuthService } from '@ems/types-backend-auth' */
-/** @import { UserRepository } from '@ems/types-backend-auth' */
-/** @import { SessionRepository } from '@ems/types-backend-auth' */
-/** @import { TokenService } from '@ems/types-backend-auth' */
-/** @import { AuthConfig } from '@ems/types-backend-config' */
+/**
+ * @import { AuthConfig } from '@ems/domain-backend-config'
+ * @import { LoginDTO, TokenDTO, RefreshTokenDTO, RevokeAllDTO } from '@ems/domain-shared-auth'
+ * @import { MessageDTO } from '@ems/domain-shared-schema'
+ * @import { TokenService } from './token/token.service.js'
+ * @import { UserRepository } from './user/index.js'
+ * @import { SessionDTO, SessionRepository } from './session/index.js'
+ */
+
+/**
+ * @exports @typedef AuthService
+ * @property {(request: LoginDTO) => Promise<TokenDTO>} login
+ * @property {(request: RefreshTokenDTO) => Promise<TokenDTO>} refresh
+ * @property {(request: RefreshTokenDTO) => Promise<MessageDTO>} logout
+ * @property {(request: RevokeAllDTO) => Promise<MessageDTO>} revokeAll
+ * @property {(token: string) => Promise<SessionDTO>} me
+ */
 
 /**
  * @param {UserRepository} userRepository
@@ -18,7 +30,7 @@ import { parseUser } from './user/user.js'
 export function createAuthService(userRepository, sessionRepository, tokenService, config) {
     const log = logger({ name: 'AuthService' })
     return {
-        /** @param {import('@ems/types-shared-auth').LoginRequestDTO} request */
+        /** @param {LoginDTO} request */
         async login(request) {
             log.info({ username: request.username }, 'Login attempt')
             const user = await userRepository.findByUsername(request.username)
@@ -71,7 +83,7 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
             }
         },
 
-        /** @param {import('@ems/types-shared-auth').RefreshRequestDTO} request */
+        /** @param {RefreshTokenDTO} request */
         async refresh(request) {
             const payload = tokenService.verifyRefreshToken(request.refreshToken)
 
@@ -114,15 +126,15 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
             }
         },
 
-        /** @param {import('@ems/types-shared-auth').LogoutRequestDTO} request */
+        /** @param {RefreshTokenDTO} request */
         async logout(request) {
             const payload = tokenService.verifyRefreshToken(request.refreshToken)
             await sessionRepository.deleteByJti(payload.jti)
             return { message: 'Logged out successfully' }
         },
 
-        /** @param {string} userId */
-        async revokeAll(userId) {
+        /** @param {RevokeAllDTO} userId */
+        async revokeAll({ userId }) {
             await sessionRepository.deleteAllByUserId(userId)
             return { message: 'All sessions revoked' }
         },

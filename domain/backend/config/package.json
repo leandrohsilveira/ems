@@ -15,7 +15,7 @@
         "test": "vitest run --passWithNoTests",
         "test:unit": "vitest --passWithNoTests"
     },
-    "dependencies": {
-        "@ems/types-backend-config": "*"
+    "devDependencies": {
+        "@ems/domain-shared-schema": "*"
     }
 }

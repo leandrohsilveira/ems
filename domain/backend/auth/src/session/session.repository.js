@@ -1,5 +1,17 @@
-/** @import { PrismaClient } from '@ems/database' */
-/** @import { SessionRepository } from '@ems/types-backend-auth' */
+/**
+ * @import { PrismaClient, Session, SessionWithUser, SessionCreateInput, SessionUpdateInput } from '@ems/database'
+ */
+
+/**
+ * @exports @typedef SessionRepository
+ * @property {(jti: string) => Promise<SessionWithUser | null>} findByJti
+ * @property {(userId: string) => Promise<SessionWithUser[]>} findByUserId
+ * @property {(data: SessionCreateInput) => Promise<Session>} create
+ * @property {(id: string, data: SessionUpdateInput) => Promise<Session>} update
+ * @property {(id: string) => Promise<void>} delete
+ * @property {(jti: string) => Promise<void>} deleteByJti
+ * @property {(userId: string) => Promise<void>} deleteAllByUserId
+ */
 
 /**
  * Creates a session repository

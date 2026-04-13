@@ -9,9 +9,6 @@
     "domain/backend/*",
     "domain/frontend/*",
     "domain/shared/*",
-    "types/backend/*",
-    "types/frontend/*",
-    "types/shared/*",
     "prisma"
   ],
   "scripts": {

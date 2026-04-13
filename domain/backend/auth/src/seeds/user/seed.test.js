@@ -3,7 +3,7 @@ import { mockDeep } from 'vitest-mock-extended'
 import { seedUsers } from './seed.js'
 
 describe('seedUsers', () => {
-    /** @type {import('vitest-mock-extended').DeepMockProxy<import('@ems/types-backend-auth').UserService>} */
+    /** @type {import('vitest-mock-extended').DeepMockProxy<import('../../user/index.js').UserService>} */
     let mockUserService
 
     beforeEach(() => {

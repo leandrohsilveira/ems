@@ -1,0 +1,28 @@
+{
+    "name": "@ems/domain-backend-schema",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.js"
+        },
+        "./testing": {
+            "types": "./src/testing/index.d.ts",
+            "default": "./src/testing/index.js"
+        }
+    },
+    "scripts": {
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest --passWithNoTests"
+    },
+    "dependencies": {
+        "fastify": "^5.2.0",
+        "fastify-plugin": "^5.1.0",
+        "fastify-type-provider-zod": "^6.1.0",
+        "zod": "^4.3.6"
+    }
+}

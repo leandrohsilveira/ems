@@ -3,7 +3,7 @@ import { vi } from 'vitest'
 /**
  * @import { ActionResult } from "@sveltejs/kit"
  * @import { Mock } from "vitest"
- * @import { FormEnhancerAction } from "@ems/types-frontend-ui"
+ * @import { FormEnhancerAction } from "../enhance.js"
  */
 
 /**

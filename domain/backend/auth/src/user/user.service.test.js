@@ -10,11 +10,11 @@ import {
 import { Prisma } from '@ems/database'
 
 describe('createUserService', () => {
-    /** @type {import('@ems/types-backend-auth').UserService} */
+    /** @type {import('./user.service.js').UserService} */
     let userService
-    /** @type {import('vitest-mock-extended').DeepMockProxy<import('@ems/types-backend-auth').UserRepository>} */
+    /** @type {import('vitest-mock-extended').DeepMockProxy<import('./user.repository.js').UserRepository>} */
     let mockUserRepository
-    /** @type {import('vitest-mock-extended').DeepMockProxy<import('@ems/types-backend-auth').TokenService>} */
+    /** @type {import('vitest-mock-extended').DeepMockProxy<import('../token/index.js').TokenService>} */
     let mockTokenService
 
     beforeEach(() => {
@@ -177,17 +177,13 @@ describe('createUserService', () => {
         })
 
         it('should create user with different roles', async () => {
-            // Test all roles: USER, MANAGER, ADMIN
+            /** @type {import('@ems/domain-shared-auth').Role[]} */
             const roles = ['USER', 'MANAGER', 'ADMIN']
 
             for (const role of roles) {
                 // Arrange
-                const userData = createMockUserCreateDTO({
-                    role: /** @type {'USER' | 'MANAGER' | 'ADMIN'} */ (role)
-                })
-                const mockUser = createMockUser({
-                    role: /** @type {import('@ems/database').Role} */ (role)
-                })
+                const userData = createMockUserCreateDTO({ role })
+                const mockUser = createMockUser({ role })
                 const expectedUserDTO = createMockUserDTO({ role })
 
                 mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)

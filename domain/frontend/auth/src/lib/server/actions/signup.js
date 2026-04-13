@@ -2,7 +2,7 @@ import { jsonRequest, jsonResponse } from '@ems/domain-shared-api'
 import { signupFormDtoSchema, signupRequestDtoSchema } from '@ems/domain-shared-auth'
 import { formatError } from '@ems/domain-shared-schema'
 
-/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/types-shared-api" */
+/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/domain-shared-api" */
 
 /**
  * @exports @typedef SubmitSignupResult

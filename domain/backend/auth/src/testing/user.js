@@ -1,7 +1,12 @@
 /**
+ * @import { User } from '@ems/database'
+ * @import { UserDTO, UserCreateDTO, SignupRequestDTO } from '@ems/domain-shared-auth'
+ */
+
+/**
  * Create mock user data for tests
- * @param {Partial<import('@ems/database').User>} overrides
- * @returns {import('@ems/database').User}
+ * @param {Partial<User>} overrides
+ * @returns {User}
  */
 export function createMockUser(overrides = {}) {
     return {
@@ -18,8 +23,8 @@ export function createMockUser(overrides = {}) {
 
 /**
  * Create mock user DTO for tests
- * @param {Partial<import('@ems/types-backend-auth').UserCreateDTO>} overrides
- * @returns {import('@ems/types-backend-auth').UserCreateDTO}
+ * @param {Partial<UserCreateDTO>} overrides
+ * @returns {UserCreateDTO}
  */
 export function createMockUserCreateDTO(overrides = {}) {
     return {
@@ -35,8 +40,8 @@ export function createMockUserCreateDTO(overrides = {}) {
 
 /**
  * Create mock user DTO response for tests
- * @param {Partial<import('@ems/types-shared-auth').UserDTO>} overrides
- * @returns {import('@ems/types-shared-auth').UserDTO}
+ * @param {Partial<UserDTO>} overrides
+ * @returns {UserDTO}
  */
 export function createMockUserDTO(overrides = {}) {
     return {
@@ -52,8 +57,8 @@ export function createMockUserDTO(overrides = {}) {
 
 /**
  * Create mock signup request DTO for tests
- * @param {Partial<import('@ems/types-shared-auth').SignUpRequestDTO>} overrides
- * @returns {import('@ems/types-shared-auth').SignUpRequestDTO}
+ * @param {Partial<SignupRequestDTO>} overrides
+ * @returns {SignupRequestDTO}
  */
 export function createMockSignUpRequestDTO(overrides = {}) {
     return {

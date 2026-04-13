@@ -1,6 +1,6 @@
 import { asArray } from '@ems/utils'
 
-/** @import { HttpClient, HttpClientOptions, HttpResult, RequestContext, RequestMethod, RequestOptions, RequestParserInput, RequestParserResult, ResponseParser } from "@ems/types-shared-api" */
+/** @import { HttpClient, HttpClientOptions, HttpResult, RequestContext, RequestMethod, RequestOptions, RequestParserInput, RequestParserResult, ResponseParser } from "./types.js" */
 
 // Main createHttpClient function
 

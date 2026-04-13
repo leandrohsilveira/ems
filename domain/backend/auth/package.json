@@ -21,19 +21,23 @@
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
         "test": "vitest run",
-        "test:unit": "vitest --run"
+        "test:watch": "vitest --passWithNoTests"
     },
     "dependencies": {
-        "@ems/backend-utils": "*",
         "@ems/database": "*",
-        "@ems/types-backend-auth": "*",
+        "@ems/domain-backend-schema": "*",
+        "@ems/domain-shared-auth": "*",
+        "@ems/domain-shared-schema": "*",
         "@ems/utils": "*",
         "bcrypt": "^6.0.0",
         "fastify": "^5.2.0",
         "fastify-plugin": "^5.1.0",
-        "jsonwebtoken": "^9.0.2"
+        "fastify-type-provider-zod": "^6.1.0",
+        "jsonwebtoken": "^9.0.2",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@ems/domain-backend-config": "*",
         "@types/bcrypt": "^5.0.2",
         "@types/jsonwebtoken": "^9.0.5"
     }

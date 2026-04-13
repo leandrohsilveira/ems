@@ -1,4 +1,11 @@
-/** @import { DatabaseConfig, EnvObject } from '@ems/types-backend-config' */
+/**
+ * @import { EnvObject } from '@ems/domain-shared-schema'
+ */
+
+/**
+ * @exports @typedef DatabaseConfig
+ * @property {string} url
+ */
 
 /**
  * Creates auth configuration from env object (dependency inversion)

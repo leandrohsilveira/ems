@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createSessionRepository } from './session.repository.js'
 
 describe('createSessionRepository', () => {
-    /** @type {ReturnType<typeof createSessionRepository>} */
+    /** @type {import('./session.repository.js').SessionRepository} */
     let sessionRepository
     /** @type {import('vitest').Mock} */
     let mockFindUnique

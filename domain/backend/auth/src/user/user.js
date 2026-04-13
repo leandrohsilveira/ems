@@ -1,7 +1,7 @@
 /**
  * Parse database User to UserDTO (excludes password)
  * @param {import('@ems/database').User} userModel
- * @returns {import('@ems/types-shared-auth').UserDTO}
+ * @returns {import('@ems/domain-shared-auth').UserDTO}
  */
 export function parseUser(userModel) {
     return {

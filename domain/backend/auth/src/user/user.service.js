@@ -3,9 +3,18 @@ import { Prisma } from '@ems/database'
 import { getErrorMessage } from '../utils/error.js'
 import { parseUser } from './user.js'
 
-/** @import { UserService } from '@ems/types-backend-auth' */
-/** @import { UserRepository } from '@ems/types-backend-auth' */
-/** @import { TokenService } from '@ems/types-backend-auth' */
+/**
+ * @import { UserRepository } from './user.repository.js'
+ * @import { TokenService } from '../token/index.js'
+ * @import { UserCreateDTO, UserDTO, SignupRequestDTO } from '@ems/domain-shared-auth'
+ */
+
+/**
+ * @exports @typedef UserService
+ * @property {(data: UserCreateDTO) => Promise<UserDTO>} createUser
+ * @property {(data: SignupRequestDTO) => Promise<UserDTO>} signup
+ * @property {(username: string, email: string) => Promise<UserDTO | null>} findByUsernameOrEmail
+ */
 
 /**
  * Creates a user service
@@ -17,7 +26,7 @@ export function createUserService(userRepository, tokenService) {
     const log = logger({ name: 'UserService' })
 
     return {
-        /** @param {import('@ems/types-backend-auth').UserCreateDTO} data */
+        /** @param {UserCreateDTO} data */
         async createUser(data) {
             log.info({ username: data.username, email: data.email }, 'Creating user')
 
@@ -69,7 +78,7 @@ export function createUserService(userRepository, tokenService) {
             }
         },
 
-        /** @param {import('@ems/types-shared-auth').SignUpRequestDTO} data */
+        /** @param {SignupRequestDTO} data */
         async signup(data) {
             log.info({ username: data.username, email: data.email }, 'User signup attempt')
 

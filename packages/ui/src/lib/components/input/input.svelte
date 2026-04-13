@@ -2,7 +2,7 @@
     import { asArray } from '@ems/utils'
     import { cn } from '../../utils/index.js'
 
-    /** @import { InputProps } from '@ems/types-frontend-ui' */
+    /** @import { InputProps } from './types.js' */
 
     /** @type {InputProps} */
     let {

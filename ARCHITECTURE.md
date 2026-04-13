@@ -14,10 +14,6 @@
       - [3. The Dependency Rule](#3-the-dependency-rule)
       - [4. Contracts](#4-contracts)
   - [Frontend](#frontend)
-- [Types Packages](#types-packages)
-  - [Backend](#backend-1)
-  - [Frontend](#frontend-1)
-  - [Shared](#shared)
 - [Packages](#packages)
 - [Prisma](#prisma)
 
@@ -173,7 +169,7 @@ function createUserService(repository) { // Depends on abstraction
 Interfaces define boundaries between components.
 
 ```typescript
-// The contract. Types live in types workspaces.
+// The contract. Types live alongside their implementation.
 interface PaymentGateway {
   charge(amount: Money, card: CardDetails): Promise<ChargeResult>;
   refund(chargeId: string): Promise<RefundResult>;
@@ -248,7 +244,8 @@ src/lib/components/<component-name>/
 ├── <component-name>.stories.svelte  # Component storybook stories
 ├── <component-name>.svelte          # Component implementation
 ├── <component-name>.svelte.test.js  # Component tests
-└── index.js                         # Barrel file
+└── index.js                         # Barrel file, exports the component as default and the types.ts file
+└── types.ts                         # Component scoped types like props
 ```
 
 **2. Write tests first** (TDD approach):
@@ -280,35 +277,8 @@ src/lib/components/<component-name>/
 
 ```js
 export { default } from "./<component-name>.svelte";
+export * from "./types.js";
 ```
-
-## Types Packages
-
-All TypeScript packages must be here. Avoid creating types using JSDoc in other packages and applications. On the other hand, implementations are forbidden—only types are allowed.
-
-### Backend
-
-All types intended for use only on the backend layer.
-
-- **Folder:** `types/backend/<package-name>`
-- **Technologies:** TypeScript
-- **Tools:** Prettier, ESLint, TSC (typechecking)
-
-### Frontend
-
-All types intended for use only on the frontend layer.
-
-- **Folder:** `types/frontend/<package-name>`
-- **Technologies:** TypeScript
-- **Tools:** Prettier, ESLint, TSC (typechecking)
-
-### Shared
-
-All types allowed to be shared between frontend and backend layers.
-
-- **Folder:** `types/shared/<package-name>`
-- **Technologies:** TypeScript
-- **Tools:** Prettier, ESLint, TSC (typechecking)
 
 ## Packages
 

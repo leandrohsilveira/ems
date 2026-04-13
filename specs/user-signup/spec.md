@@ -178,7 +178,7 @@ Based on `specs/user-signup/design.pen`:
 ## Dependencies
 
 - **Internal**: `@ems/ui` components (Input, Button, Paper)
-- **Internal**: `@ems/types-shared-auth` for type definitions
+- **Internal**: `@ems/domain-shared-auth` for type definitions
 - **Internal**: Existing `/auth/signup` API endpoint
 - **External**: None beyond project stack
 

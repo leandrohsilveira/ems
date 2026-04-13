@@ -1,4 +1,4 @@
-/** @import { RequestParser, ResponseParser, RequestContext, HttpResult, DefaultErrorFormat, HttpErrorResult } from "@ems/types-shared-api" */
+/** @import { RequestParser, ResponseParser, RequestContext, HttpResult, DefaultErrorFormat, HttpErrorResult } from "./types.js" */
 
 // Parser factories
 

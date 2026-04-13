@@ -1,9 +1,8 @@
 import fastifyPlugin from 'fastify-plugin'
-import { getErrorMessage } from './utils/error.js'
-import { roleHasPermission } from './permissions/permissions.js'
+import { roleHasPermission } from '@ems/domain-shared-auth'
 
 /** @import { FastifyInstance } from 'fastify' */
-/** @import { AuthService } from '@ems/types-backend-auth' */
+/** @import { AuthService } from './auth.service.js' */
 
 export default fastifyPlugin(
     /**
@@ -19,25 +18,24 @@ export default fastifyPlugin(
             const authHeader = request.headers.authorization
 
             if (!authHeader) {
-                return reply.status(401).send({ error: 'Authorization header required' })
+                return reply.status(401).send({ message: 'Authorization header required' })
             }
 
             if (!authHeader.startsWith('Bearer ')) {
-                return reply.status(401).send({ error: 'Invalid authorization format' })
+                return reply.status(401).send({ message: 'Invalid authorization format' })
             }
 
             const accessToken = authHeader.slice(7).trim()
             if (!accessToken) {
-                return reply.status(401).send({ error: 'Token missing' })
+                return reply.status(401).send({ message: 'Token missing' })
             }
 
             try {
-                const session = await authService.me(accessToken)
-                request.user = session.user
+                const { user } = await authService.me(accessToken)
+                request.user = user
             } catch (error) {
-                return reply
-                    .status(401)
-                    .send({ error: 'Invalid or expired token', message: getErrorMessage(error) })
+                request.log.error(error)
+                return reply.status(401).send({ message: 'Invalid or expired token' })
             }
         })
 
@@ -54,7 +52,7 @@ export default fastifyPlugin(
 
                 // Check if user is authenticated
                 if (!request.user) {
-                    return reply.status(401).send({ error: 'User not authenticated' })
+                    return reply.status(401).send({ message: 'User not authenticated' })
                 }
 
                 // Store user in variable after null check
@@ -66,7 +64,7 @@ export default fastifyPlugin(
                 )
 
                 if (!hasPermission) {
-                    return reply.status(403).send({ error: 'Insufficient permissions' })
+                    return reply.status(403).send({ message: 'Insufficient permissions' })
                 }
             }
         })

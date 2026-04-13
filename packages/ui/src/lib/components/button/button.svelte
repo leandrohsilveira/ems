@@ -1,7 +1,7 @@
 <script>
     import { cn } from '../../utils/index.js'
 
-    /** @import { ButtonProps } from '@ems/types-frontend-ui' */
+    /** @import { ButtonProps } from './types.js' */
 
     /** @type {ButtonProps} */
     let {
