@@ -1,40 +1,25 @@
-/** @type {import('./$types.js').Actions} */
+import { fail, redirect } from '@sveltejs/kit'
+import { submitLoginAction } from '@ems/domain-frontend-auth/server/actions/login'
+
+/** @satisfies {import('./$types.js').Actions} */
 export const actions = {
-    default: async ({ request, cookies }) => {
+    default: async ({ request, locals, cookies }) => {
         const formData = await request.formData()
-        const username = formData.get('username')
-        const password = formData.get('password')
 
-        if (!username || !password) {
-            return { success: false, error: 'Username and password are required' }
-        }
+        // Call domain action with raw FormData
+        const result = await submitLoginAction({ client: locals.http, form: formData })
 
-        try {
-            const response = await fetch('http://localhost:3000/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            })
-
-            if (!response.ok) {
-                const error = await response.json()
-                return { success: false, error: error.message || 'Login failed' }
-            }
-
-            const tokens = await response.json()
-
-            // Set HTTP-only cookies
-            cookies.set('accessToken', tokens.accessToken, {
+        if (result.isSuccess && result.tokens) {
+            // Set HTTP-only cookies (BFF responsibility)
+            cookies.set('accessToken', result.tokens.accessToken, {
                 path: '/',
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
-                maxAge: tokens.expiresIn
+                maxAge: result.tokens.expiresIn
             })
 
-            cookies.set('refreshToken', tokens.refreshToken, {
+            cookies.set('refreshToken', result.tokens.refreshToken, {
                 path: '/',
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -42,9 +27,14 @@ export const actions = {
                 maxAge: 604800 // 7 days
             })
 
-            return { success: true }
-        } catch {
-            return { success: false, error: 'Unable to connect to authentication service' }
+            // Redirect to dashboard on success
+            redirect(303, '/')
+        } else {
+            // Return errors for form display
+            return fail(result.status, {
+                errors: result.errors,
+                errorMessage: result.errorMessage
+            })
         }
     }
 }
