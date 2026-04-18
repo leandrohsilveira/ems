@@ -5,6 +5,7 @@ import {
     createJsonResponse,
     createNetworkError
 } from '@ems/domain-shared-api/testing'
+import { defaultLanguage } from '@ems/domain-shared-schema'
 
 describe('submitSignupAction', () => {
     /** @type {ReturnType<typeof createHttpClientStub>} */
@@ -29,7 +30,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -55,7 +60,11 @@ describe('submitSignupAction', () => {
             formData.set('lastName', 'Doe')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -80,7 +89,11 @@ describe('submitSignupAction', () => {
             formData.set('anotherExtra', 'also ignored')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -113,7 +126,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -148,7 +165,11 @@ describe('submitSignupAction', () => {
 
             // Act & Assert
             await expect(
-                submitSignupAction({ client: httpStub.client, form: formData })
+                submitSignupAction({
+                    client: httpStub.client,
+                    form: formData,
+                    locale: defaultLanguage
+                })
             ).resolves.toMatchObject({
                 isSuccess: false,
                 status: 409,
@@ -173,7 +194,11 @@ describe('submitSignupAction', () => {
 
             // Act & Assert
             await expect(
-                submitSignupAction({ client: httpStub.client, form: formData })
+                submitSignupAction({
+                    client: httpStub.client,
+                    form: formData,
+                    locale: defaultLanguage
+                })
             ).resolves.toMatchObject({
                 isSuccess: false,
                 status: 500,
@@ -196,7 +221,11 @@ describe('submitSignupAction', () => {
 
             // Act & Assert
             await expect(
-                submitSignupAction({ client: httpStub.client, form: formData })
+                submitSignupAction({
+                    client: httpStub.client,
+                    form: formData,
+                    locale: defaultLanguage
+                })
             ).resolves.toMatchObject({
                 isSuccess: false,
                 errorMessage: 'Service temporarily unavailable. Please try again later.'
@@ -214,7 +243,11 @@ describe('submitSignupAction', () => {
 
             // Act & Assert
             await expect(
-                submitSignupAction({ client: httpStub.client, form: formData })
+                submitSignupAction({
+                    client: httpStub.client,
+                    form: formData,
+                    locale: defaultLanguage
+                })
             ).resolves.toMatchObject({
                 isSuccess: false,
                 errorMessage: 'Something went wrong. Please try again later.'
@@ -233,7 +266,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -254,7 +291,11 @@ describe('submitSignupAction', () => {
             formData.set('email', 'test@example.com')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -288,7 +329,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', '')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -326,7 +371,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -350,7 +399,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'differentpassword')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -378,7 +431,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -406,7 +463,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -434,7 +495,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -464,7 +529,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -492,7 +561,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'a'.repeat(129))
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -521,7 +594,11 @@ describe('submitSignupAction', () => {
             formData.set('firstName', 'a'.repeat(101)) // 101 chars
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -550,7 +627,11 @@ describe('submitSignupAction', () => {
             formData.set('lastName', 'a'.repeat(101)) // 101 chars
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -578,7 +659,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -595,7 +680,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -612,7 +701,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'a'.repeat(128))
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -630,7 +723,11 @@ describe('submitSignupAction', () => {
             formData.set('firstName', 'a'.repeat(100)) // 100 chars
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -648,7 +745,11 @@ describe('submitSignupAction', () => {
             formData.set('lastName', 'a'.repeat(100)) // 100 chars
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -665,7 +766,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -684,7 +789,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            await submitSignupAction({ client: httpStub.client, form: formData })
+            await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(httpStub.fetch).toHaveBeenCalledWith(
@@ -706,7 +815,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            await submitSignupAction({ client: httpStub.client, form: formData })
+            await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(httpStub.fetch).toHaveBeenCalledWith(
@@ -730,7 +843,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toMatchObject({
@@ -758,7 +875,11 @@ describe('submitSignupAction', () => {
             formData.set('confirmPassword', 'password123')
 
             // Act
-            const result = await submitSignupAction({ client: httpStub.client, form: formData })
+            const result = await submitSignupAction({
+                client: httpStub.client,
+                form: formData,
+                locale: defaultLanguage
+            })
 
             // Assert
             expect(result).toEqual({ isSuccess: true, status: 201 })
@@ -769,6 +890,43 @@ describe('submitSignupAction', () => {
                     body: expect.stringContaining('"email":"test+unicode@example.com"')
                 })
             )
+        })
+    })
+
+    it('uses pt_BR locale for validation messages', async () => {
+        // Arrange
+        const formData = new FormData()
+        // Empty form data
+        formData.set('email', '')
+        formData.set('username', '')
+        formData.set('password', '')
+        formData.set('confirmPassword', '')
+
+        // Act
+        const result = await submitSignupAction({
+            client: httpStub.client,
+            form: formData,
+            locale: 'pt_BR'
+        })
+
+        // Assert
+        expect(result.isSuccess).toBe(false)
+        expect(result.status).toBe(400)
+        expect(result.errors).toBeDefined()
+        // Test that validation errors contain actual Portuguese messages
+        expect(result.errors).toMatchObject({
+            fields: expect.objectContaining({
+                email: expect.arrayContaining([
+                    'É necessário informar um endereço de e-mail válido'
+                ]),
+                username: expect.arrayContaining([
+                    'O nome de usuário deve ter pelo menos 3 caracteres'
+                ]),
+                password: expect.arrayContaining(['A senha deve ter pelo menos 8 caracteres']),
+                confirmPassword: expect.arrayContaining([
+                    'É necessário informar a confirmação da senha'
+                ])
+            })
         })
     })
 })

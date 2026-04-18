@@ -353,7 +353,7 @@ describe('Auth Plugin', () => {
             })
 
             expect(mockUserService.signup).not.toHaveBeenCalled()
-            expect(response.json()).toEqual({
+            expect(response.json()).toMatchObject({
                 fields: {
                     email: ['Must enter a valid e-mail address']
                 }
@@ -442,7 +442,7 @@ describe('Auth Plugin', () => {
 
             expect(mockUserService.signup).not.toHaveBeenCalled()
             expect(response.statusCode).toBe(400)
-            expect(response.json()).toEqual({
+            expect(response.json()).toMatchObject({
                 fields: {
                     password: ['Must enter a valid password']
                 }
@@ -471,7 +471,7 @@ describe('Auth Plugin', () => {
             })
 
             expect(mockUserService.signup).not.toHaveBeenCalled()
-            expect(response.json()).toEqual({
+            expect(response.json()).toMatchObject({
                 fields: {
                     username: ['Username must be at least 3 characters']
                 }

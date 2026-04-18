@@ -1,5 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit'
 import { submitLoginAction } from '@ems/domain-frontend-auth/server/actions/login'
+import { loginLoader } from '@ems/domain-frontend-auth/server/loaders/login'
 
 /** @satisfies {import('./$types.js').Actions} */
 export const actions = {
@@ -42,14 +43,17 @@ export const actions = {
 /** @type {import('./$types.js').PageServerLoad} */
 export const load = async ({ cookies }) => {
     const accessToken = cookies.get('accessToken')
+    const { literals } = await loginLoader()
 
     if (accessToken) {
         return {
-            isAuthenticated: true
+            isAuthenticated: true,
+            literals
         }
     }
 
     return {
-        isAuthenticated: false
+        isAuthenticated: false,
+        literals
     }
 }

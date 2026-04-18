@@ -1,5 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit'
 import { submitSignupAction } from '@ems/domain-frontend-auth/server/actions/signup'
+import { signupLoader } from '@ems/domain-frontend-auth/server/loaders/signup'
 
 /** @satisfies {import('./$types.js').Actions} */
 export const actions = {
@@ -20,4 +21,9 @@ export const actions = {
             })
         }
     }
+}
+
+/** @type {import('./$types.js').PageServerLoad} */
+export const load = async () => {
+    return await signupLoader()
 }

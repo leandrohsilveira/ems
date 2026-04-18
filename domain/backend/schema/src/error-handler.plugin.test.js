@@ -3,8 +3,29 @@ import Fastify from 'fastify'
 import schemaPlugin from './plugin.js'
 import z from 'zod'
 import { withTypeProvider } from './type-provider.js'
+import { i18n } from '@ems/domain-shared-schema'
+import { errorHandling } from './error-handling.js'
 
-describe('errorHandling plugin', () => {
+const testSchema = z.object({
+    email: z.email(),
+    age: z.number().min(18).optional()
+})
+
+const defaultLiterals = {
+    'email.invalid': 'The email is invalid',
+    'age.invalid': 'Must be a number',
+    'age.min': 'The minimum age is {minimum}'
+}
+
+const testI18n = i18n(defaultLiterals, {
+    pt_BR: {
+        'email.invalid': 'O e-mail é invalido',
+        'age.invalid': 'Deve ser um número',
+        'age.min': 'A idade mínima é {minumum}'
+    }
+})
+
+describe('error handling plugin', () => {
     /** @type {import('fastify').FastifyInstance} */
     let fastify
 
@@ -23,14 +44,13 @@ describe('errorHandling plugin', () => {
             '/test',
             {
                 schema: {
-                    body: z.object({
-                        email: z.email('The email is invalid'),
-                        age: z
-                            .number('Must be a number')
-                            .min(18, 'The minimum age is 18')
-                            .optional()
-                    })
-                }
+                    body: testSchema
+                },
+                errorHandler: errorHandling({
+                    i18n: {
+                        body: testI18n
+                    }
+                })
             },
             () => ({ ok: true })
         )
@@ -42,7 +62,7 @@ describe('errorHandling plugin', () => {
         })
 
         expect(response.statusCode).toBe(400)
-        expect(response.json()).toEqual({
+        expect(response.json()).toMatchObject({
             fields: {
                 email: ['The email is invalid'],
                 age: ['The minimum age is 18']

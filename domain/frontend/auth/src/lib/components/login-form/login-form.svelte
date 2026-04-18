@@ -5,7 +5,7 @@
     import Paper from '@ems/ui/components/paper'
 
     /** @type {import('./types.js').LoginFormProps} */
-    let { errors, errorMessage, enhance, action = '/login', signupHref } = $props()
+    let { literals, errors, errorMessage, enhance, action = '/login', signupHref } = $props()
 
     let loading = $state(false)
     let rememberMe = $state(false)
@@ -18,9 +18,9 @@
             <div
                 class="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full font-semibold"
             >
-                EMS
+                {literals.headerApp}
             </div>
-            <h1 class="text-foreground text-center text-2xl font-semibold">Sign In</h1>
+            <h1 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h1>
         </div>
     {/snippet}
 
@@ -39,7 +39,7 @@
             }
         }}
         class="flex flex-col gap-4"
-        aria-label="User login form"
+        aria-label={literals.formAriaLabel}
         novalidate
     >
         <!-- Error message display -->
@@ -54,8 +54,8 @@
         <!-- Username field -->
         <Input
             name="username"
-            label="Username"
-            placeholder="Enter your username"
+            label={literals.usernameLabel}
+            placeholder={literals.usernamePlaceholder}
             required
             autocomplete="username"
             error={errors?.fields.username}
@@ -65,8 +65,8 @@
         <!-- Password field -->
         <Input
             name="password"
-            label="Password"
-            placeholder="Enter your password"
+            label={literals.passwordLabel}
+            placeholder={literals.passwordPlaceholder}
             required
             type="password"
             autocomplete="current-password"
@@ -78,19 +78,24 @@
         <Checkbox
             name="rememberMe"
             bind:checked={rememberMe}
-            label="Remember me"
+            label={literals.rememberMeLabel}
             disabled={loading}
         />
 
         <!-- Submit button -->
-        <Button type="submit" class="w-full rounded-full" {loading} aria-label="Sign in button"
-            >Sign In</Button
+        <Button
+            type="submit"
+            class="w-full rounded-full"
+            {loading}
+            aria-label={literals.signInButtonAria}>{literals.signInButton}</Button
         >
 
         <!-- Signup link -->
         <div class="flex items-center justify-center gap-2">
-            <span class="text-muted-foreground text-sm">Don't have an account?</span>
-            <a href={signupHref} class="text-primary text-sm font-medium">Create Account</a>
+            <span class="text-muted-foreground text-sm">{literals.noAccountText}</span>
+            <a href={signupHref} class="text-primary text-sm font-medium"
+                >{literals.createAccountLink}</a
+            >
         </div>
     </form>
 </Paper>

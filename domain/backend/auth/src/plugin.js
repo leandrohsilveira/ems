@@ -2,14 +2,18 @@ import authMiddleware from './auth.middleware.js'
 import { getErrorMessage } from './utils/error.js'
 import {
     PERMISSIONS,
+    loginDtoI18n,
     loginDtoSchema,
+    refreshTokenDtoI18n,
     refreshTokenDtoSchema,
+    revokeAllDtoI18n,
     revokeAllDtoSchema,
+    signupRequestDtoI18n,
     signupRequestDtoSchema,
     tokenDtoSchema,
     userResponseDtoSchema
 } from '@ems/domain-shared-auth'
-import { withTypeProvider } from '@ems/domain-backend-schema'
+import { errorHandling, withTypeProvider } from '@ems/domain-backend-schema'
 import { messageDtoSchema, validationErrorDtoSchema } from '@ems/domain-shared-schema'
 import { assert } from '@ems/utils'
 
@@ -40,6 +44,11 @@ export default async function authPlugin(fastify, { authService, userService }) 
                 401: messageDtoSchema
             }
         },
+        errorHandler: errorHandling({
+            i18n: {
+                body: loginDtoI18n
+            }
+        }),
         handler: async (request, reply) => {
             try {
                 const result = await authService.login(request.body)
@@ -61,6 +70,11 @@ export default async function authPlugin(fastify, { authService, userService }) 
                 500: messageDtoSchema
             }
         },
+        errorHandler: errorHandling({
+            i18n: {
+                body: signupRequestDtoI18n
+            }
+        }),
         handler: async (request, reply) => {
             try {
                 const user = await userService.signup(request.body)
@@ -90,6 +104,11 @@ export default async function authPlugin(fastify, { authService, userService }) 
                 401: messageDtoSchema
             }
         },
+        errorHandler: errorHandling({
+            i18n: {
+                body: refreshTokenDtoI18n
+            }
+        }),
         handler: async (request, reply) => {
             try {
                 const result = await authService.refresh(request.body)
@@ -109,6 +128,11 @@ export default async function authPlugin(fastify, { authService, userService }) 
                 401: messageDtoSchema
             }
         },
+        errorHandler: errorHandling({
+            i18n: {
+                body: refreshTokenDtoI18n
+            }
+        }),
         handler: async (request, reply) => {
             try {
                 const result = await authService.logout(request.body)
@@ -130,6 +154,11 @@ export default async function authPlugin(fastify, { authService, userService }) 
                 500: messageDtoSchema
             }
         },
+        errorHandler: errorHandling({
+            i18n: {
+                body: revokeAllDtoI18n
+            }
+        }),
         handler: async (request, reply) => {
             try {
                 const result = await authService.revokeAll(request.body)

@@ -8,9 +8,4 @@ export const tokenDtoSchema = z.object({
     tokenType: z.literal(['Bearer'])
 })
 
-export const refreshTokenDtoSchema = z.object({
-    refreshToken: z.string()
-})
-
 /** @exports @typedef {z.infer<typeof tokenDtoSchema>} TokenDTO */
-/** @exports @typedef {z.infer<typeof refreshTokenDtoSchema>} RefreshTokenDTO */

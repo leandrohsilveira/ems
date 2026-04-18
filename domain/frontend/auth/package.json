@@ -37,6 +37,10 @@
         "./server/actions/*": {
             "types": "./dist/server/actions/*.d.ts",
             "svelte": "./dist/server/actions/*.js"
+        },
+        "./server/loaders/*": {
+            "types": "./dist/server/loaders/*.d.ts",
+            "svelte": "./dist/server/loaders/*.js"
         }
     },
     "peerDependencies": {
@@ -52,6 +56,7 @@
         "@ems/domain-shared-auth": "*",
         "@ems/domain-shared-schema": "*",
         "@ems/ui": "*",
+        "@ems/i18n": "*",
         "@ems/icons": "*",
         "@ems/utils": "*",
         "zod": "^4.3.6"

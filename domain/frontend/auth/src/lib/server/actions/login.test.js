@@ -4,6 +4,7 @@ import {
     createNetworkError,
     createJsonResponse
 } from '@ems/domain-shared-api/testing'
+import { defaultLanguage } from '@ems/domain-shared-schema'
 import { submitLoginAction } from './login.js'
 
 describe('submitLoginAction', () => {
@@ -17,13 +18,21 @@ describe('submitLoginAction', () => {
     it('returns validation errors for invalid form data', async () => {
         const mockForm = new FormData()
         // Empty form data
-        const result = await submitLoginAction({ client: httpClientStub.client, form: mockForm })
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: defaultLanguage
+        })
 
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(400)
         expect(result.errors).toBeDefined()
-        expect(result.errors?.fields).toHaveProperty('username')
-        expect(result.errors?.fields).toHaveProperty('password')
+        expect(result.errors).toMatchObject({
+            fields: {
+                username: expect.arrayContaining(['Must enter the username']),
+                password: expect.arrayContaining(['Must enter the password'])
+            }
+        })
     })
 
     it('returns success with tokens on valid login', async () => {
@@ -41,11 +50,17 @@ describe('submitLoginAction', () => {
             createJsonResponse({ body: mockTokens, status: 200 })
         )
 
-        const result = await submitLoginAction({ client: httpClientStub.client, form: mockForm })
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: defaultLanguage
+        })
 
-        expect(result.isSuccess).toBe(true)
-        expect(result.status).toBe(200)
-        expect(result.tokens).toEqual(mockTokens)
+        expect(result).toMatchObject({
+            isSuccess: true,
+            status: 200,
+            tokens: mockTokens
+        })
         expect(httpClientStub.fetch).toHaveBeenCalledWith(
             'http://localhost/auth/login',
             expect.objectContaining({
@@ -64,11 +79,17 @@ describe('submitLoginAction', () => {
             createJsonResponse({ body: { message: 'Invalid credentials' }, status: 401 })
         )
 
-        const result = await submitLoginAction({ client: httpClientStub.client, form: mockForm })
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: defaultLanguage
+        })
 
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(401)
-        expect(result.errorMessage).toBe('Invalid username or password')
+        expect(result).toMatchObject({
+            errorMessage: 'Invalid username or password'
+        })
     })
 
     it('handles network errors', async () => {
@@ -78,11 +99,17 @@ describe('submitLoginAction', () => {
 
         httpClientStub.fetch.mockRejectedValue(createNetworkError('ECONNREFUSED'))
 
-        const result = await submitLoginAction({ client: httpClientStub.client, form: mockForm })
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: defaultLanguage
+        })
 
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(500)
-        expect(result.errorMessage).toContain('Service temporarily unavailable')
+        expect(result).toMatchObject({
+            errorMessage: 'Service temporarily unavailable. Please try again later.'
+        })
     })
 
     it('handles other HTTP errors', async () => {
@@ -94,10 +121,37 @@ describe('submitLoginAction', () => {
             createJsonResponse({ body: { message: 'Internal server error' }, status: 500 })
         )
 
-        const result = await submitLoginAction({ client: httpClientStub.client, form: mockForm })
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: defaultLanguage
+        })
 
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(500)
-        expect(result.errorMessage).toBe('Something went wrong. Please try again later.')
+        expect(result).toMatchObject({
+            errorMessage: 'Something went wrong. Please try again later.'
+        })
+    })
+
+    it('uses different locale for validation messages', async () => {
+        const mockForm = new FormData()
+        // Empty form data
+        const result = await submitLoginAction({
+            client: httpClientStub.client,
+            form: mockForm,
+            locale: 'pt_BR'
+        })
+
+        expect(result.isSuccess).toBe(false)
+        expect(result.status).toBe(400)
+        expect(result.errors).toBeDefined()
+        // Test that validation errors contain actual messages
+        expect(result.errors).toMatchObject({
+            fields: {
+                username: expect.arrayContaining(['É necessário informar o nome de usuário']),
+                password: expect.arrayContaining(['É necessário informar a senha'])
+            }
+        })
     })
 })

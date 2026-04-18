@@ -1,8 +1,11 @@
 import { jsonRequest, jsonResponse } from '@ems/domain-shared-api'
-import { loginFormDtoSchema } from '@ems/domain-shared-auth'
-import { formatError } from '@ems/domain-shared-schema'
+import { loginDtoI18n, loginDtoSchema } from '@ems/domain-shared-auth'
+import { createFormDataValidator, defaultLanguage } from '@ems/domain-shared-schema'
 
-/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/domain-shared-api" */
+/**
+ * @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/domain-shared-api"
+ * @import { AvailableLanguages } from "@ems/domain-shared-schema"
+ */
 
 /**
  * @exports @typedef SubmitLoginResult
@@ -13,29 +16,32 @@ import { formatError } from '@ems/domain-shared-schema'
  * @property {import('@ems/domain-shared-auth').TokenDTO} [tokens]
  */
 
+const validate = createFormDataValidator({
+    schema: loginDtoSchema,
+    i18n: loginDtoI18n,
+    mapper: {
+        username: 'username',
+        password: 'password'
+    }
+})
+
 /**
  * Handles user login form submission with comprehensive error mapping.
  *
  * @param {object} data
  * @param {HttpClient} data.client - HTTP client configured with API base URL
  * @param {FormData} data.form - Form data from login form submission
+ * @param {AvailableLanguages} [data.locale=defaultLanguage] - The user's preferred language for error messages and UI localization
  * @returns {Promise<SubmitLoginResult>} Result object with success status, tokens, and error details
  */
-export async function submitLoginAction({ client, form }) {
-    const {
-        success,
-        data: formData,
-        error: validationError
-    } = loginFormDtoSchema.safeParse({
-        username: form.get('username'),
-        password: form.get('password')
-    })
+export async function submitLoginAction({ locale = defaultLanguage, client, form }) {
+    const { success, data: formData, error: validationError } = validate(locale, form)
 
     if (!success)
         return {
             isSuccess: false,
             status: 400,
-            errors: formatError(validationError)
+            errors: validationError
         }
 
     const {

@@ -2,12 +2,14 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-svelte'
 import LoginForm from './login-form.svelte'
 import { createEnhanceMock } from '@ems/ui/testing'
+import { defaultLiterals } from './login-form.i18n.js'
 
 describe('LoginForm', () => {
     describe('Component Props & Structure', () => {
         it('renders with empty errors prop', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -27,6 +29,7 @@ describe('LoginForm', () => {
         it('renders all form fields with correct labels', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -45,6 +48,7 @@ describe('LoginForm', () => {
         it('renders submit button with "Sign In" text', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -58,6 +62,7 @@ describe('LoginForm', () => {
         it('renders signup link with correct text and href', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -83,7 +88,12 @@ describe('LoginForm', () => {
             }
 
             const screen = render(LoginForm, {
-                props: { errors, enhance: createEnhanceMock(), signupHref: '/signup' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    enhance: createEnhanceMock(),
+                    signupHref: '/signup'
+                }
             })
 
             // Check error messages are displayed
@@ -98,7 +108,12 @@ describe('LoginForm', () => {
             const errorMessage = 'Invalid username or password'
 
             const screen = render(LoginForm, {
-                props: { errorMessage, enhance: createEnhanceMock(), signupHref: '/signup' }
+                props: {
+                    literals: defaultLiterals,
+                    errorMessage,
+                    enhance: createEnhanceMock(),
+                    signupHref: '/signup'
+                }
             })
 
             const generalError = screen.getByText('Invalid username or password')
@@ -114,7 +129,12 @@ describe('LoginForm', () => {
             }
 
             const screen = render(LoginForm, {
-                props: { errors, enhance: createEnhanceMock(), signupHref: '/signup' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    enhance: createEnhanceMock(),
+                    signupHref: '/signup'
+                }
             })
 
             // Check username input
@@ -136,7 +156,12 @@ describe('LoginForm', () => {
             const enhance = createEnhanceMock({ onSubmit, update })
 
             const screen = render(LoginForm, {
-                props: { errors: { fields: {} }, enhance, signupHref: '/signup' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    signupHref: '/signup'
+                }
             })
 
             const usernameInput = screen.getByLabelText('Username')
@@ -192,7 +217,12 @@ describe('LoginForm', () => {
             const enhance = createEnhanceMock({ onSubmit })
 
             const screen = render(LoginForm, {
-                props: { errors: { fields: {} }, enhance, signupHref: '/signup' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    signupHref: '/signup'
+                }
             })
 
             // Fill form
@@ -217,6 +247,7 @@ describe('LoginForm', () => {
         it('input elements have correct name attributes', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -238,6 +269,7 @@ describe('LoginForm', () => {
         it('password field has type="password"', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'
@@ -251,6 +283,7 @@ describe('LoginForm', () => {
         it('form has correct action attribute', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     action: '/custom-login',
@@ -265,6 +298,7 @@ describe('LoginForm', () => {
         it('form has default action attribute when not provided', async () => {
             const screen = render(LoginForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     signupHref: '/signup'

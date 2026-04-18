@@ -4,7 +4,7 @@
     import Paper from '@ems/ui/components/paper'
 
     /** @type {import('./types.js').SignupFormProps} */
-    let { errors, errorMessage, enhance, action = '/signup', loginHref } = $props()
+    let { literals, errors, errorMessage, enhance, action = '/signup', loginHref } = $props()
 
     let loading = $state(false)
 </script>
@@ -16,9 +16,9 @@
             <div
                 class="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full font-semibold"
             >
-                EMS
+                {literals.headerApp}
             </div>
-            <h1 class="text-foreground text-center text-2xl font-semibold">Create Account</h1>
+            <h1 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h1>
         </div>
     {/snippet}
 
@@ -37,7 +37,7 @@
             }
         }}
         class="flex flex-col gap-4"
-        aria-label="User sign-up form"
+        aria-label={literals.formAriaLabel}
         novalidate
     >
         <!-- Error message display -->
@@ -52,8 +52,8 @@
         <!-- Username field -->
         <Input
             name="username"
-            label="Username"
-            placeholder="Enter your username"
+            label={literals.usernameLabel}
+            placeholder={literals.usernamePlaceholder}
             required
             autocomplete="username"
             error={errors?.fields.username}
@@ -63,8 +63,8 @@
         <!-- Email field -->
         <Input
             name="email"
-            label="Email"
-            placeholder="Enter your email"
+            label={literals.emailLabel}
+            placeholder={literals.emailPlaceholder}
             required
             type="email"
             autocomplete="email"
@@ -75,8 +75,8 @@
         <!-- First Name field (optional) -->
         <Input
             name="firstName"
-            label="First Name (Optional)"
-            placeholder="Enter your first name"
+            label={literals.firstNameLabel}
+            placeholder={literals.firstNamePlaceholder}
             autocomplete="given-name"
             error={errors?.fields.firstName}
             disabled={loading}
@@ -85,8 +85,8 @@
         <!-- Last Name field (optional) -->
         <Input
             name="lastName"
-            label="Last Name (Optional)"
-            placeholder="Enter your last name"
+            label={literals.lastNameLabel}
+            placeholder={literals.lastNamePlaceholder}
             autocomplete="family-name"
             error={errors?.fields.lastName}
             disabled={loading}
@@ -95,8 +95,8 @@
         <!-- Password field -->
         <Input
             name="password"
-            label="Password"
-            placeholder="Enter your password"
+            label={literals.passwordLabel}
+            placeholder={literals.passwordPlaceholder}
             required
             type="password"
             autocomplete="new-password"
@@ -107,8 +107,8 @@
         <!-- Confirm Password field -->
         <Input
             name="confirmPassword"
-            label="Confirm Password"
-            placeholder="Confirm your password"
+            label={literals.confirmPasswordLabel}
+            placeholder={literals.confirmPasswordPlaceholder}
             required
             type="password"
             autocomplete="new-password"
@@ -117,14 +117,17 @@
         />
 
         <!-- Submit button -->
-        <Button type="submit" class="w-full rounded-full" {loading} aria-label="Signup button"
-            >Sign Up</Button
+        <Button
+            type="submit"
+            class="w-full rounded-full"
+            {loading}
+            aria-label={literals.signUpButtonAria}>{literals.signUpButton}</Button
         >
 
         <!-- Login link -->
         <div class="flex items-center justify-center gap-2">
-            <span class="text-muted-foreground text-sm">Already have an account?</span>
-            <a href={loginHref} class="text-primary text-sm font-medium">Sign In</a>
+            <span class="text-muted-foreground text-sm">{literals.hasAccountText}</span>
+            <a href={loginHref} class="text-primary text-sm font-medium">{literals.signInLink}</a>
         </div>
     </form>
 </Paper>

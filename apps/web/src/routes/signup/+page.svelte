@@ -4,16 +4,22 @@
     import SignupForm from '@ems/domain-frontend-auth/components/signup-form'
 
     /** @type {import('./$types.js').PageProps} */
-    const { form } = $props()
+    const { form, data } = $props()
 
     // Resolve login URL
     const loginHref = resolve('/login')
 </script>
 
 <svelte:head>
-    <title>Sign Up - EMS</title>
+    <title>{data.literals.title}</title>
 </svelte:head>
 
 <div class="bg-background flex min-h-screen items-center justify-center p-4">
-    <SignupForm errors={form?.errors} errorMessage={form?.errorMessage} {enhance} {loginHref} />
+    <SignupForm
+        literals={data.literals}
+        errors={form?.errors}
+        errorMessage={form?.errorMessage}
+        {enhance}
+        {loginHref}
+    />
 </div>

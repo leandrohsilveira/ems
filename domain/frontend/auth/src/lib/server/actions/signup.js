@@ -1,8 +1,13 @@
 import { jsonRequest, jsonResponse } from '@ems/domain-shared-api'
-import { signupFormDtoSchema, signupRequestDtoSchema } from '@ems/domain-shared-auth'
-import { formatError } from '@ems/domain-shared-schema'
+import {
+    signupRequestDtoSchema,
+    signupRequestDtoI18n,
+    signupFormDtoSchema
+} from '@ems/domain-shared-auth'
+import { createFormDataValidator, defaultLanguage } from '@ems/domain-shared-schema'
 
 /** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/domain-shared-api" */
+/** @import { AvailableLanguages } from "@ems/domain-shared-schema" */
 
 /**
  * @exports @typedef SubmitSignupResult
@@ -12,33 +17,36 @@ import { formatError } from '@ems/domain-shared-schema'
  * @property {import('@ems/domain-shared-schema').ValidationErrorDTO} [errors]
  */
 
+const validate = createFormDataValidator({
+    schema: signupFormDtoSchema,
+    i18n: signupRequestDtoI18n,
+    mapper: {
+        email: 'email',
+        username: 'username',
+        password: 'password',
+        confirmPassword: 'confirmPassword',
+        firstName: 'firstName',
+        lastName: 'lastName'
+    }
+})
+
 /**
  * Handles user signup form submission with comprehensive error mapping.
  *
  * @param {object} data
  * @param {HttpClient} data.client - HTTP client configured with API base URL
  * @param {FormData} data.form - Form data from signup form submission
+ * @param {AvailableLanguages} [data.locale=defaultLanguage] - The user's preferred language for error messages and UI localization
  * @returns {Promise<SubmitSignupResult>} Result object with success status and error details
  */
-export async function submitSignupAction({ client, form }) {
-    const {
-        success,
-        data: formData,
-        error: validationError
-    } = signupFormDtoSchema.safeParse({
-        email: form.get('email'),
-        username: form.get('username'),
-        password: form.get('password'),
-        confirmPassword: form.get('confirmPassword'),
-        firstName: form.get('firstName'),
-        lastName: form.get('lastName')
-    })
+export async function submitSignupAction({ locale = defaultLanguage, client, form }) {
+    const { success, data: formData, error: validationError } = validate(locale, form)
 
     if (!success)
         return {
             isSuccess: false,
             status: 400,
-            errors: formatError(validationError)
+            errors: validationError
         }
 
     // Convert form data to API request data (remove confirmPassword)

@@ -2,12 +2,18 @@ import { describe, it, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-svelte'
 import SignupForm from './signup-form.svelte'
 import { createEnhanceMock } from '@ems/ui/testing'
+import { defaultLiterals } from './signup-form.i18n.js'
 
 describe('SignupForm', () => {
     describe('Component Props & Structure', () => {
         it('renders with empty errors prop', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Form should be visible
@@ -15,12 +21,18 @@ describe('SignupForm', () => {
             await expect.element(form).toBeVisible()
 
             // Check for each input field individually
-            await expect.element(screen.getByLabelText('Username')).toBeVisible()
-            await expect.element(screen.getByLabelText('Email')).toBeVisible()
-            await expect.element(screen.getByLabelText('First Name (Optional)')).toBeVisible()
-            await expect.element(screen.getByLabelText('Last Name (Optional)')).toBeVisible()
-            await expect.element(screen.getByLabelText('Password', { exact: true })).toBeVisible()
-            await expect.element(screen.getByLabelText('Confirm Password')).toBeVisible()
+            await expect.element(screen.getByLabelText(defaultLiterals.usernameLabel)).toBeVisible()
+            await expect.element(screen.getByLabelText(defaultLiterals.emailLabel)).toBeVisible()
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.firstNameLabel))
+                .toBeVisible()
+            await expect.element(screen.getByLabelText(defaultLiterals.lastNameLabel)).toBeVisible()
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.passwordLabel, { exact: true }))
+                .toBeVisible()
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.confirmPasswordLabel))
+                .toBeVisible()
         })
 
         it('accepts errors and errorMessage props', async () => {
@@ -33,7 +45,13 @@ describe('SignupForm', () => {
             const errorMessage = 'General error occurred'
 
             const screen = render(SignupForm, {
-                props: { errors, errorMessage, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    errorMessage,
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Form should render without throwing
@@ -43,17 +61,22 @@ describe('SignupForm', () => {
 
         it('renders all form fields with correct labels', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Check all field labels
             const labels = [
-                'Username',
-                'Email',
-                'First Name (Optional)',
-                'Last Name (Optional)',
-                'Password',
-                'Confirm Password'
+                defaultLiterals.usernameLabel,
+                defaultLiterals.emailLabel,
+                defaultLiterals.firstNameLabel,
+                defaultLiterals.lastNameLabel,
+                defaultLiterals.passwordLabel,
+                defaultLiterals.confirmPasswordLabel
             ]
 
             for (const labelText of labels) {
@@ -64,11 +87,16 @@ describe('SignupForm', () => {
 
         it('renders "(Optional)" for firstName and lastName labels', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
-            const firstNameLabel = screen.getByText('First Name (Optional)')
-            const lastNameLabel = screen.getByText('Last Name (Optional)')
+            const firstNameLabel = screen.getByText(defaultLiterals.firstNameLabel)
+            const lastNameLabel = screen.getByText(defaultLiterals.lastNameLabel)
 
             await expect.element(firstNameLabel).toBeVisible()
             await expect.element(lastNameLabel).toBeVisible()
@@ -76,20 +104,32 @@ describe('SignupForm', () => {
 
         it('renders submit button with "Sign Up" text', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
-            const button = screen.getByRole('button', { hasText: /sign up/i })
+            const button = screen.getByRole('button', {
+                hasText: new RegExp(defaultLiterals.signUpButton, 'i')
+            })
             await expect.element(button).toBeVisible()
         })
 
         it('renders login link with correct text and href', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
-            const linkText = screen.getByText('Already have an account?')
-            const link = screen.getByText('Sign In')
+            const linkText = screen.getByText(defaultLiterals.hasAccountText)
+            const link = screen.getByText(defaultLiterals.signInLink)
 
             await expect.element(linkText).toBeVisible()
             await expect.element(link).toBeVisible()
@@ -98,10 +138,15 @@ describe('SignupForm', () => {
 
         it('renders logo badge with "EMS" text', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
-            const logo = screen.getByText('EMS')
+            const logo = screen.getByText(defaultLiterals.headerApp)
             await expect.element(logo).toBeVisible()
         })
     })
@@ -117,7 +162,12 @@ describe('SignupForm', () => {
             }
 
             const screen = render(SignupForm, {
-                props: { errors, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Check error messages are displayed
@@ -134,7 +184,12 @@ describe('SignupForm', () => {
             const errorMessage = 'Something went wrong. Please try again.'
 
             const screen = render(SignupForm, {
-                props: { errorMessage, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errorMessage,
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             const generalError = screen.getByText('Something went wrong. Please try again.')
@@ -150,15 +205,20 @@ describe('SignupForm', () => {
             }
 
             const screen = render(SignupForm, {
-                props: { errors, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Check username input
-            const usernameInput = screen.getByLabelText('Username')
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
             await expect.element(usernameInput).toHaveAttribute('aria-invalid', 'true')
 
             // Check email input
-            const emailInput = screen.getByLabelText('Email')
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
             await expect.element(emailInput).toHaveAttribute('aria-invalid', 'true')
         })
 
@@ -171,15 +231,20 @@ describe('SignupForm', () => {
             }
 
             const screen = render(SignupForm, {
-                props: { errors, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors,
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Username input should have aria-invalid
-            const usernameInput = screen.getByLabelText('Username')
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
             await expect.element(usernameInput).toHaveAttribute('aria-invalid', 'true')
 
             // Email input should not have aria-invalid="true"
-            const emailInput = screen.getByLabelText('Email')
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
             await expect.element(emailInput).not.toHaveAttribute('aria-invalid', 'true')
         })
     })
@@ -193,14 +258,23 @@ describe('SignupForm', () => {
             const enhance = createEnhanceMock({ onSubmit, update })
 
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance, loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    loginHref: '/login'
+                }
             })
 
-            const usernameInput = screen.getByLabelText('Username')
-            const emailInput = screen.getByLabelText('Email')
-            const passwordInput = screen.getByLabelText('Password', { exact: true })
-            const confirmPasswordInput = screen.getByLabelText('Confirm Password')
-            const button = screen.getByRole('button', { hasText: /sign up/i })
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
+            const passwordInput = screen.getByLabelText(defaultLiterals.passwordLabel, {
+                exact: true
+            })
+            const confirmPasswordInput = screen.getByLabelText(defaultLiterals.confirmPasswordLabel)
+            const button = screen.getByRole('button', {
+                hasText: new RegExp(defaultLiterals.signUpButton, 'i')
+            })
 
             // Initially not loading
             await expect.element(button).not.toBeDisabled()
@@ -255,15 +329,24 @@ describe('SignupForm', () => {
             const enhance = createEnhanceMock({ onSubmit })
 
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance, loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    loginHref: '/login'
+                }
             })
 
             // Fill form
-            const usernameInput = screen.getByLabelText('Username')
-            const emailInput = screen.getByLabelText('Email')
-            const passwordInput = screen.getByLabelText('Password', { exact: true })
-            const confirmPasswordInput = screen.getByLabelText('Confirm Password')
-            const button = screen.getByRole('button', { hasText: /sign up/i })
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
+            const passwordInput = screen.getByLabelText(defaultLiterals.passwordLabel, {
+                exact: true
+            })
+            const confirmPasswordInput = screen.getByLabelText(defaultLiterals.confirmPasswordLabel)
+            const button = screen.getByRole('button', {
+                hasText: new RegExp(defaultLiterals.signUpButton, 'i')
+            })
 
             await usernameInput.fill('testuser')
             await emailInput.fill('test@example.com')
@@ -283,15 +366,24 @@ describe('SignupForm', () => {
             const enhance = createEnhanceMock({ onSubmit, update })
 
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance, loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    loginHref: '/login'
+                }
             })
 
             // Fill form
-            const usernameInput = screen.getByLabelText('Username')
-            const emailInput = screen.getByLabelText('Email')
-            const passwordInput = screen.getByLabelText('Password', { exact: true })
-            const confirmPasswordInput = screen.getByLabelText('Confirm Password')
-            const button = screen.getByRole('button', { hasText: /sign up/i })
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
+            const passwordInput = screen.getByLabelText(defaultLiterals.passwordLabel, {
+                exact: true
+            })
+            const confirmPasswordInput = screen.getByLabelText(defaultLiterals.confirmPasswordLabel)
+            const button = screen.getByRole('button', {
+                hasText: new RegExp(defaultLiterals.signUpButton, 'i')
+            })
 
             await usernameInput.fill('testuser')
             await emailInput.fill('test@example.com')
@@ -310,14 +402,23 @@ describe('SignupForm', () => {
             const enhance = createEnhanceMock({ onSubmit, update })
 
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance, loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance,
+                    loginHref: '/login'
+                }
             })
 
-            const usernameInput = screen.getByLabelText('Username')
-            const emailInput = screen.getByLabelText('Email')
-            const passwordInput = screen.getByLabelText('Password', { exact: true })
-            const confirmPasswordInput = screen.getByLabelText('Confirm Password')
-            const button = screen.getByRole('button', { hasText: /sign up/i })
+            const usernameInput = screen.getByLabelText(defaultLiterals.usernameLabel)
+            const emailInput = screen.getByLabelText(defaultLiterals.emailLabel)
+            const passwordInput = screen.getByLabelText(defaultLiterals.passwordLabel, {
+                exact: true
+            })
+            const confirmPasswordInput = screen.getByLabelText(defaultLiterals.confirmPasswordLabel)
+            const button = screen.getByRole('button', {
+                hasText: new RegExp(defaultLiterals.signUpButton, 'i')
+            })
 
             await usernameInput.fill('testuser')
             await emailInput.fill('test@example.com')
@@ -328,8 +429,12 @@ describe('SignupForm', () => {
             // Check each field is disabled during loading
             await expect.element(usernameInput).toBeDisabled()
             await expect.element(emailInput).toBeDisabled()
-            await expect.element(screen.getByLabelText('First Name (Optional)')).toBeDisabled()
-            await expect.element(screen.getByLabelText('Last Name (Optional)')).toBeDisabled()
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.firstNameLabel))
+                .toBeDisabled()
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.lastNameLabel))
+                .toBeDisabled()
             await expect.element(passwordInput).toBeDisabled()
             await expect.element(confirmPasswordInput).toBeDisabled()
         })
@@ -338,45 +443,60 @@ describe('SignupForm', () => {
     describe('Form Attributes', () => {
         it('input elements have correct name attributes', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Check each field has correct name attribute
             await expect
-                .element(screen.getByLabelText('Username'))
+                .element(screen.getByLabelText(defaultLiterals.usernameLabel))
                 .toHaveAttribute('name', 'username')
-            await expect.element(screen.getByLabelText('Email')).toHaveAttribute('name', 'email')
             await expect
-                .element(screen.getByLabelText('First Name (Optional)'))
+                .element(screen.getByLabelText(defaultLiterals.emailLabel))
+                .toHaveAttribute('name', 'email')
+            await expect
+                .element(screen.getByLabelText(defaultLiterals.firstNameLabel))
                 .toHaveAttribute('name', 'firstName')
             await expect
-                .element(screen.getByLabelText('Last Name (Optional)'))
+                .element(screen.getByLabelText(defaultLiterals.lastNameLabel))
                 .toHaveAttribute('name', 'lastName')
             await expect
-                .element(screen.getByLabelText('Password', { exact: true }))
+                .element(screen.getByLabelText(defaultLiterals.passwordLabel, { exact: true }))
                 .toHaveAttribute('name', 'password')
             await expect
-                .element(screen.getByLabelText('Confirm Password'))
+                .element(screen.getByLabelText(defaultLiterals.confirmPasswordLabel))
                 .toHaveAttribute('name', 'confirmPassword')
         })
 
         it('password fields have type="password"', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             // Password field
-            const passwordInput = screen.getByLabelText('Password', { exact: true })
+            const passwordInput = screen.getByLabelText(defaultLiterals.passwordLabel, {
+                exact: true
+            })
             await expect.element(passwordInput).toHaveAttribute('type', 'password')
 
             // Confirm password field
-            const confirmPasswordInput = screen.getByLabelText('Confirm Password')
+            const confirmPasswordInput = screen.getByLabelText(defaultLiterals.confirmPasswordLabel)
             await expect.element(confirmPasswordInput).toHaveAttribute('type', 'password')
         })
 
         it('form has correct action attribute', async () => {
             const screen = render(SignupForm, {
                 props: {
+                    literals: defaultLiterals,
                     errors: { fields: {} },
                     enhance: createEnhanceMock(),
                     action: '/custom-signup',
@@ -390,7 +510,12 @@ describe('SignupForm', () => {
 
         it('form has default action attribute when not provided', async () => {
             const screen = render(SignupForm, {
-                props: { errors: { fields: {} }, enhance: createEnhanceMock(), loginHref: '/login' }
+                props: {
+                    literals: defaultLiterals,
+                    errors: { fields: {} },
+                    enhance: createEnhanceMock(),
+                    loginHref: '/login'
+                }
             })
 
             const form = screen.getByRole('form')

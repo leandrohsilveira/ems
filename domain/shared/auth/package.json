@@ -16,6 +16,7 @@
         "check": "tsc --noEmit --project jsconfig.json",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
+        "test:watch": "vitest --passWithNoTests",
         "test": "vitest run --passWithNoTests"
     },
     "devDependencies": {
@@ -24,6 +25,8 @@
         "vitest": "^4.1.0"
     },
     "dependencies": {
+        "@ems/domain-shared-schema": "*",
+        "@ems/i18n": "*",
         "zod": "^4.3.6"
     }
 }
