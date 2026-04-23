@@ -35,6 +35,7 @@ Creates an HTTP client.
 | `fetch` | `Window['fetch']` | The fetch function |
 | `options.baseUrl` | `string` | Base URL for all requests |
 | `options.request` | `ClientRequestParserInput[]` | Global request parsers (applied to every request) |
+| `options.literals` | `ClientI18nLiterals` | I18N literals for error messages (defaults to `defaultLiterals`) |
 
 Returns a client with methods: `get`, `post`, `put`, `patch`, `delete`, `head`, `options`, and `call`.
 
@@ -77,6 +78,27 @@ interface RequestOptions<T> {
 | `bearerAuth(token)` | Adds `Authorization: Bearer <token>` header |
 | `jsonResponse(transformer?)` | Parses JSON response, optionally transforms data |
 | `noResponse()` | For endpoints that return no body |
+
+### I18N Literals
+
+Customizable error messages via `ClientI18nLiterals`:
+
+| Key | Default |
+|-----|---------|
+| `serviceUnavailableError` | `Service temporarily unavailable. Please, try again later.` |
+| `somethingWentWrongError` | `Something went wrong. Please, try again later.` |
+
+```js
+import { createHttpClient } from '@ems/http'
+
+const client = createHttpClient(fetch, {
+    baseUrl: 'https://api.example.com',
+    literals: {
+        serviceUnavailableError: 'Serviço temporariamente indisponível. Tente novamente mais tarde.',
+        somethingWentWrongError: 'Algo deu errado. Tente novamente mais tarde.'
+    }
+})
+```
 
 ### Error types (`error.type`)
 

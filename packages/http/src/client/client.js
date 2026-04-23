@@ -1,4 +1,5 @@
 import { asArray } from '@ems/utils'
+import { defaultLiterals } from './literals.js'
 
 /** @import { HttpClient, HttpClientOptions, HttpResult, RequestContext, RequestMethod, RequestOptions, RequestParserInput, RequestParserResult, ResponseParser } from "./types.js" */
 
@@ -11,7 +12,10 @@ import { asArray } from '@ems/utils'
  * @returns {HttpClient} Configured HTTP client instance
  * @throws {Error} If API_URL is not set in env
  */
-export function createHttpClient(fetch, { baseUrl = '', request: clientRequestParsers = [] } = {}) {
+export function createHttpClient(
+    fetch,
+    { baseUrl = '', request: clientRequestParsers = [], literals = defaultLiterals } = {}
+) {
     // Store base URL
     const baseApiUrl = baseUrl.replace(/\/$/, '')
 
@@ -80,7 +84,7 @@ export function createHttpClient(fetch, { baseUrl = '', request: clientRequestPa
                     ok: false,
                     error: {
                         type: 'NETWORK_ERROR',
-                        message: 'Service temporarily unavailable. Please, try again later.',
+                        message: literals.serviceUnavailableError,
                         context: requestContext
                     }
                 }
@@ -91,7 +95,7 @@ export function createHttpClient(fetch, { baseUrl = '', request: clientRequestPa
                 ok: false,
                 error: {
                     type: 'UNEXPECTED_ERROR',
-                    message: 'Something went wrong. Please, try again later.',
+                    message: literals.somethingWentWrongError,
                     context: requestContext
                 }
             }

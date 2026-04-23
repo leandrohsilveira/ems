@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createHttpClient } from './client.js'
 import { jsonRequest, bearerAuth, jsonResponse, noResponse } from './parsers.js'
 import * as testing from '../testing/index.js'
+import { defaultLiterals } from './literals.js'
 
 describe('createHttpClient', () => {
     /** @type {import('vitest').Mock} */
@@ -144,7 +145,7 @@ describe('createHttpClient', () => {
                 ok: false,
                 error: {
                     type: 'NETWORK_ERROR',
-                    message: 'Service temporarily unavailable. Please, try again later.',
+                    message: defaultLiterals.serviceUnavailableError,
                     context: expect.any(Object)
                 }
             })
@@ -237,7 +238,7 @@ describe('createHttpClient', () => {
                 ok: false,
                 error: {
                     type: 'UNEXPECTED_ERROR',
-                    message: 'Something went wrong. Please, try again later.',
+                    message: defaultLiterals.somethingWentWrongError,
                     context: expect.any(Object)
                 }
             })
@@ -254,7 +255,7 @@ describe('createHttpClient', () => {
                 ok: false,
                 error: {
                     type: 'UNEXPECTED_ERROR',
-                    message: 'Something went wrong. Please, try again later.',
+                    message: defaultLiterals.somethingWentWrongError,
                     context: expect.any(Object)
                 }
             })
@@ -270,7 +271,7 @@ describe('createHttpClient', () => {
                 ok: false,
                 error: {
                     type: 'UNEXPECTED_ERROR',
-                    message: 'Something went wrong. Please, try again later.',
+                    message: defaultLiterals.somethingWentWrongError,
                     context: expect.any(Object)
                 }
             })

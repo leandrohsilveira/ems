@@ -36,9 +36,15 @@ export interface RequestOptions<T> {
     response: ResponseParser<T>
 }
 
+export type ClientI18nLiterals = Record<
+    'serviceUnavailableError' | 'somethingWentWrongError',
+    string
+>
+
 export interface HttpClientOptions {
     baseUrl?: string
     request?: ClientRequestParserInput | ClientRequestParserInput[]
+    literals?: ClientI18nLiterals
 }
 
 interface AbstractError {
