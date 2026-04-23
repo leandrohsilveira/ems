@@ -1,3 +1,4 @@
+export * from './login-errors.i18n.js'
 export * from './login.dto.js'
 export * from './refresh-token.dto.js'
 export * from './revoke-all.dto.js'

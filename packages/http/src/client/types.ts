@@ -26,14 +26,14 @@ export type ClientRequestParser = () => MaybePromise<ClientRequestParserResult>
 
 export type ClientRequestParserInput = ClientRequestParserResult | ClientRequestParser
 
-export interface ResponseParser<T> {
-    parse: (response: Response, request: RequestContext) => MaybePromise<HttpResult<T>>
+export interface ResponseParser<T, E> {
+    parse: (response: Response, request: RequestContext) => MaybePromise<HttpResult<T, E>>
     accepts?: string | string[]
 }
 
-export interface RequestOptions<T> {
+export interface RequestOptions<T, E> {
     request?: RequestParserInput | RequestParserInput[]
-    response: ResponseParser<T>
+    response: ResponseParser<T, E>
 }
 
 export type ClientI18nLiterals = Record<
@@ -51,15 +51,6 @@ interface AbstractError {
     message: string
     context: RequestContext
 }
-
-interface NetworkError extends AbstractError {
-    type: 'NETWORK_ERROR'
-}
-
-interface UnexpectedError extends AbstractError {
-    type: 'UNEXPECTED_ERROR'
-}
-
 interface HttpResponseError extends AbstractError {
     type: 'HTTP_ERROR'
     parsed: boolean
@@ -68,7 +59,15 @@ interface HttpResponseError extends AbstractError {
     response: Response
 }
 
-interface ContentTypeMismatchError extends HttpResponseError {
+export interface NetworkError extends AbstractError {
+    type: 'NETWORK_ERROR'
+}
+
+export interface UnexpectedError extends AbstractError {
+    type: 'UNEXPECTED_ERROR'
+}
+
+export interface ContentTypeMismatchError extends HttpResponseError {
     parsed: false
     reason: 'CONTENT_TYPE_MISMATCH'
     expected: string
@@ -76,7 +75,7 @@ interface ContentTypeMismatchError extends HttpResponseError {
     body: string
 }
 
-interface ParsedHttpResponseError<T> extends HttpResponseError {
+export interface ParsedHttpResponseError<T> extends HttpResponseError {
     parsed: true
     contentType: string
     body: T
@@ -93,19 +92,22 @@ export type HttpError<T> =
     | ParsedHttpResponseError<T>
 export type HttpErrorResult<T> = { ok: false; data?: undefined; error: HttpError<T> }
 export type HttpOkResult<T> = { ok: true; data: T; error?: undefined }
-export type HttpResult<T, E = DefaultErrorFormat> = HttpOkResult<T> | HttpErrorResult<E>
+export type HttpResult<T, E> = HttpOkResult<T> | HttpErrorResult<E>
 
-export interface HttpClient {
-    call: <T>(
+export interface HttpClient<DefErr = DefaultErrorFormat> {
+    call: <T, E = DefErr>(
         method: RequestMethod,
         url: string,
-        options: RequestOptions<T>
-    ) => Promise<HttpResult<T>>
-    get: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    post: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    put: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    patch: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    delete: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    head: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
-    options: <T>(url: string, options: RequestOptions<T>) => Promise<HttpResult<T>>
+        options: RequestOptions<T, E>
+    ) => Promise<HttpResult<T, E>>
+    get: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    post: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    put: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    patch: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    delete: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    head: <T, E = DefErr>(url: string, options: RequestOptions<T, E>) => Promise<HttpResult<T, E>>
+    options: <T, E = DefErr>(
+        url: string,
+        options: RequestOptions<T, E>
+    ) => Promise<HttpResult<T, E>>
 }

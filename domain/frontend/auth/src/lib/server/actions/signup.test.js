@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { submitSignupAction } from './signup.js'
 import { createHttpClientStub, createJsonResponse, createNetworkError } from '@ems/http/testing'
-import { defaultLanguage } from '@ems/domain-shared-schema'
+import { defaultLanguage, resolveErrorLiterals } from '@ems/domain-shared-schema'
+import { signupErrorsI18n } from '@ems/domain-shared-auth'
+
+const literals = resolveErrorLiterals('en_US', signupErrorsI18n)
 
 describe('submitSignupAction', () => {
     /** @type {ReturnType<typeof createHttpClientStub>} */
@@ -169,7 +172,7 @@ describe('submitSignupAction', () => {
             ).resolves.toMatchObject({
                 isSuccess: false,
                 status: 409,
-                errorMessage: 'Username or email already exists'
+                errorMessage: literals.usernameOrEmailAlreadyExists
             })
         })
 
@@ -198,7 +201,7 @@ describe('submitSignupAction', () => {
             ).resolves.toMatchObject({
                 isSuccess: false,
                 status: 500,
-                errorMessage: 'Something went wrong. Please try again later.'
+                errorMessage: literals.somethingWentWrongError
             })
         })
     })
@@ -224,7 +227,7 @@ describe('submitSignupAction', () => {
                 })
             ).resolves.toMatchObject({
                 isSuccess: false,
-                errorMessage: 'Service temporarily unavailable. Please try again later.'
+                errorMessage: literals.serviceUnavailableError
             })
         })
 
@@ -246,7 +249,7 @@ describe('submitSignupAction', () => {
                 })
             ).resolves.toMatchObject({
                 isSuccess: false,
-                errorMessage: 'Something went wrong. Please try again later.'
+                errorMessage: literals.somethingWentWrongError
             })
         })
     })

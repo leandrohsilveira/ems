@@ -41,11 +41,12 @@ function makeLiterals(literals) {
 describe('formatError', () => {
     describe('base output', () => {
         it('returns empty form and fields for no issues', () => {
-            expect(runFormatError([])).toEqual({ form: [], fields: {} })
+            expect(runFormatError([])).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: {} })
         })
 
         it('handles a single error with no path', () => {
             expect(runFormatError([makeIssue({ message: 'Custom error' })])).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: ['Custom error'],
                 fields: {}
             })
@@ -57,13 +58,18 @@ describe('formatError', () => {
                     makeIssue({ message: 'Form error', path: [] }),
                     makeIssue({ message: 'Field error', path: ['email'] })
                 ])
-            ).toEqual({ form: ['Form error'], fields: { email: ['Field error'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: ['Form error'],
+                fields: { email: ['Field error'] }
+            })
         })
     })
 
     describe('stringifyPath', () => {
         it('stringifies flat paths', () => {
             expect(runFormatError([makeIssue({ path: ['user', 'email'] })])).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: [],
                 fields: { 'user.email': ['Custom error'] }
             })
@@ -71,6 +77,7 @@ describe('formatError', () => {
 
         it('stringifies array paths', () => {
             expect(runFormatError([makeIssue({ path: ['categories', 0, 'name'] })])).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: [],
                 fields: { 'categories[0].name': ['Custom error'] }
             })
@@ -80,6 +87,7 @@ describe('formatError', () => {
             expect(
                 runFormatError([makeIssue({ path: ['items', 0, 'variants', 1, 'name'] })])
             ).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: [],
                 fields: { 'items[0].variants[1].name': ['Custom error'] }
             })
@@ -93,7 +101,11 @@ describe('formatError', () => {
                     makeIssue({ message: 'Error 1', path: ['name'] }),
                     makeIssue({ message: 'Error 2', path: ['name'] })
                 ])
-            ).toEqual({ form: [], fields: { name: ['Error 1', 'Error 2'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { name: ['Error 1', 'Error 2'] }
+            })
         })
 
         it('accumulates multiple form-level errors in order', () => {
@@ -102,7 +114,11 @@ describe('formatError', () => {
                     makeIssue({ message: 'Form error 1' }),
                     makeIssue({ message: 'Form error 2' })
                 ])
-            ).toEqual({ form: ['Form error 1', 'Form error 2'], fields: {} })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: ['Form error 1', 'Form error 2'],
+                fields: {}
+            })
         })
     })
 
@@ -115,7 +131,11 @@ describe('formatError', () => {
                     'invalid.number': 'Must be a number',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { age: ['Age is invalid'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { age: ['Age is invalid'] }
+                }
             },
             {
                 name: 'path literal',
@@ -124,7 +144,11 @@ describe('formatError', () => {
                     'invalid.number': 'Must be a number',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { age: ['Age must be a number'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { age: ['Age must be a number'] }
+                }
             },
             {
                 name: 'invalid.expected literal',
@@ -132,17 +156,25 @@ describe('formatError', () => {
                     'invalid.number': 'Must be a number',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { age: ['Must be a number'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { age: ['Must be a number'] }
+                }
             },
             {
                 name: 'invalid literal',
                 literals: makeLiterals({ invalid: 'Invalid value' }),
-                expected: { form: [], fields: { age: ['Invalid value'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { age: ['Invalid value'] }
+                }
             },
             {
                 name: 'issue.message fallback',
                 literals: makeLiterals({}),
-                expected: { form: [], fields: { age: ['Invalid type'] } }
+                expected: { code: 'VALIDATION_FAILED', form: [], fields: { age: ['Invalid type'] } }
             }
         ])('$name', ({ literals, expected }) => {
             expect(
@@ -164,12 +196,20 @@ describe('formatError', () => {
             {
                 name: 'items[].name.invalid literal',
                 literals: makeLiterals({ 'items[].name.invalid': 'Item name is invalid' }),
-                expected: { form: [], fields: { 'items[0].name': ['Item name is invalid'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { 'items[0].name': ['Item name is invalid'] }
+                }
             },
             {
                 name: 'items[].name literal',
                 literals: makeLiterals({ 'items[].name': 'Item name must be a string' }),
-                expected: { form: [], fields: { 'items[0].name': ['Item name must be a string'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { 'items[0].name': ['Item name must be a string'] }
+                }
             }
         ])('$name', ({ literals, expected }) => {
             expect(
@@ -205,7 +245,7 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Age is invalid'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { age: ['Age is invalid'] } })
         })
     })
 
@@ -221,7 +261,11 @@ describe('formatError', () => {
                     format: 'Invalid format',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { email: ['Invalid email format'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Invalid email format'] }
+                }
             },
             {
                 name: 'path.invalid literal',
@@ -232,7 +276,11 @@ describe('formatError', () => {
                     format: 'Invalid format',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { email: ['Invalid email'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Invalid email'] }
+                }
             },
             {
                 name: 'path literal',
@@ -242,7 +290,11 @@ describe('formatError', () => {
                     format: 'Invalid format',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { email: ['Email is wrong'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Email is wrong'] }
+                }
             },
             {
                 name: 'format.format literal',
@@ -251,22 +303,38 @@ describe('formatError', () => {
                     format: 'Invalid format',
                     invalid: 'Invalid value'
                 }),
-                expected: { form: [], fields: { email: ['Must be a valid email'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Must be a valid email'] }
+                }
             },
             {
                 name: 'format literal',
                 literals: makeLiterals({ format: 'Invalid format', invalid: 'Invalid value' }),
-                expected: { form: [], fields: { email: ['Invalid format'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Invalid format'] }
+                }
             },
             {
                 name: 'invalid literal',
                 literals: makeLiterals({ invalid: 'Invalid value' }),
-                expected: { form: [], fields: { email: ['Invalid value'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Invalid value'] }
+                }
             },
             {
                 name: 'issue.message fallback',
                 literals: makeLiterals({}),
-                expected: { form: [], fields: { email: ['Invalid format'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { email: ['Invalid format'] }
+                }
             }
         ])('$name', ({ literals, expected }) => {
             expect(
@@ -289,6 +357,7 @@ describe('formatError', () => {
                 name: 'items[].email.format literal',
                 literals: makeLiterals({ 'items[].email.format': 'Item email format is invalid' }),
                 expected: {
+                    code: 'VALIDATION_FAILED',
                     form: [],
                     fields: { 'items[0].email': ['Item email format is invalid'] }
                 }
@@ -296,12 +365,20 @@ describe('formatError', () => {
             {
                 name: 'items[].email.invalid literal',
                 literals: makeLiterals({ 'items[].email.invalid': 'Item email is invalid' }),
-                expected: { form: [], fields: { 'items[0].email': ['Item email is invalid'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { 'items[0].email': ['Item email is invalid'] }
+                }
             },
             {
                 name: 'items[].email literal',
                 literals: makeLiterals({ 'items[].email': 'Item email is wrong' }),
-                expected: { form: [], fields: { 'items[0].email': ['Item email is wrong'] } }
+                expected: {
+                    code: 'VALIDATION_FAILED',
+                    form: [],
+                    fields: { 'items[0].email': ['Item email is wrong'] }
+                }
             }
         ])('$name', ({ literals, expected }) => {
             expect(
@@ -339,7 +416,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { email: ['Invalid email format'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { email: ['Invalid email format'] }
+            })
         })
     })
 
@@ -361,7 +442,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Age must be at least 18'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { age: ['Age must be at least 18'] }
+            })
         })
 
         it("'path.invalid literal'", () => {
@@ -380,7 +465,7 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Invalid age'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { age: ['Invalid age'] } })
         })
 
         it("'path literal'", () => {
@@ -398,7 +483,7 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Age is invalid'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { age: ['Age is invalid'] } })
         })
 
         it("'invalid literal'", () => {
@@ -415,7 +500,7 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Invalid value'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { age: ['Invalid value'] } })
         })
 
         it("'issue.message fallback'", () => {
@@ -430,7 +515,7 @@ describe('formatError', () => {
                     ],
                     {}
                 )
-            ).toEqual({ form: [], fields: { age: ['Too small'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { age: ['Too small'] } })
         })
 
         it("'min.string literal' with template", () => {
@@ -452,6 +537,7 @@ describe('formatError', () => {
                     }
                 )
             ).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: [],
                 fields: { username: ['Username must be at least 3 characters'] }
             })
@@ -475,7 +561,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { age: ['Age must be at least 18'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { age: ['Age must be at least 18'] }
+            })
         })
 
         it("'min literal' with template", () => {
@@ -496,7 +586,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { score: ['Score must be at least 0'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { score: ['Score must be at least 0'] }
+            })
         })
 
         it('precedence: path.min > path.invalid > path > min.origin > min > invalid > issue.message', () => {
@@ -520,7 +614,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { value: ['Custom: at least 10'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { value: ['Custom: at least 10'] }
+            })
         })
 
         it('falls back to min.origin when path.min not found', () => {
@@ -541,7 +639,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { count: ['Number must be at least 5'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { count: ['Number must be at least 5'] }
+            })
         })
 
         it('falls back to min when neither path.min nor min.origin found', () => {
@@ -561,7 +663,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { amount: ['Minimum value is 1'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { amount: ['Minimum value is 1'] }
+            })
         })
     })
 
@@ -583,7 +689,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Quantity must be at most 100'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { quantity: ['Quantity must be at most 100'] }
+            })
         })
 
         it("'path.invalid literal'", () => {
@@ -602,7 +712,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Invalid quantity'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { quantity: ['Invalid quantity'] }
+            })
         })
 
         it("'path literal'", () => {
@@ -620,7 +734,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Quantity is invalid'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { quantity: ['Quantity is invalid'] }
+            })
         })
 
         it("'invalid literal'", () => {
@@ -637,7 +755,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Invalid value'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { quantity: ['Invalid value'] }
+            })
         })
 
         it("'max.string literal' with template", () => {
@@ -659,6 +781,7 @@ describe('formatError', () => {
                     }
                 )
             ).toEqual({
+                code: 'VALIDATION_FAILED',
                 form: [],
                 fields: { description: ['Description cannot exceed 500 characters'] }
             })
@@ -682,7 +805,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Quantity cannot exceed 100'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { quantity: ['Quantity cannot exceed 100'] }
+            })
         })
 
         it("'max literal' with template", () => {
@@ -703,7 +830,11 @@ describe('formatError', () => {
                         invalid: 'Invalid value'
                     }
                 )
-            ).toEqual({ form: [], fields: { price: ['Price cannot exceed 1000'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { price: ['Price cannot exceed 1000'] }
+            })
         })
 
         it('precedence: path.max > path.invalid > path > max.origin > max > invalid > issue.message', () => {
@@ -727,7 +858,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { value: ['Custom: cannot exceed 100'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { value: ['Custom: cannot exceed 100'] }
+            })
         })
 
         it('falls back to max.origin when path.max not found', () => {
@@ -748,7 +883,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { count: ['Number cannot exceed 50'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { count: ['Number cannot exceed 50'] }
+            })
         })
 
         it('falls back to max when neither path.max nor max.origin found', () => {
@@ -768,7 +907,11 @@ describe('formatError', () => {
                         invalid: 'Invalid'
                     }
                 )
-            ).toEqual({ form: [], fields: { amount: ['Maximum value is 99'] } })
+            ).toEqual({
+                code: 'VALIDATION_FAILED',
+                form: [],
+                fields: { amount: ['Maximum value is 99'] }
+            })
         })
 
         it("'issue.message fallback'", () => {
@@ -783,7 +926,7 @@ describe('formatError', () => {
                     ],
                     {}
                 )
-            ).toEqual({ form: [], fields: { quantity: ['Too big'] } })
+            ).toEqual({ code: 'VALIDATION_FAILED', form: [], fields: { quantity: ['Too big'] } })
         })
     })
 })

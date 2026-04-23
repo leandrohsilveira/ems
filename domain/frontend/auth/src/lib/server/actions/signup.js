@@ -2,11 +2,16 @@ import { jsonRequest, jsonResponse } from '@ems/http'
 import {
     signupRequestDtoSchema,
     signupRequestDtoI18n,
-    signupFormDtoSchema
+    signupFormDtoSchema,
+    signupErrorsI18n
 } from '@ems/domain-shared-auth'
-import { createFormDataValidator, defaultLanguage } from '@ems/domain-shared-schema'
+import {
+    createFormDataValidator,
+    defaultLanguage,
+    makeHttpErrorMapper
+} from '@ems/domain-shared-schema'
 
-/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/http" */
+/** @import { HttpClient } from "@ems/http" */
 /** @import { AvailableLanguages } from "@ems/domain-shared-schema" */
 
 /**
@@ -14,7 +19,7 @@ import { createFormDataValidator, defaultLanguage } from '@ems/domain-shared-sch
  * @property {boolean} isSuccess
  * @property {number} status
  * @property {string} [errorMessage]
- * @property {import('@ems/domain-shared-schema').ValidationErrorDTO} [errors]
+ * @property {import('@ems/domain-shared-schema').ValidationResultDTO} [errors]
  */
 
 const validate = createFormDataValidator({
@@ -30,11 +35,21 @@ const validate = createFormDataValidator({
     }
 })
 
+const mapError = makeHttpErrorMapper(signupErrorsI18n, {
+    handleHttp(error, literals) {
+        if (error.status === 409)
+            return {
+                status: 409,
+                message: literals.usernameOrEmailAlreadyExists
+            }
+    }
+})
+
 /**
  * Handles user signup form submission with comprehensive error mapping.
  *
  * @param {object} data
- * @param {HttpClient} data.client - HTTP client configured with API base URL
+ * @param {HttpClient<import('@ems/domain-shared-schema').ErrorDTO>} data.client - HTTP client configured with API base URL
  * @param {FormData} data.form - Form data from signup form submission
  * @param {AvailableLanguages} [data.locale=defaultLanguage] - The user's preferred language for error messages and UI localization
  * @returns {Promise<SubmitSignupResult>} Result object with success status and error details
@@ -57,44 +72,10 @@ export async function submitSignupAction({ locale = defaultLanguage, client, for
         response: jsonResponse()
     })
 
-    if (!ok)
-        return {
-            isSuccess: false,
-            ...mapError(signupError)
-        }
+    if (!ok) return mapError(locale, signupError)
 
     return {
         isSuccess: true,
         status: 201
-    }
-}
-
-/**
- * Error mapping logic:
- * - 400 (Validation): Returns structured field errors from Zod validation (handled in submitSignupAction)
- * - 409 (Conflict): Returns generic "Username or email already exists" message
- * - Network errors: Returns generic "Something went wrong. Please try again later." with status 500
- * - Other HTTP errors: Returns generic "Something went wrong. Please try again later." with original status
- * - Other errors: Returns generic "Something went wrong. Please try again later." with status 500
- *
- * @template [E=DefaultErrorFormat]
- * @param {HttpError<E>} error
- */
-function mapError(error) {
-    if (error.type === 'NETWORK_ERROR')
-        return {
-            status: 500,
-            errorMessage: 'Service temporarily unavailable. Please try again later.'
-        }
-
-    if (error.type === 'HTTP_ERROR' && error.status === 409)
-        return {
-            status: error.status,
-            errorMessage: 'Username or email already exists'
-        }
-
-    return {
-        status: error.type === 'HTTP_ERROR' ? error.status : 500,
-        errorMessage: 'Something went wrong. Please try again later.'
     }
 }

@@ -18,6 +18,7 @@
     "dependencies": {
         "@ems/ui": "*",
         "@ems/domain-frontend-auth": "*",
+        "@ems/domain-shared-schema": "*",
         "@ems/http": "*"
     }
 }

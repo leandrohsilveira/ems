@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { createHttpClientStub, createNetworkError, createJsonResponse } from '@ems/http/testing'
-import { defaultLanguage } from '@ems/domain-shared-schema'
+import { defaultLanguage, resolveErrorLiterals } from '@ems/domain-shared-schema'
 import { submitLoginAction } from './login.js'
+import { loginErrorsI18n } from '@ems/domain-shared-auth'
+
+const literals = resolveErrorLiterals('en_US', loginErrorsI18n)
 
 describe('submitLoginAction', () => {
     /** @type {import('@ems/http/testing').HttpClientStub} */
@@ -84,7 +87,7 @@ describe('submitLoginAction', () => {
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(401)
         expect(result).toMatchObject({
-            errorMessage: 'Invalid username or password'
+            errorMessage: literals.incorrectUsernameOrPassword
         })
     })
 
@@ -102,9 +105,9 @@ describe('submitLoginAction', () => {
         })
 
         expect(result.isSuccess).toBe(false)
-        expect(result.status).toBe(500)
+        expect(result.status).toBe(503)
         expect(result).toMatchObject({
-            errorMessage: 'Service temporarily unavailable. Please try again later.'
+            errorMessage: literals.serviceUnavailableError
         })
     })
 
@@ -126,7 +129,7 @@ describe('submitLoginAction', () => {
         expect(result.isSuccess).toBe(false)
         expect(result.status).toBe(500)
         expect(result).toMatchObject({
-            errorMessage: 'Something went wrong. Please try again later.'
+            errorMessage: literals.somethingWentWrongError
         })
     })
 

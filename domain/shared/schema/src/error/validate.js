@@ -5,7 +5,7 @@
  */
 
 import { formatError } from './format.js'
-import { resolveLiterals } from './resolve.js'
+import { resolveValidationLiterals } from './resolve.js'
 
 /** @exports @typedef {{ [key: string]: string | string[] | FormDataMapper | FormDataMapper[] | ((data: FormData) => (string | string[] | FormDataMapper | FormDataMapper[])) }} FormDataMapper */
 
@@ -24,7 +24,7 @@ export function createFormDataValidator({ schema, i18n, mapper }) {
      * @param {FormData} formData
      */
     function validate(locale, formData) {
-        const literals = resolveLiterals(locale, i18n)
+        const literals = resolveValidationLiterals(locale, i18n)
 
         const { success, data, error } = schema.safeParse(mapFormData(formData, mapper))
 

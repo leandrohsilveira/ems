@@ -1,4 +1,4 @@
-import { formatError, resolveLiterals } from '@ems/domain-shared-schema'
+import { formatError, resolveValidationLiterals } from '@ems/domain-shared-schema'
 
 /**
  * @import { FastifyError, FastifyRequest, FastifyReply } from "fastify"
@@ -25,7 +25,7 @@ export function errorHandling({ i18n = {} } = {}) {
 
         // Handle Fastify schema validation errors
         if (error.validation && error.validationContext) {
-            const literals = resolveLiterals('en_US', i18n[error.validationContext])
+            const literals = resolveValidationLiterals('en_US', i18n[error.validationContext])
 
             const validationError = formatError(
                 {

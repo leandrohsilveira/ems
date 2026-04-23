@@ -1,4 +1,4 @@
-/** @import { RequestParser, ResponseParser, RequestContext, HttpResult, DefaultErrorFormat, HttpErrorResult } from "./types.js" */
+/** @import { RequestParser, ResponseParser, RequestContext, HttpResult, HttpErrorResult } from "./types.js" */
 
 // Parser factories
 
@@ -40,7 +40,7 @@ export function bearerAuth(token) {
 // Response parser factories
 
 /**
- * @template [E=DefaultErrorFormat]
+ * @template E
  * @param {Response} response
  * @param {RequestContext} context
  * @returns {Promise<HttpErrorResult<E>>}
@@ -95,7 +95,7 @@ async function handleJsonError(response, context) {
 
 /**
  * @template T
- * @template [E=DefaultErrorFormat]
+ * @template E
  * @param {Response} response
  * @param {RequestContext} context
  * @returns {Promise<HttpResult<T, E>>}
@@ -140,23 +140,26 @@ async function parseJsonResponse(response, context) {
 /**
  * Creates a JSON response parser
  * @template B
+ * @template E
  * @overload
- * @returns {ResponseParser<B>}
+ * @returns {ResponseParser<B, E>}
  */
 /**
  * Creates a JSON response parser
  * @template B
+ * @template E
  * @template [T=B]
  * @overload
  * @param {((body: B, headers: Record<string, string>) => T)?} [transformer]
- * @returns {ResponseParser<T>}
+ * @returns {ResponseParser<T, E>}
  */
 /**
  * Creates a JSON response parser
  * @template B
+ * @template E
  * @template [T=B]
  * @param {((body: B, headers: Record<string, string>) => T)?} [transformer]
- * @returns {ResponseParser<T>}
+ * @returns {ResponseParser<T, E>}
  */
 export function jsonResponse(transformer) {
     if (transformer) {
@@ -187,8 +190,9 @@ export function jsonResponse(transformer) {
 }
 
 /**
+ * @template E
  * Creates a response parser for requests with no expected response body
- * @returns {ResponseParser<void>}
+ * @returns {ResponseParser<void, E>}
  */
 export function noResponse() {
     return {

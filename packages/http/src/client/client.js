@@ -1,15 +1,16 @@
 import { asArray } from '@ems/utils'
 import { defaultLiterals } from './literals.js'
 
-/** @import { HttpClient, HttpClientOptions, HttpResult, RequestContext, RequestMethod, RequestOptions, RequestParserInput, RequestParserResult, ResponseParser } from "./types.js" */
+/** @import { DefaultErrorFormat, HttpClient, HttpClientOptions, HttpResult, RequestContext, RequestMethod, RequestOptions, RequestParserInput, RequestParserResult, ResponseParser } from "./types.js" */
 
 // Main createHttpClient function
 
 /**
  * Creates an HTTP client for making API requests
+ * @template [DefErr=DefaultErrorFormat]
  * @param {Window['fetch']} fetch - The fetch function to use for HTTP requests
  * @param {HttpClientOptions} [options={}]
- * @returns {HttpClient} Configured HTTP client instance
+ * @returns {HttpClient<DefErr>} Configured HTTP client instance
  * @throws {Error} If API_URL is not set in env
  */
 export function createHttpClient(
@@ -21,10 +22,11 @@ export function createHttpClient(
 
     /**
      * @template T
+     * @template [E=DefErr]
      * @param {RequestMethod} method
      * @param {string} url
-     * @param {RequestOptions<T>} options
-     * @returns {Promise<HttpResult<T>>}
+     * @param {RequestOptions<T, E>} options
+     * @returns {Promise<HttpResult<T, E>>}
      * @throws {NetworkError} For network failures
      * @throws {HttpError|HttpJsonError} For HTTP error responses
      * @throws {Error} For other errors (missing response parser, etc.)
@@ -143,8 +145,9 @@ async function evaluateParserInputs(parserInputs) {
 
 /**
  * Collects and merges Accept headers from response parser and request parser results
+ * @template E
  * @param {RequestParserResult[]} parserResults
- * @param {ResponseParser<unknown>} [responseParser]
+ * @param {ResponseParser<unknown, E>} [responseParser]
  * @returns {string|undefined} Merged Accept header value
  */
 function collectAcceptHeaders(parserResults, responseParser) {
