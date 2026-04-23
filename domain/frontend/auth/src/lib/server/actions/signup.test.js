@@ -1,10 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { submitSignupAction } from './signup.js'
-import {
-    createHttpClientStub,
-    createJsonResponse,
-    createNetworkError
-} from '@ems/domain-shared-api/testing'
+import { createHttpClientStub, createJsonResponse, createNetworkError } from '@ems/http/testing'
 import { defaultLanguage } from '@ems/domain-shared-schema'
 
 describe('submitSignupAction', () => {

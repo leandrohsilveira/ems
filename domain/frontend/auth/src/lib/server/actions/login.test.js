@@ -1,14 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import {
-    createHttpClientStub,
-    createNetworkError,
-    createJsonResponse
-} from '@ems/domain-shared-api/testing'
+import { createHttpClientStub, createNetworkError, createJsonResponse } from '@ems/http/testing'
 import { defaultLanguage } from '@ems/domain-shared-schema'
 import { submitLoginAction } from './login.js'
 
 describe('submitLoginAction', () => {
-    /** @type {import('@ems/domain-shared-api/testing').HttpClientStub} */
+    /** @type {import('@ems/http/testing').HttpClientStub} */
     let httpClientStub
 
     beforeEach(() => {

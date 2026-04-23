@@ -52,7 +52,7 @@
         "domain"
     ],
     "dependencies": {
-        "@ems/domain-shared-api": "*",
+        "@ems/http": "*",
         "@ems/domain-shared-auth": "*",
         "@ems/domain-shared-schema": "*",
         "@ems/ui": "*",

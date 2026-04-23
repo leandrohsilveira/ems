@@ -1,4 +1,4 @@
-import { jsonRequest, jsonResponse } from '@ems/domain-shared-api'
+import { jsonRequest, jsonResponse } from '@ems/http'
 import {
     signupRequestDtoSchema,
     signupRequestDtoI18n,
@@ -6,7 +6,7 @@ import {
 } from '@ems/domain-shared-auth'
 import { createFormDataValidator, defaultLanguage } from '@ems/domain-shared-schema'
 
-/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/domain-shared-api" */
+/** @import { HttpClient, HttpError, DefaultErrorFormat } from "@ems/http" */
 /** @import { AvailableLanguages } from "@ems/domain-shared-schema" */
 
 /**

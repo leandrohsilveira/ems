@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private'
-import { createHttpClient } from '@ems/domain-shared-api'
+import { createHttpClient } from '@ems/http'
 import { sequence } from '@sveltejs/kit/hooks'
 
 export const handle = sequence(async function httpClient({ event, resolve }) {

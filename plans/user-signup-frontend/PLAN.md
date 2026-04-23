@@ -140,7 +140,7 @@ Implement the frontend part of the user signup feature following the BFF (Backen
 6. Implement BFF: create HTTP client with `createHttpClient(fetch, process.env)`, call domain action, handle responses
 7. Ensure no HTTP-only cookies on signup
 8. Create success page placeholder at `/signup/success/+page.svelte` for redirect target
-9. Add dependencies: `@ems/domain-frontend-auth` and `@ems/domain-shared-api` to web app
+9. Add dependencies: `@ems/domain-frontend-auth` and `@ems/http` to web app
 
 **Implementation Details**:
 

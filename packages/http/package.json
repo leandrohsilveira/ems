@@ -1,5 +1,5 @@
 {
-    "name": "@ems/domain-shared-api",
+    "name": "@ems/http",
     "version": "0.0.0",
     "type": "module",
     "exports": {
@@ -16,11 +16,14 @@
         "check": "tsc --noEmit --project jsconfig.json",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write .",
-        "test": "vitest run --passWithNoTests"
+        "test": "vitest run"
     },
     "devDependencies": {
         "@types/node": "^25.5.0",
         "typescript": "^5.9.3",
         "vitest": "^4.1.0"
+    },
+    "dependencies": {
+        "@ems/utils": "*"
     }
 }
