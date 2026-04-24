@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "seed": "node ./src/seeds/index.js"
+    "dev": "tsc --watch"
   },
   "exports": {
     ".": {
@@ -13,7 +13,7 @@
     }
   },
   "dependencies": {
-    "@ems/domain-backend-config": "*",
+    "@ems/utils": "*",
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "*"
   }

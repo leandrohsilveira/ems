@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
-import { createUserRepository } from './user.repository.js'
+import { Prisma } from '@ems/database'
+import { failure, ResultStatus } from '@ems/utils'
+import { createUserRepository, UserRepositoryFailuresEnum } from './user.repository.js'
 import { createMockUser } from '../testing/user.js'
 
 describe('createUserRepository', () => {
@@ -21,18 +23,19 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByUsername('testuser')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { username: 'testuser' }
             })
         })
 
-        it('should return null when user not found', async () => {
+        it('should return failure when user not found', async () => {
             mockDb.user.findUnique.mockResolvedValue(null)
 
             const result = await userRepository.findByUsername('nonexistent')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { username: 'nonexistent' }
             })
@@ -46,18 +49,19 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findById('user-1')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { id: 'user-1' }
             })
         })
 
-        it('should return null when user not found', async () => {
+        it('should return failure when user not found', async () => {
             mockDb.user.findUnique.mockResolvedValue(null)
 
             const result = await userRepository.findById('nonexistent-id')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { id: 'nonexistent-id' }
             })
@@ -78,11 +82,12 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.create(userData)
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.create).toHaveBeenCalledWith({ data: userData })
         })
 
-        it('should propagate Prisma unique constraint error for duplicate username', async () => {
+        it('should return failure for Prisma unique constraint error for duplicate username', async () => {
             /** @type {import('@ems/database').UserCreateInput} */
             const userData = {
                 username: 'duplicate',
@@ -90,15 +95,18 @@ describe('createUserRepository', () => {
                 password: 'hash',
                 role: 'USER'
             }
-            const prismaError = new Error('Unique constraint failed on the fields: (`username`)')
+            const prismaError = new Prisma.PrismaClientKnownRequestError(
+                'Unique constraint failed on the fields: (`username`)',
+                { code: 'P2002', clientVersion: '7.5.0' }
+            )
             mockDb.user.create.mockRejectedValue(prismaError)
 
-            await expect(userRepository.create(userData)).rejects.toThrow(
-                'Unique constraint failed on the fields: (`username`)'
-            )
+            const result = await userRepository.create(userData)
+
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.CONFLICT))
         })
 
-        it('should propagate Prisma unique constraint error for duplicate email', async () => {
+        it('should return failure for Prisma unique constraint error for duplicate email', async () => {
             /** @type {import('@ems/database').UserCreateInput} */
             const userData = {
                 username: 'unique',
@@ -106,12 +114,15 @@ describe('createUserRepository', () => {
                 password: 'hash',
                 role: 'USER'
             }
-            const prismaError = new Error('Unique constraint failed on the fields: (`email`)')
+            const prismaError = new Prisma.PrismaClientKnownRequestError(
+                'Unique constraint failed on the fields: (`email`)',
+                { code: 'P2002', clientVersion: '7.5.0' }
+            )
             mockDb.user.create.mockRejectedValue(prismaError)
 
-            await expect(userRepository.create(userData)).rejects.toThrow(
-                'Unique constraint failed on the fields: (`email`)'
-            )
+            const result = await userRepository.create(userData)
+
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.CONFLICT))
         })
 
         it('should handle missing optional fields', async () => {
@@ -121,7 +132,6 @@ describe('createUserRepository', () => {
                 email: 'min@example.com',
                 password: 'hash',
                 role: 'USER'
-                // No firstName, lastName
             }
             const mockUser = createMockUser({
                 id: 'user-min',
@@ -132,7 +142,8 @@ describe('createUserRepository', () => {
             mockDb.user.create.mockResolvedValue(mockUser)
 
             const result = await userRepository.create(userData)
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should handle null values for optional fields', async () => {
@@ -149,7 +160,8 @@ describe('createUserRepository', () => {
             mockDb.user.create.mockResolvedValue(mockUser)
 
             const result = await userRepository.create(userData)
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should handle MANAGER and ADMIN roles', async () => {
@@ -166,7 +178,8 @@ describe('createUserRepository', () => {
             mockDb.user.create.mockResolvedValue(mockUser)
 
             const result = await userRepository.create(userData)
-            expect(result.role).toBe('ADMIN')
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data?.role).toBe('ADMIN')
         })
     })
 
@@ -177,18 +190,19 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByEmail('test@example.com')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { email: 'test@example.com' }
             })
         })
 
-        it('should return null when email not found', async () => {
+        it('should return failure when email not found', async () => {
             mockDb.user.findUnique.mockResolvedValue(null)
 
             const result = await userRepository.findByEmail('nonexistent@example.com')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { email: 'nonexistent@example.com' }
             })
@@ -199,7 +213,7 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByEmail('')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({ where: { email: '' } })
         })
 
@@ -209,7 +223,8 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByEmail('test+tag@example.com')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should handle case-sensitive email lookup as provided', async () => {
@@ -218,7 +233,8 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByEmail('Test@Example.com')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findUnique).toHaveBeenCalledWith({
                 where: { email: 'Test@Example.com' }
             })
@@ -232,7 +248,8 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByUsernameOrEmail('existing', 'new@example.com')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findFirst).toHaveBeenCalledWith({
                 where: {
                     OR: [{ username: 'existing' }, { email: 'new@example.com' }]
@@ -249,7 +266,8 @@ describe('createUserRepository', () => {
                 'existing@example.com'
             )
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
             expect(mockDb.user.findFirst).toHaveBeenCalledWith({
                 where: {
                     OR: [{ username: 'newuser' }, { email: 'existing@example.com' }]
@@ -257,12 +275,12 @@ describe('createUserRepository', () => {
             })
         })
 
-        it('should return null when neither username nor email exists', async () => {
+        it('should return failure when neither username nor email exists', async () => {
             mockDb.user.findFirst.mockResolvedValue(null)
 
             const result = await userRepository.findByUsernameOrEmail('newuser', 'new@example.com')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findFirst).toHaveBeenCalledWith({
                 where: {
                     OR: [{ username: 'newuser' }, { email: 'new@example.com' }]
@@ -282,7 +300,8 @@ describe('createUserRepository', () => {
                 'sameuser@example.com'
             )
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should handle empty strings for both parameters', async () => {
@@ -290,7 +309,7 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByUsernameOrEmail('', '')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserRepositoryFailuresEnum.NOT_FOUND))
             expect(mockDb.user.findFirst).toHaveBeenCalledWith({
                 where: { OR: [{ username: '' }, { email: '' }] }
             })
@@ -302,7 +321,8 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByUsernameOrEmail('', 'test@example.com')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should handle valid username with empty email', async () => {
@@ -311,7 +331,8 @@ describe('createUserRepository', () => {
 
             const result = await userRepository.findByUsernameOrEmail('testuser', '')
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
 
         it('should return first match when multiple users could match', async () => {
@@ -326,7 +347,8 @@ describe('createUserRepository', () => {
                 'other@example.com'
             )
 
-            expect(result).toEqual(mockUser)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(mockUser)
         })
     })
 })

@@ -25,7 +25,7 @@
     "db:generate": "prisma generate",
     "postdb:generate": "npm run build -w=@ems/database",
     "predb:seed": "npm run db:generate",
-    "db:seed": "dotenvx run -f .env -f .env.local -- npm run seed -w=@ems/database"
+    "db:seed": "dotenvx run -f .env -f .env.local -- npm run seed -w=@ems/app-seeds"
   },
   "overrides": {
     "cookie": ">=0.7.0",

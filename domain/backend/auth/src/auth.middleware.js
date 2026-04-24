@@ -1,5 +1,7 @@
 import fastifyPlugin from 'fastify-plugin'
 import { roleHasPermission } from '@ems/domain-shared-auth'
+import { ResultStatus } from '@ems/utils'
+import { AuthServiceFailures } from './auth.service.js'
 
 /** @import { FastifyInstance } from 'fastify' */
 /** @import { AuthService } from './auth.service.js' */
@@ -30,12 +32,17 @@ export default fastifyPlugin(
                 return reply.status(401).send({ message: 'Token missing' })
             }
 
-            try {
-                const { user } = await authService.me(accessToken)
-                request.user = user
-            } catch (error) {
-                request.log.error(error)
-                return reply.status(401).send({ message: 'Invalid or expired token' })
+            const { status, data, error: err } = await authService.me(accessToken)
+
+            switch (status) {
+                case ResultStatus.OK:
+                    request.user = data.user
+                    break
+                case AuthServiceFailures.SESSION_EXPIRED:
+                case AuthServiceFailures.SESSION_NOT_FOUND:
+                case ResultStatus.ERROR:
+                    request.log.error(err || status)
+                    return reply.status(401).send({ message: 'Invalid or expired token' })
             }
         })
 

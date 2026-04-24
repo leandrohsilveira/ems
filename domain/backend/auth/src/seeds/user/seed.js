@@ -1,5 +1,7 @@
 import { ROLES } from '@ems/domain-shared-auth'
 import logger from 'pino'
+import { UserServiceFailures } from '../../user/index.js'
+import { ok, ResultStatus } from '@ems/utils'
 
 /**
  * @import { UserCreateDTO } from '@ems/domain-shared-auth'
@@ -10,7 +12,6 @@ import logger from 'pino'
  * Seed users with all roles (USER, MANAGER, ADMIN)
  * @param {UserService} userService
  * @param {string} password - Password for all seed users
- * @returns {Promise<void>}
  */
 export async function seedUsers(userService, password) {
     const log = logger({ name: 'SeedUsers' })
@@ -44,20 +45,36 @@ export async function seedUsers(userService, password) {
     ]
 
     for (const userData of users) {
-        try {
-            const existing = await userService.findByUsernameOrEmail(
-                userData.username,
-                userData.email
-            )
-            if (!existing) {
-                await userService.createUser(userData)
-                log.info({ email: userData.email, role: userData.role }, 'User seeded successfully')
-            } else {
+        const { status: findStatus, error: findErr } = await userService.findByUsernameOrEmail(
+            userData.username,
+            userData.email
+        )
+
+        sw: switch (findStatus) {
+            case ResultStatus.OK:
                 log.info({ email: userData.email }, 'User already exists, skipping')
-            }
-        } catch (error) {
-            log.warn({ email: userData.email, error: String(error) }, 'Failed to seed user')
-            // Continue with other users
+                continue
+            case ResultStatus.ERROR:
+                log.warn({ email: userData.email, error: findErr }, 'Failed to seed user')
+                continue
+            case UserServiceFailures.NOT_FOUND:
+                break sw
+        }
+
+        const { status: createStatus, error: createErr } = await userService.createUser(userData)
+        switch (createStatus) {
+            case ResultStatus.OK:
+                log.info({ email: userData.email, role: userData.role }, 'User seeded successfully')
+                continue
+            case UserServiceFailures.CONFLICT:
+            case ResultStatus.ERROR:
+                log.warn(
+                    { email: userData.email, error: createErr || createStatus },
+                    'Failed to seed user'
+                )
+                continue
         }
     }
+
+    return ok(undefined)
 }

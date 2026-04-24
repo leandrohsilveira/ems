@@ -1,4 +1,6 @@
 export * from './array.js'
 export * from './assert.js'
+export * from './enum.js'
 export * from './error.js'
+export * from './result.js'
 export * from './string.js'

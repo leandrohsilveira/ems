@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createSessionRepository } from './session.repository.js'
+import { Prisma } from '@ems/database'
+import { failure, ok } from '@ems/utils'
+import { createSessionRepository, SessionRepositoryFailuresEnum } from './session.repository.js'
 
 describe('createSessionRepository', () => {
     /** @type {import('./session.repository.js').SessionRepository} */
@@ -41,30 +43,30 @@ describe('createSessionRepository', () => {
     })
 
     describe('findByJti', () => {
-        it('should return session with user when found', async () => {
+        it('should return ok with session when found', async () => {
             const mockSession = { id: 'sess-1', userId: 'user-1', jti: 'token-123', user: {} }
             mockFindUnique.mockResolvedValue(mockSession)
 
             const result = await sessionRepository.findByJti('token-123')
 
-            expect(result).toEqual(mockSession)
+            expect(result).toEqual(ok(mockSession))
             expect(mockFindUnique).toHaveBeenCalledWith({
                 where: { jti: 'token-123' },
                 include: { user: true }
             })
         })
 
-        it('should return null when session not found', async () => {
+        it('should return failure NOT_FOUND when session not found', async () => {
             mockFindUnique.mockResolvedValue(null)
 
             const result = await sessionRepository.findByJti('nonexistent')
 
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(SessionRepositoryFailuresEnum.NOT_FOUND))
         })
     })
 
     describe('findByUserId', () => {
-        it('should return sessions with user for user', async () => {
+        it('should return ok with sessions when found', async () => {
             const mockSessions = [
                 { id: 'sess-1', userId: 'user-1', user: {} },
                 { id: 'sess-2', userId: 'user-1', user: {} }
@@ -73,16 +75,24 @@ describe('createSessionRepository', () => {
 
             const result = await sessionRepository.findByUserId('user-1')
 
-            expect(result).toEqual(mockSessions)
+            expect(result).toEqual(ok(mockSessions))
             expect(mockFindMany).toHaveBeenCalledWith({
                 where: { userId: 'user-1' },
                 include: { user: true }
             })
         })
+
+        it('should return ok with empty array when no sessions found', async () => {
+            mockFindMany.mockResolvedValue([])
+
+            const result = await sessionRepository.findByUserId('user-1')
+
+            expect(result).toEqual(ok([]))
+        })
     })
 
     describe('create', () => {
-        it('should create and return session', async () => {
+        it('should return ok with created session', async () => {
             const input = {
                 userId: 'user-1',
                 jti: 'token-123',
@@ -94,50 +104,97 @@ describe('createSessionRepository', () => {
 
             const result = await sessionRepository.create(input)
 
-            expect(result).toEqual(mockSession)
+            expect(result).toEqual(ok(mockSession))
             expect(mockCreate).toHaveBeenCalledWith({ data: input })
+        })
+
+        it('should return failure CONFLICT on unique constraint violation', async () => {
+            const input = {
+                userId: 'user-1',
+                jti: 'token-123',
+                lastRefresh: new Date(),
+                expiresAt: new Date()
+            }
+            const prismaError = new Prisma.PrismaClientKnownRequestError('Unique constraint', {
+                code: 'P2002',
+                clientVersion: '5.0.0'
+            })
+            mockCreate.mockRejectedValue(prismaError)
+
+            const result = await sessionRepository.create(input)
+
+            expect(result).toEqual(failure(SessionRepositoryFailuresEnum.CONFLICT))
         })
     })
 
     describe('update', () => {
-        it('should update and return session', async () => {
+        it('should return ok with updated session', async () => {
             const input = { jti: 'new-token', lastRefresh: new Date() }
             const mockSession = { id: 'sess-1', ...input }
             mockUpdate.mockResolvedValue(mockSession)
 
             const result = await sessionRepository.update('sess-1', input)
 
-            expect(result).toEqual(mockSession)
+            expect(result).toEqual(ok(mockSession))
             expect(mockUpdate).toHaveBeenCalledWith({ where: { id: 'sess-1' }, data: input })
+        })
+
+        it('should return error when record does not exist', async () => {
+            const input = { jti: 'new-token', lastRefresh: new Date() }
+            const prismaError = new Prisma.PrismaClientKnownRequestError('Record not found', {
+                code: 'P2025',
+                clientVersion: '5.0.0'
+            })
+            mockUpdate.mockRejectedValue(prismaError)
+
+            const result = await sessionRepository.update('nonexistent', input)
+
+            expect(result.status).toBe('ERROR')
+            expect(result.error).toBeInstanceOf(Error)
         })
     })
 
     describe('delete', () => {
-        it('should delete session by id', async () => {
+        it('should return ok with null on successful delete', async () => {
             mockDelete.mockResolvedValue({})
 
-            await sessionRepository.delete('sess-1')
+            const result = await sessionRepository.delete('sess-1')
 
+            expect(result).toEqual(ok(null))
             expect(mockDelete).toHaveBeenCalledWith({ where: { id: 'sess-1' } })
+        })
+
+        it('should return failure NOT_FOUND when record does not exist', async () => {
+            const prismaError = new Prisma.PrismaClientKnownRequestError('Record not found', {
+                code: 'P2025',
+                clientVersion: '5.0.0'
+            })
+            mockDelete.mockRejectedValue(prismaError)
+
+            const result = await sessionRepository.delete('nonexistent')
+
+            expect(result).toEqual(failure(SessionRepositoryFailuresEnum.NOT_FOUND))
         })
     })
 
     describe('deleteByJti', () => {
-        it('should delete session by jti', async () => {
-            mockDeleteMany.mockResolvedValue({ count: 1 })
+        it('should return ok with null on successful delete', async () => {
+            mockDelete.mockResolvedValue({})
 
-            await sessionRepository.deleteByJti('token-123')
+            const result = await sessionRepository.deleteByJti('token-123')
 
-            expect(mockDeleteMany).toHaveBeenCalledWith({ where: { jti: 'token-123' } })
+            expect(result).toEqual(ok(null))
+            expect(mockDelete).toHaveBeenCalledWith({ where: { jti: 'token-123' } })
         })
     })
 
     describe('deleteAllByUserId', () => {
-        it('should delete all sessions for user', async () => {
+        it('should return ok with null on successful delete', async () => {
             mockDeleteMany.mockResolvedValue({ count: 3 })
 
-            await sessionRepository.deleteAllByUserId('user-1')
+            const result = await sessionRepository.deleteAllByUserId('user-1')
 
+            expect(result).toEqual(ok(null))
             expect(mockDeleteMany).toHaveBeenCalledWith({ where: { userId: 'user-1' } })
         })
     })

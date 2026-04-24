@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { ok } from '@ems/utils'
 import { createTokenService } from './token.service.js'
 import { ROLES } from '@ems/domain-shared-auth'
 
@@ -69,45 +70,51 @@ describe('createTokenService', () => {
 
     describe('generateAccessToken', () => {
         it('should generate access token', () => {
-            const token = tokenService.generateAccessToken(mockSession)
-            expect(token).toBe('mock-signed-token')
+            const result = tokenService.generateAccessToken(mockSession)
+
+            expect(result).toEqual(ok('mock-signed-token'))
         })
     })
 
     describe('generateRefreshToken', () => {
         it('should generate refresh token', () => {
-            const token = tokenService.generateRefreshToken(mockSession)
-            expect(token).toBe('mock-signed-token')
+            const result = tokenService.generateRefreshToken(mockSession)
+
+            expect(result).toEqual(ok('mock-signed-token'))
         })
     })
 
     describe('verifyAccessToken', () => {
         it('should verify and return payload', () => {
-            const payload = tokenService.verifyAccessToken('access-token')
-            expect(payload.sub).toBe('user-1')
-            expect(payload.type).toBe('access')
+            const result = tokenService.verifyAccessToken('access-token')
+
+            expect(result).toEqual(ok(expect.objectContaining({ sub: 'user-1', type: 'access' })))
         })
     })
 
     describe('verifyRefreshToken', () => {
         it('should verify and return payload', () => {
-            const payload = tokenService.verifyRefreshToken('refresh-token')
-            expect(payload.sessionId).toBe('session-1')
-            expect(payload.type).toBe('refresh')
+            const result = tokenService.verifyRefreshToken('refresh-token')
+
+            expect(result).toEqual(
+                ok(expect.objectContaining({ sessionId: 'session-1', type: 'refresh' }))
+            )
         })
     })
 
     describe('hashPassword', () => {
         it('should hash password', async () => {
-            const hash = await tokenService.hashPassword('password')
-            expect(hash).toBe('hashed-password')
+            const result = await tokenService.hashPassword('password')
+
+            expect(result).toEqual(ok('hashed-password'))
         })
     })
 
     describe('comparePassword', () => {
         it('should return true for matching password', async () => {
             const result = await tokenService.comparePassword('password', 'hash')
-            expect(result).toBe(true)
+
+            expect(result).toEqual(ok(true))
         })
     })
 })

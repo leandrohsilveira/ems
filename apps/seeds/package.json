@@ -1,0 +1,19 @@
+{
+    "name": "@ems/app-seeds",
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "seed": "node ./src/index.js",
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test": "vitest run --passWithNoTests"
+    },
+    "devDependencies": {
+        "@ems/domain-backend-config": "*",
+        "@ems/domain-backend-auth": "*",
+        "@ems/database": "*",
+        "@types/node": "^25.5.0",
+        "typescript": "^5.9.3"
+    }
+}

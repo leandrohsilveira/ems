@@ -1,4 +1,9 @@
+import { createEnum } from '@ems/utils'
 import z from 'zod'
+
+export const TokenTypes = createEnum({
+    Bearer: 'Bearer'
+})
 
 export const accessTokenPayloadDtoSchema = z.object({
     sub: z.string(),
@@ -21,3 +26,5 @@ export const refreshTokenPayloadDtoSchema = z.object({
 
 /** @exports @typedef {z.infer<typeof accessTokenPayloadDtoSchema>} AccessTokenPayloadDTO */
 /** @exports @typedef {z.infer<typeof refreshTokenPayloadDtoSchema>} RefreshTokenPayloadDTO */
+
+export { TokenServiceFailuresEnum } from './token.service.js'

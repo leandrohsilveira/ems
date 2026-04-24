@@ -3,6 +3,8 @@ import path from 'node:path'
 import { includeIgnoreFile } from '@eslint/compat'
 import js from '@eslint/js'
 import jsdoc from 'eslint-plugin-jsdoc'
+import tseslint from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
 import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 
@@ -23,6 +25,22 @@ export default defineConfig(
                         require: { FunctionDeclaration: true, FunctionExpression: true }
                     }
                 ]
+            }
+        },
+        {
+            files: ['**/*.js'],
+            languageOptions: {
+                parser: tsParser,
+                parserOptions: {
+                    project: path.resolve(import.meta.dirname, 'jsconfig.json'), // Enables type checking
+                    sourceType: 'module'
+                }
+            },
+            plugins: {
+                '@typescript-eslint': tseslint
+            },
+            rules: {
+                '@typescript-eslint/switch-exhaustiveness-check': ['error']
             }
         }
     ],

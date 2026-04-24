@@ -1,21 +1,30 @@
 import authMiddleware from './auth.middleware.js'
-import { getErrorMessage } from './utils/error.js'
 import {
     PERMISSIONS,
     loginDtoI18n,
     loginDtoSchema,
+    loginErrorsI18n,
     refreshTokenDtoI18n,
     refreshTokenDtoSchema,
     revokeAllDtoI18n,
     revokeAllDtoSchema,
+    sessionErrorsI18n,
+    signupErrorsI18n,
     signupRequestDtoI18n,
     signupRequestDtoSchema,
     tokenDtoSchema,
     userResponseDtoSchema
 } from '@ems/domain-shared-auth'
+import { AuthServiceFailures } from './auth.service.js'
+import { UserServiceFailures } from './user/index.js'
 import { errorHandling, withTypeProvider } from '@ems/domain-backend-schema'
-import { messageDtoSchema, validationErrorDtoSchema } from '@ems/domain-shared-schema'
-import { assert } from '@ems/utils'
+import {
+    errorDtoSchema,
+    messageDtoSchema,
+    resolveErrorLiterals,
+    validationErrorDtoSchema
+} from '@ems/domain-shared-schema'
+import { assert, ResultStatus } from '@ems/utils'
 
 /**
  * @import { FastifyInstance } from 'fastify'
@@ -41,7 +50,8 @@ export default async function authPlugin(fastify, { authService, userService }) 
             body: loginDtoSchema,
             response: {
                 200: tokenDtoSchema,
-                401: messageDtoSchema
+                401: errorDtoSchema,
+                500: errorDtoSchema
             }
         },
         errorHandler: errorHandling({
@@ -50,11 +60,22 @@ export default async function authPlugin(fastify, { authService, userService }) 
             }
         }),
         handler: async (request, reply) => {
-            try {
-                const result = await authService.login(request.body)
-                return reply.status(200).send(result)
-            } catch (error) {
-                return reply.status(401).send({ message: getErrorMessage(error) })
+            const literals = resolveErrorLiterals('en_US', loginErrorsI18n)
+            const { status, data, error: err } = await authService.login(request.body)
+
+            switch (status) {
+                case ResultStatus.OK:
+                    return reply.status(200).send(data)
+                case AuthServiceFailures.INVALID_CREDENTIALS:
+                    return reply.status(401).send({
+                        code: 'HTTP',
+                        message: literals.incorrectUsernameOrPassword
+                    })
+                case ResultStatus.ERROR:
+                    request.log.error(err)
+                    return reply
+                        .status(500)
+                        .send({ code: 'UNEXPECTED', message: literals.somethingWentWrongError })
             }
         }
     })
@@ -66,8 +87,8 @@ export default async function authPlugin(fastify, { authService, userService }) 
             response: {
                 201: userResponseDtoSchema,
                 400: validationErrorDtoSchema,
-                409: messageDtoSchema,
-                500: messageDtoSchema
+                409: errorDtoSchema,
+                500: errorDtoSchema
             }
         },
         errorHandler: errorHandling({
@@ -76,21 +97,23 @@ export default async function authPlugin(fastify, { authService, userService }) 
             }
         }),
         handler: async (request, reply) => {
-            try {
-                const user = await userService.signup(request.body)
+            const literals = resolveErrorLiterals('en_US', signupErrorsI18n)
 
-                return reply.status(201).send({ user })
-            } catch (error) {
-                // Type-safe error handling
-                if (error instanceof Error) {
-                    // Check for duplicate user error
-                    if (error.message.includes('already exists')) {
-                        return reply.status(409).send({ message: error.message })
-                    }
-                }
+            const { status, data, error: err } = await userService.signup(request.body)
 
-                // Generic error handling
-                return reply.status(500).send({ message: getErrorMessage(error) })
+            switch (status) {
+                case ResultStatus.OK:
+                    return reply.status(201).send({ user: data })
+                case UserServiceFailures.CONFLICT:
+                    return reply.status(409).send({
+                        code: 'HTTP',
+                        message: literals.usernameOrEmailAlreadyExists
+                    })
+                case ResultStatus.ERROR:
+                    request.log.error(err)
+                    return reply
+                        .status(500)
+                        .send({ code: 'UNEXPECTED', message: literals.somethingWentWrongError })
             }
         }
     })
@@ -101,7 +124,8 @@ export default async function authPlugin(fastify, { authService, userService }) 
             body: refreshTokenDtoSchema,
             response: {
                 200: tokenDtoSchema,
-                401: messageDtoSchema
+                401: errorDtoSchema,
+                500: errorDtoSchema
             }
         },
         errorHandler: errorHandling({
@@ -110,11 +134,28 @@ export default async function authPlugin(fastify, { authService, userService }) 
             }
         }),
         handler: async (request, reply) => {
-            try {
-                const result = await authService.refresh(request.body)
-                return reply.send(result)
-            } catch (error) {
-                return reply.status(401).send({ message: getErrorMessage(error) })
+            const authLiterals = resolveErrorLiterals('en_US', sessionErrorsI18n)
+
+            const { status, data, error: err } = await authService.refresh(request.body)
+
+            switch (status) {
+                case ResultStatus.OK:
+                    return reply.send(data)
+                case AuthServiceFailures.SESSION_NOT_FOUND:
+                    return reply.status(401).send({
+                        code: 'HTTP',
+                        message: authLiterals.sessionNotFound
+                    })
+                case AuthServiceFailures.SESSION_EXPIRED:
+                    return reply.status(401).send({
+                        code: 'HTTP',
+                        message: authLiterals.sessionExpired
+                    })
+                case ResultStatus.ERROR:
+                    request.log.error(err)
+                    return reply
+                        .status(500)
+                        .send({ code: 'UNEXPECTED', message: authLiterals.somethingWentWrongError })
             }
         }
     })
@@ -125,7 +166,8 @@ export default async function authPlugin(fastify, { authService, userService }) 
             body: refreshTokenDtoSchema,
             response: {
                 200: messageDtoSchema,
-                401: messageDtoSchema
+                401: errorDtoSchema,
+                500: errorDtoSchema
             }
         },
         errorHandler: errorHandling({
@@ -134,11 +176,22 @@ export default async function authPlugin(fastify, { authService, userService }) 
             }
         }),
         handler: async (request, reply) => {
-            try {
-                const result = await authService.logout(request.body)
-                return reply.send(result)
-            } catch (error) {
-                return reply.status(401).send({ message: getErrorMessage(error) })
+            const authLiterals = resolveErrorLiterals('en_US', sessionErrorsI18n)
+            const { status, data, error: err } = await authService.logout(request.body)
+
+            switch (status) {
+                case ResultStatus.OK:
+                    return reply.send(data)
+                case AuthServiceFailures.SESSION_NOT_FOUND:
+                    return reply.status(401).send({
+                        code: 'HTTP',
+                        message: authLiterals.sessionNotFound
+                    })
+                case ResultStatus.ERROR:
+                    request.log.error(err)
+                    return reply
+                        .status(500)
+                        .send({ code: 'UNEXPECTED', message: authLiterals.somethingWentWrongError })
             }
         }
     })
@@ -151,7 +204,7 @@ export default async function authPlugin(fastify, { authService, userService }) 
             response: {
                 200: messageDtoSchema,
                 401: messageDtoSchema,
-                500: messageDtoSchema
+                500: errorDtoSchema
             }
         },
         errorHandler: errorHandling({
@@ -160,11 +213,17 @@ export default async function authPlugin(fastify, { authService, userService }) 
             }
         }),
         handler: async (request, reply) => {
-            try {
-                const result = await authService.revokeAll(request.body)
-                return reply.send(result)
-            } catch (error) {
-                return reply.status(500).send({ message: getErrorMessage(error) })
+            const authLiterals = resolveErrorLiterals('en_US', sessionErrorsI18n)
+            const { status, data, error: err } = await authService.revokeAll(request.body)
+
+            switch (status) {
+                case ResultStatus.OK:
+                    return reply.send(data)
+                case ResultStatus.ERROR:
+                    request.log.error(err)
+                    return reply
+                        .status(500)
+                        .send({ code: 'UNEXPECTED', message: authLiterals.somethingWentWrongError })
             }
         }
     })

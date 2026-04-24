@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
-import { createUserService } from './user.service.js'
+import { error, ok, failure, ResultStatus } from '@ems/utils'
+import { createUserService, UserServiceFailures } from './user.service.js'
 import {
     createMockUser,
     createMockUserCreateDTO,
     createMockUserDTO,
     createMockSignUpRequestDTO
 } from '../testing/user.js'
-import { Prisma } from '@ems/database'
 
 describe('createUserService', () => {
     /** @type {import('./user.service.js').UserService} */
@@ -26,24 +26,17 @@ describe('createUserService', () => {
 
     describe('createUser', () => {
         it('should create user successfully with hashed password', async () => {
-            // Arrange
             const userData = createMockUserCreateDTO()
             const mockUser = createMockUser()
             const expectedUserDTO = createMockUserDTO()
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.createUser(userData)
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                userData.username,
-                userData.email
-            )
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockTokenService.hashPassword).toHaveBeenCalledWith(userData.password)
             expect(mockUserRepository.create).toHaveBeenCalledWith({
                 firstName: userData.firstName,
@@ -55,95 +48,31 @@ describe('createUserService', () => {
             })
         })
 
-        it('should throw error when user with username already exists', async () => {
-            // Arrange
+        it('should handle data conflict error from repository', async () => {
             const userData = createMockUserCreateDTO()
-            const existingUser = createMockUser({ username: userData.username })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(failure(UserServiceFailures.CONFLICT))
 
-            // Act & Assert
-            await expect(userService.createUser(userData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                userData.username,
-                userData.email
-            )
-            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
-            expect(mockUserRepository.create).not.toHaveBeenCalled()
+            const result = await userService.createUser(userData)
+
+            expect(result).toEqual(failure(UserServiceFailures.CONFLICT))
         })
 
-        it('should throw error when user with email already exists', async () => {
-            // Arrange
-            const userData = createMockUserCreateDTO()
-            const existingUser = createMockUser({ email: userData.email })
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
-
-            // Act & Assert
-            await expect(userService.createUser(userData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                userData.username,
-                userData.email
-            )
-            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
-            expect(mockUserRepository.create).not.toHaveBeenCalled()
-        })
-
-        it('should handle Prisma unique constraint error for username', async () => {
-            // Arrange
-            const userData = createMockUserCreateDTO()
-            const constraintError = new Prisma.PrismaClientKnownRequestError(
-                'Unique constraint failed on the fields: (`username`)',
-                { code: 'P2002', clientVersion: '7.5.0' }
-            )
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockRejectedValue(constraintError)
-
-            // Act & Assert
-            await expect(userService.createUser(userData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-        })
-
-        it('should handle Prisma unique constraint error for email', async () => {
-            // Arrange
-            const userData = createMockUserCreateDTO()
-            const constraintError = new Prisma.PrismaClientKnownRequestError(
-                'Unique constraint failed on the fields: (`email`)',
-                { code: 'P2002', clientVersion: '7.5.0' }
-            )
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockRejectedValue(constraintError)
-
-            // Act & Assert
-            await expect(userService.createUser(userData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-        })
-
-        it('should re-throw other repository errors', async () => {
-            // Arrange
+        it('should return error result for repository errors', async () => {
             const userData = createMockUserCreateDTO()
             const repositoryError = new Error('Database connection failed')
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
             mockUserRepository.create.mockRejectedValue(repositoryError)
 
-            // Act & Assert
-            await expect(userService.createUser(userData)).rejects.toThrow(repositoryError)
+            const result = await userService.createUser(userData)
+
+            expect(result.status).toBe(ResultStatus.ERROR)
+            expect(result.error).toBe(repositoryError)
         })
 
         it('should create user with null first and last names', async () => {
-            // Arrange
             const userData = createMockUserCreateDTO({
                 firstName: null,
                 lastName: null
@@ -157,15 +86,13 @@ describe('createUserService', () => {
                 lastName: null
             })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.createUser(userData)
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockUserRepository.create).toHaveBeenCalledWith({
                 firstName: null,
                 lastName: null,
@@ -181,68 +108,71 @@ describe('createUserService', () => {
             const roles = ['USER', 'MANAGER', 'ADMIN']
 
             for (const role of roles) {
-                // Arrange
                 const userData = createMockUserCreateDTO({ role })
                 const mockUser = createMockUser({ role })
                 const expectedUserDTO = createMockUserDTO({ role })
 
-                mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-                mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-                mockUserRepository.create.mockResolvedValue(mockUser)
+                mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+                mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-                // Act
                 const result = await userService.createUser(userData)
 
-                // Assert
-                expect(result).toEqual(expectedUserDTO)
+                expect(result.status).toBe(ResultStatus.OK)
+                expect(result.data).toEqual(expectedUserDTO)
                 expect(mockUserRepository.create).toHaveBeenCalledWith(
                     expect.objectContaining({ role })
                 )
 
-                // Reset mocks for next iteration
-                mockUserRepository.findByUsernameOrEmail.mockClear()
                 mockTokenService.hashPassword.mockClear()
                 mockUserRepository.create.mockClear()
             }
         })
 
         it('should exclude password from returned UserDTO', async () => {
-            // Arrange
             const userData = createMockUserCreateDTO()
             const mockUser = createMockUser()
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.createUser(userData)
 
-            // Assert
-            expect(result).not.toHaveProperty('password')
-            expect(result).toHaveProperty('userId')
-            expect(result).toHaveProperty('username')
-            expect(result).toHaveProperty('email')
-            expect(result).toHaveProperty('role')
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).not.toHaveProperty('password')
+            expect(result.data).toHaveProperty('userId')
+            expect(result.data).toHaveProperty('username')
+            expect(result.data).toHaveProperty('email')
+            expect(result.data).toHaveProperty('role')
+        })
+
+        it('should return error when hashing fails', async () => {
+            const userData = createMockUserCreateDTO()
+            const hashError = new Error('Hashing failed')
+
+            mockTokenService.hashPassword.mockResolvedValue(error(hashError))
+
+            const result = await userService.createUser(userData)
+
+            expect(result.status).toBe(ResultStatus.ERROR)
+            expect(result.error).toBe(hashError)
+            expect(mockUserRepository.create).not.toHaveBeenCalled()
         })
     })
 
     describe('findByUsernameOrEmail', () => {
         it('should return UserDTO when user found by username', async () => {
-            // Arrange
             const mockUser = createMockUser({ username: 'existinguser' })
             const expectedUserDTO = createMockUserDTO({ username: 'existinguser' })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(mockUser)
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.findByUsernameOrEmail(
                 'existinguser',
                 'new@example.com'
             )
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
                 'existinguser',
                 'new@example.com'
@@ -250,50 +180,46 @@ describe('createUserService', () => {
         })
 
         it('should return UserDTO when user found by email', async () => {
-            // Arrange
             const mockUser = createMockUser({ email: 'existing@example.com' })
             const expectedUserDTO = createMockUserDTO({ email: 'existing@example.com' })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(mockUser)
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.findByUsernameOrEmail(
                 'newuser',
                 'existing@example.com'
             )
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
                 'newuser',
                 'existing@example.com'
             )
         })
 
-        it('should return null when user not found', async () => {
-            // Arrange
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
+        it('should result in failure when user not found', async () => {
+            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(
+                failure(UserServiceFailures.NOT_FOUND)
+            )
 
-            // Act
             const result = await userService.findByUsernameOrEmail('nonexistent', 'new@example.com')
 
-            // Assert
-            expect(result).toBeNull()
+            expect(result).toEqual(failure(UserServiceFailures.NOT_FOUND))
             expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
                 'nonexistent',
                 'new@example.com'
             )
         })
 
-        it('should propagate repository errors', async () => {
-            // Arrange
+        it('should return error result for repository errors', async () => {
             const repositoryError = new Error('Database error')
             mockUserRepository.findByUsernameOrEmail.mockRejectedValue(repositoryError)
 
-            // Act & Assert
-            await expect(
-                userService.findByUsernameOrEmail('test', 'test@example.com')
-            ).rejects.toThrow('Database error')
+            const result = await userService.findByUsernameOrEmail('test', 'test@example.com')
+
+            expect(result.status).toBe(ResultStatus.ERROR)
+            expect(result.error).toBe(repositoryError)
             expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
                 'test',
                 'test@example.com'
@@ -303,24 +229,17 @@ describe('createUserService', () => {
 
     describe('signup', () => {
         it('should sign up user successfully with valid data', async () => {
-            // Arrange
             const signupData = createMockSignUpRequestDTO()
             const mockUser = createMockUser()
             const expectedUserDTO = createMockUserDTO()
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.signup(signupData)
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
             expect(mockUserRepository.create).toHaveBeenCalledWith({
                 firstName: signupData.firstName,
@@ -328,119 +247,39 @@ describe('createUserService', () => {
                 email: signupData.email,
                 username: signupData.username,
                 password: 'hashed-password',
-                role: 'USER' // Default role for signup
+                role: 'USER'
             })
         })
 
-        it('should throw error when user with username already exists', async () => {
-            // Arrange
+        it('should handle data conflict error from repository', async () => {
             const signupData = createMockSignUpRequestDTO()
-            const existingUser = createMockUser({ username: signupData.username })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(failure(UserServiceFailures.CONFLICT))
 
-            // Act & Assert
-            await expect(userService.signup(signupData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
-            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
-            expect(mockUserRepository.create).not.toHaveBeenCalled()
-        })
+            const result = await userService.signup(signupData)
 
-        it('should throw error when user with email already exists', async () => {
-            // Arrange
-            const signupData = createMockSignUpRequestDTO()
-            const existingUser = createMockUser({ email: signupData.email })
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(existingUser)
-
-            // Act & Assert
-            await expect(userService.signup(signupData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
-            expect(mockTokenService.hashPassword).not.toHaveBeenCalled()
-            expect(mockUserRepository.create).not.toHaveBeenCalled()
-        })
-
-        it('should handle Prisma unique constraint error for username', async () => {
-            // Arrange
-            const signupData = createMockSignUpRequestDTO()
-            const constraintError = new Prisma.PrismaClientKnownRequestError(
-                'Unique constraint failed on the fields: (`username`)',
-                { code: 'P2002', clientVersion: '7.5.0' }
-            )
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockRejectedValue(constraintError)
-
-            // Act & Assert
-            await expect(userService.signup(signupData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
+            expect(result).toEqual(failure(UserServiceFailures.CONFLICT))
             expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
             expect(mockUserRepository.create).toHaveBeenCalled()
         })
 
-        it('should handle Prisma unique constraint error for email', async () => {
-            // Arrange
-            const signupData = createMockSignUpRequestDTO()
-            const constraintError = new Prisma.PrismaClientKnownRequestError(
-                'Unique constraint failed on the fields: (`email`)',
-                { code: 'P2002', clientVersion: '7.5.0' }
-            )
-
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockRejectedValue(constraintError)
-
-            // Act & Assert
-            await expect(userService.signup(signupData)).rejects.toThrow(
-                'User with this username or email already exists'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
-            expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
-            expect(mockUserRepository.create).toHaveBeenCalled()
-        })
-
-        it('should handle other database errors', async () => {
-            // Arrange
+        it('should return error result for other database errors', async () => {
             const signupData = createMockSignUpRequestDTO()
             const databaseError = new Error('Database connection failed')
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
             mockUserRepository.create.mockRejectedValue(databaseError)
 
-            // Act & Assert
-            await expect(userService.signup(signupData)).rejects.toThrow(
-                'Database connection failed'
-            )
-            expect(mockUserRepository.findByUsernameOrEmail).toHaveBeenCalledWith(
-                signupData.username,
-                signupData.email
-            )
+            const result = await userService.signup(signupData)
+
+            expect(result.status).toBe(ResultStatus.ERROR)
+            expect(result.error).toBe(databaseError)
             expect(mockTokenService.hashPassword).toHaveBeenCalledWith(signupData.password)
             expect(mockUserRepository.create).toHaveBeenCalled()
         })
 
         it('should accept null firstName and lastName', async () => {
-            // Arrange
             const signupData = createMockSignUpRequestDTO({
                 firstName: null,
                 lastName: null
@@ -448,15 +287,13 @@ describe('createUserService', () => {
             const mockUser = createMockUser({ firstName: null, lastName: null })
             const expectedUserDTO = createMockUserDTO({ firstName: null, lastName: null })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.signup(signupData)
 
-            // Assert
-            expect(result).toEqual(expectedUserDTO)
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data).toEqual(expectedUserDTO)
             expect(mockUserRepository.create).toHaveBeenCalledWith({
                 firstName: null,
                 lastName: null,
@@ -468,22 +305,32 @@ describe('createUserService', () => {
         })
 
         it('should always set role to USER for signup', async () => {
-            // Arrange
             const signupData = createMockSignUpRequestDTO()
-            const mockUser = createMockUser({ role: 'USER' }) // Should always be USER
+            const mockUser = createMockUser({ role: 'USER' })
 
-            mockUserRepository.findByUsernameOrEmail.mockResolvedValue(null)
-            mockTokenService.hashPassword.mockResolvedValue('hashed-password')
-            mockUserRepository.create.mockResolvedValue(mockUser)
+            mockTokenService.hashPassword.mockResolvedValue(ok('hashed-password'))
+            mockUserRepository.create.mockResolvedValue(ok(mockUser))
 
-            // Act
             const result = await userService.signup(signupData)
 
-            // Assert
-            expect(result.role).toBe('USER')
+            expect(result.status).toBe(ResultStatus.OK)
+            expect(result.data?.role).toBe('USER')
             expect(mockUserRepository.create).toHaveBeenCalledWith(
                 expect.objectContaining({ role: 'USER' })
             )
+        })
+
+        it('should return error when hashing fails', async () => {
+            const signupData = createMockSignUpRequestDTO()
+            const hashError = new Error('Hashing failed')
+
+            mockTokenService.hashPassword.mockResolvedValue(error(hashError))
+
+            const result = await userService.signup(signupData)
+
+            expect(result.status).toBe(ResultStatus.ERROR)
+            expect(result.error).toBe(hashError)
+            expect(mockUserRepository.create).not.toHaveBeenCalled()
         })
     })
 })

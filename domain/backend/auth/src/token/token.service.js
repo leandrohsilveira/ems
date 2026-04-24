@@ -1,22 +1,27 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { assert } from '@ems/utils'
+import { assert, createEnum, failure, ok, tryCatch, tryCatchAsync } from '@ems/utils'
 
 /**
+ * @import { ResultOk, ResultError, ResultFailure } from '@ems/utils'
  * @import { AuthConfig } from '@ems/domain-backend-config'
  * @import { JwtPayload } from 'jsonwebtoken'
  * @import { SessionDTO } from "../session/index.js"
  * @import { AccessTokenPayloadDTO, RefreshTokenPayloadDTO } from "./token.js",
  */
 
+export const TokenServiceFailuresEnum = createEnum({
+    NO_MATCH: 'NO_MATCH'
+})
+
 /**
  * @exports @typedef TokenService
- * @property {(session: SessionDTO) => string} generateAccessToken
- * @property {(session: SessionDTO) => string} generateRefreshToken
- * @property {(token: string) => AccessTokenPayloadDTO} verifyAccessToken
- * @property {(token: string) => RefreshTokenPayloadDTO} verifyRefreshToken
- * @property {(password: string) => Promise<string>} hashPassword
- * @property {(password: string, hash: string) => Promise<boolean>} comparePassword
+ * @property {(session: SessionDTO) => (ResultOk<string> | ResultError)} generateAccessToken
+ * @property {(session: SessionDTO) => (ResultOk<string> | ResultError)} generateRefreshToken
+ * @property {(token: string) => (ResultOk<AccessTokenPayloadDTO> | ResultError)} verifyAccessToken
+ * @property {(token: string) => (ResultOk<RefreshTokenPayloadDTO> | ResultError)} verifyRefreshToken
+ * @property {(password: string) => Promise<ResultOk<string> | ResultError>} hashPassword
+ * @property {(password: string, hash: string) => Promise<ResultOk<boolean> | ResultFailure<typeof TokenServiceFailuresEnum.NO_MATCH> | ResultError>} comparePassword
  */
 
 /**
@@ -78,52 +83,72 @@ export function createTokenService(config) {
     return {
         /** @param {SessionDTO} session */
         generateAccessToken(session) {
-            const payload = {
-                sub: session.userId,
-                username: session.user.username,
-                role: session.user.role,
-                jti: session.jti,
-                type: 'access'
-            }
-            return jwt.sign(payload, config.jwtSecret, {
-                expiresIn: config.accessTokenTTL
-            })
+            return tryCatch(() =>
+                ok(
+                    jwt.sign(
+                        {
+                            sub: session.userId,
+                            username: session.user.username,
+                            role: session.user.role,
+                            jti: session.jti,
+                            type: 'access'
+                        },
+                        config.jwtSecret,
+                        {
+                            expiresIn: config.accessTokenTTL
+                        }
+                    )
+                )
+            )
         },
 
         /** @param {SessionDTO} session */
         generateRefreshToken(session) {
-            const payload = {
-                sub: session.userId,
-                jti: session.jti,
-                sessionId: session.id,
-                type: 'refresh'
-            }
-            return jwt.sign(payload, config.jwtSecret, {
-                expiresIn: config.refreshTokenTTL
-            })
+            return tryCatch(() =>
+                ok(
+                    jwt.sign(
+                        {
+                            sub: session.userId,
+                            jti: session.jti,
+                            sessionId: session.id,
+                            type: 'refresh'
+                        },
+                        config.jwtSecret,
+                        {
+                            expiresIn: config.refreshTokenTTL
+                        }
+                    )
+                )
+            )
         },
 
         /** @param {string} token */
         verifyAccessToken(token) {
-            const payload = jwt.verify(token, config.jwtSecret)
-            return parseTokenPayload(payload, 'access')
+            return tryCatch(() =>
+                ok(parseTokenPayload(jwt.verify(token, config.jwtSecret), 'access'))
+            )
         },
 
         /** @param {string} token */
         verifyRefreshToken(token) {
-            const payload = jwt.verify(token, config.jwtSecret)
-            return parseTokenPayload(payload, 'refresh')
+            return tryCatch(() =>
+                ok(parseTokenPayload(jwt.verify(token, config.jwtSecret), 'refresh'))
+            )
         },
 
         /** @param {string} password */
-        async hashPassword(password) {
-            return bcrypt.hash(password, 10)
+        hashPassword(password) {
+            return tryCatchAsync(async () => ok(await bcrypt.hash(password, 10)))
         },
 
         /** @param {string} password */
         /** @param {string} hash */
-        async comparePassword(password, hash) {
-            return bcrypt.compare(password, hash)
+        comparePassword(password, hash) {
+            return tryCatchAsync(async () => {
+                const match = await bcrypt.compare(password, hash)
+                if (!match) return failure(TokenServiceFailuresEnum.NO_MATCH)
+                return ok(true)
+            })
         }
     }
 }

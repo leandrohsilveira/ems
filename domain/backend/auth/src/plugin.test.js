@@ -2,14 +2,22 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mockDeep } from 'vitest-mock-extended'
 import Fastify from 'fastify'
 import schemaPlugin from '@ems/domain-backend-schema'
+import { resolveErrorLiterals } from '@ems/domain-shared-schema'
+import { loginErrorsI18n, ROLES, signupErrorsI18n } from '@ems/domain-shared-auth'
+
 import authPlugin from './plugin.js'
+import { AuthServiceFailures } from './auth.service.js'
+import { ok, failure, error } from '@ems/utils'
+import { UserServiceFailures } from './user/index.js'
+import { TokenTypes } from './token/token.js'
 import { randomUUID } from 'crypto'
 
+const signupErrorsLiterals = resolveErrorLiterals('en_US', signupErrorsI18n)
+const loginErrorsLiterals = resolveErrorLiterals('en_US', loginErrorsI18n)
+
 /**
- * @import { TokenDTO, UserDTO } from '@ems/domain-shared-auth'
  * @import { AuthService } from './auth.service.js'
  * @import { UserService } from './user/index.js'
- * @import { SessionDTO } from './session/index.js'
  */
 
 describe('Auth Plugin', () => {
@@ -29,15 +37,14 @@ describe('Auth Plugin', () => {
 
     describe('POST /login', () => {
         it('should call authService.login and return 200 on success', async () => {
-            /** @type {TokenDTO} */
             const mockResponse = {
                 accessToken: 'test-access-token',
                 refreshToken: 'test-refresh-token',
                 expiresIn: 300,
                 issuedAt: '2024-01-01T00:00:00.000Z',
-                tokenType: 'Bearer'
+                tokenType: TokenTypes.Bearer
             }
-            mockAuthService.login.mockResolvedValue(mockResponse)
+            mockAuthService.login.mockResolvedValue(ok(mockResponse))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -64,7 +71,9 @@ describe('Auth Plugin', () => {
         })
 
         it('should return 401 on authentication failure', async () => {
-            mockAuthService.login.mockRejectedValue(new Error('Invalid credentials'))
+            mockAuthService.login.mockResolvedValue(
+                failure(AuthServiceFailures.INVALID_CREDENTIALS)
+            )
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -84,22 +93,22 @@ describe('Auth Plugin', () => {
 
             expect(response.statusCode).toBe(401)
             expect(response.json()).toEqual({
-                message: 'Invalid credentials'
+                code: 'HTTP',
+                message: loginErrorsLiterals.incorrectUsernameOrPassword
             })
         })
     })
 
     describe('POST /refresh', () => {
         it('should call authService.refresh and return 200 on success', async () => {
-            /** @type {TokenDTO} */
             const mockResponse = {
                 accessToken: 'new-access-token',
                 refreshToken: 'new-refresh-token',
                 expiresIn: 300,
                 issuedAt: '2024-01-01T00:00:00.000Z',
-                tokenType: 'Bearer'
+                tokenType: TokenTypes.Bearer
             }
-            mockAuthService.refresh.mockResolvedValue(mockResponse)
+            mockAuthService.refresh.mockResolvedValue(ok(mockResponse))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -127,7 +136,7 @@ describe('Auth Plugin', () => {
     describe('POST /logout', () => {
         it('should call authService.logout and return 200 on success', async () => {
             const mockResponse = { message: 'Logged out successfully' }
-            mockAuthService.logout.mockResolvedValue(mockResponse)
+            mockAuthService.logout.mockResolvedValue(ok(mockResponse))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -183,13 +192,13 @@ describe('Auth Plugin', () => {
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'ADMIN'
+                role: ROLES.ADMIN
             }
 
             const mockResponse = { message: 'All sessions revoked' }
-            mockAuthService.revokeAll.mockResolvedValue(mockResponse)
+            mockAuthService.revokeAll.mockResolvedValue(ok(mockResponse))
             mockAuthService.me.mockResolvedValue(
-                /** @type {SessionDTO} */ ({
+                ok({
                     id: 'session-1',
                     userId: 'user-123',
                     jti: 'jti-1',
@@ -247,18 +256,17 @@ describe('Auth Plugin', () => {
         it('should return user info when authenticated', async () => {
             const userId = crypto.randomUUID()
 
-            /** @type {UserDTO} */
             const mockUser = {
                 userId,
                 username: 'testuser',
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'USER'
+                role: ROLES.USER
             }
 
             mockAuthService.me.mockResolvedValue(
-                /** @type {SessionDTO} */ ({
+                ok({
                     id: 'session-1',
                     userId,
                     jti: 'jti-1',
@@ -291,16 +299,15 @@ describe('Auth Plugin', () => {
 
     describe('POST /signup', () => {
         it('should call userService.signup and return 201 on success', async () => {
-            /** @type {UserDTO} */
             const mockUser = {
                 userId: randomUUID(),
                 username: 'testuser',
                 email: 'test@example.com',
                 firstName: 'Test',
                 lastName: 'User',
-                role: 'USER'
+                role: ROLES.USER
             }
-            mockUserService.signup.mockResolvedValue(mockUser)
+            mockUserService.signup.mockResolvedValue(ok(mockUser))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -345,8 +352,8 @@ describe('Auth Plugin', () => {
                 url: '/signup',
                 payload: {
                     username: 'testuser',
-                    email: 'invalid-email', // Valid email
-                    password: 'Password123', // Valid password
+                    email: 'invalid-email',
+                    password: 'Password123',
                     firstName: 'Test',
                     lastName: 'User'
                 }
@@ -362,9 +369,7 @@ describe('Auth Plugin', () => {
         })
 
         it('should return 409 on duplicate user error', async () => {
-            mockUserService.signup.mockRejectedValue(
-                new Error('User with this username or email already exists')
-            )
+            mockUserService.signup.mockResolvedValue(failure(UserServiceFailures.CONFLICT))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -386,13 +391,14 @@ describe('Auth Plugin', () => {
             })
 
             expect(response.json()).toEqual({
-                message: 'User with this username or email already exists'
+                code: 'HTTP',
+                message: signupErrorsLiterals.usernameOrEmailAlreadyExists
             })
             expect(response.statusCode).toBe(409)
         })
 
         it('should return 500 on other errors', async () => {
-            mockUserService.signup.mockRejectedValue(new Error('Database connection failed'))
+            mockUserService.signup.mockResolvedValue(error(new Error('Database connection failed')))
 
             const app = Fastify()
             await app.register(schemaPlugin)
@@ -414,7 +420,8 @@ describe('Auth Plugin', () => {
             })
 
             expect(response.json()).toEqual({
-                message: 'Database connection failed'
+                code: 'UNEXPECTED',
+                message: signupErrorsLiterals.somethingWentWrongError
             })
             expect(response.statusCode).toBe(500)
         })
@@ -427,7 +434,6 @@ describe('Auth Plugin', () => {
                 userService: mockUserService
             })
 
-            // Test missing required field
             const response = await app.inject({
                 method: 'POST',
                 url: '/signup',
@@ -457,12 +463,11 @@ describe('Auth Plugin', () => {
                 userService: mockUserService
             })
 
-            // Test username too short
             const response = await app.inject({
                 method: 'POST',
                 url: '/signup',
                 payload: {
-                    username: 'ab', // Too short (minLength: 3)
+                    username: 'ab',
                     email: 'test@example.com',
                     password: 'Password123',
                     firstName: 'Test',

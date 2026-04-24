@@ -1,23 +1,34 @@
 import { randomUUID } from 'crypto'
 import logger from 'pino'
 import { parseUser } from './user/user.js'
+import { createEnum, error, failure, ok, ResultStatus } from '@ems/utils'
+import { TokenTypes, TokenServiceFailuresEnum } from './token/token.js'
+import { SessionRepositoryFailuresEnum } from './session/index.js'
+import { UserRepositoryFailuresEnum } from './user/index.js'
 
 /**
  * @import { AuthConfig } from '@ems/domain-backend-config'
  * @import { LoginDTO, TokenDTO, RefreshTokenDTO, RevokeAllDTO } from '@ems/domain-shared-auth'
  * @import { MessageDTO } from '@ems/domain-shared-schema'
+ * @import { ResultOk, ResultFailure, ResultError } from '@ems/utils'
  * @import { TokenService } from './token/token.service.js'
  * @import { UserRepository } from './user/index.js'
  * @import { SessionDTO, SessionRepository } from './session/index.js'
  */
 
+export const AuthServiceFailures = createEnum({
+    INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
+    SESSION_NOT_FOUND: 'SESSION_NOT_FOUND',
+    SESSION_EXPIRED: 'SESSION_EXPIRED'
+})
+
 /**
  * @exports @typedef AuthService
- * @property {(request: LoginDTO) => Promise<TokenDTO>} login
- * @property {(request: RefreshTokenDTO) => Promise<TokenDTO>} refresh
- * @property {(request: RefreshTokenDTO) => Promise<MessageDTO>} logout
- * @property {(request: RevokeAllDTO) => Promise<MessageDTO>} revokeAll
- * @property {(token: string) => Promise<SessionDTO>} me
+ * @property {(request: LoginDTO) => Promise<ResultOk<TokenDTO> | ResultFailure<typeof AuthServiceFailures.INVALID_CREDENTIALS> | ResultError>} login
+ * @property {(request: RefreshTokenDTO) => Promise<ResultOk<TokenDTO> | ResultFailure<typeof AuthServiceFailures.SESSION_NOT_FOUND | typeof AuthServiceFailures.SESSION_EXPIRED> | ResultError>} refresh
+ * @property {(request: RefreshTokenDTO) => Promise<ResultOk<MessageDTO> | ResultFailure<typeof AuthServiceFailures.SESSION_NOT_FOUND> | ResultError>} logout
+ * @property {(request: RevokeAllDTO) => Promise<ResultOk<MessageDTO> | ResultError>} revokeAll
+ * @property {(token: string) => Promise<ResultOk<SessionDTO> | ResultFailure<typeof AuthServiceFailures.SESSION_NOT_FOUND | typeof AuthServiceFailures.SESSION_EXPIRED> | ResultError>} me
  */
 
 /**
@@ -33,77 +44,161 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
         /** @param {LoginDTO} request */
         async login(request) {
             log.info({ username: request.username }, 'Login attempt')
-            const user = await userRepository.findByUsername(request.username)
-            if (!user) {
-                log.error(
-                    { username: request.username },
-                    'Login failed: invalid credentials (username)'
-                )
-                throw new Error('Invalid credentials')
+
+            const {
+                status: findStatus,
+                data: user,
+                error: findErr
+            } = await userRepository.findByUsername(request.username)
+            switch (findStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(findErr)
+                case UserRepositoryFailuresEnum.NOT_FOUND:
+                    log.error(
+                        { username: request.username },
+                        'Login failed: invalid credentials (username)'
+                    )
+                    return failure(AuthServiceFailures.INVALID_CREDENTIALS)
             }
 
-            const isValidPassword = await tokenService.comparePassword(
+            const { status: compareStatus, error: compareErr } = await tokenService.comparePassword(
                 request.password,
                 user.password
             )
-            if (!isValidPassword) {
-                log.error(
-                    { username: request.username },
-                    'Login failed: invalid credentials (password)'
-                )
-                throw new Error('Invalid credentials')
+
+            switch (compareStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(compareErr)
+                case TokenServiceFailuresEnum.NO_MATCH:
+                    log.error(
+                        { username: request.username },
+                        'Login failed: invalid credentials (password)'
+                    )
+                    return failure(AuthServiceFailures.INVALID_CREDENTIALS)
             }
 
             const jti = randomUUID()
             const lastRefresh = new Date()
             const expiresAt = new Date(lastRefresh.getTime() + config.refreshTokenTTL * 1000)
 
-            const session = await sessionRepository.create({
+            const {
+                status: createStatus,
+                data: session,
+                error: createErr
+            } = await sessionRepository.create({
                 userId: user.id,
                 jti,
                 lastRefresh,
                 expiresAt
             })
 
+            switch (createStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(createErr)
+                case SessionRepositoryFailuresEnum.CONFLICT:
+                    return error('Unexpected session conflict')
+            }
+
             const sessionWithUser = {
                 ...session,
                 user: parseUser(user)
             }
 
-            const accessToken = tokenService.generateAccessToken(sessionWithUser)
-            const refreshToken = tokenService.generateRefreshToken(sessionWithUser)
+            const {
+                status: accessStatus,
+                data: accessToken,
+                error: accessErr
+            } = tokenService.generateAccessToken(sessionWithUser)
+
+            switch (accessStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(accessErr)
+            }
+
+            const {
+                status: refreshStatus,
+                data: refreshToken,
+                error: refreshErr
+            } = tokenService.generateRefreshToken(sessionWithUser)
+
+            switch (refreshStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(refreshErr)
+            }
 
             log.info({ username: request.username }, 'Login successful')
-            return {
+
+            return ok({
                 accessToken,
                 refreshToken,
                 expiresIn: config.accessTokenTTL,
                 issuedAt: lastRefresh.toISOString(),
-                tokenType: 'Bearer'
-            }
+                tokenType: TokenTypes.Bearer
+            })
         },
 
         /** @param {RefreshTokenDTO} request */
         async refresh(request) {
-            const payload = tokenService.verifyRefreshToken(request.refreshToken)
+            const {
+                status: verifyStatus,
+                data: payload,
+                error: verifyErr
+            } = tokenService.verifyRefreshToken(request.refreshToken)
 
-            const session = await sessionRepository.findByJti(payload.jti)
-            if (!session) {
-                throw new Error('Session not found')
+            switch (verifyStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(verifyErr)
             }
 
-            if (new Date() > session.expiresAt) {
-                throw new Error('Session expired')
+            const {
+                status: findStatus,
+                data: session,
+                error: findErr
+            } = await sessionRepository.findByJti(payload.jti)
+
+            switch (findStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(findErr)
+                case SessionRepositoryFailuresEnum.NOT_FOUND:
+                    return failure(AuthServiceFailures.SESSION_NOT_FOUND)
             }
+
+            if (new Date() > session.expiresAt) return failure(AuthServiceFailures.SESSION_EXPIRED)
 
             const newJti = randomUUID()
             const lastRefresh = new Date()
             const expiresAt = new Date(lastRefresh.getTime() + config.refreshTokenTTL * 1000)
 
-            await sessionRepository.update(session.id, {
-                jti: newJti,
-                lastRefresh
-            })
+            const { status: updateStatus, error: updateErr } = await sessionRepository.update(
+                session.id,
+                {
+                    jti: newJti,
+                    lastRefresh
+                }
+            )
+
+            switch (updateStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(updateErr)
+                case SessionRepositoryFailuresEnum.CONFLICT:
+                    return error('Unexpected session conflict')
+            }
 
             const updatedSession = {
                 id: session.id,
@@ -114,45 +209,123 @@ export function createAuthService(userRepository, sessionRepository, tokenServic
                 expiresAt
             }
 
-            const accessToken = tokenService.generateAccessToken(updatedSession)
-            const refreshToken = tokenService.generateRefreshToken(updatedSession)
+            const {
+                status: accessStatus,
+                data: accessToken,
+                error: accessErr
+            } = tokenService.generateAccessToken(updatedSession)
 
-            return {
+            switch (accessStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(accessErr)
+            }
+
+            const {
+                status: refreshStatus,
+                data: refreshToken,
+                error: refreshErr
+            } = tokenService.generateRefreshToken(updatedSession)
+
+            switch (refreshStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(refreshErr)
+            }
+
+            return ok({
                 accessToken,
                 refreshToken,
                 expiresIn: config.accessTokenTTL,
                 issuedAt: lastRefresh.toISOString(),
-                tokenType: 'Bearer'
-            }
+                tokenType: TokenTypes.Bearer
+            })
         },
 
         /** @param {RefreshTokenDTO} request */
         async logout(request) {
-            const payload = tokenService.verifyRefreshToken(request.refreshToken)
-            await sessionRepository.deleteByJti(payload.jti)
-            return { message: 'Logged out successfully' }
+            const {
+                status: verifyStatus,
+                data: payload,
+                error: verifyErr
+            } = tokenService.verifyRefreshToken(request.refreshToken)
+
+            switch (verifyStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(verifyErr)
+            }
+
+            const { status: deleteStatus, error: deleteErr } = await sessionRepository.deleteByJti(
+                payload.jti
+            )
+
+            switch (deleteStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(deleteErr)
+                case SessionRepositoryFailuresEnum.NOT_FOUND:
+                    return failure(AuthServiceFailures.SESSION_NOT_FOUND)
+            }
+
+            return ok({ message: 'Logged out successfully' })
         },
 
         /** @param {RevokeAllDTO} userId */
         async revokeAll({ userId }) {
-            await sessionRepository.deleteAllByUserId(userId)
-            return { message: 'All sessions revoked' }
+            const { status: deleteStatus, error: deleteErr } =
+                await sessionRepository.deleteAllByUserId(userId)
+
+            switch (deleteStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(deleteErr)
+            }
+
+            return ok({ message: 'All sessions revoked' })
         },
 
         /** @param {string} accessToken */
         async me(accessToken) {
-            const payload = tokenService.verifyAccessToken(accessToken)
-            const session = await sessionRepository.findByJti(payload.jti)
-            if (!session) {
-                throw new Error('Session not found')
+            const {
+                status: verifyStatus,
+                data: payload,
+                error: verifyErr
+            } = tokenService.verifyAccessToken(accessToken)
+
+            switch (verifyStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(verifyErr)
             }
-            if (new Date() > session.expiresAt) {
-                throw new Error('Session expired')
+
+            const {
+                status: findStatus,
+                data: session,
+                error: findErr
+            } = await sessionRepository.findByJti(payload.jti)
+
+            switch (findStatus) {
+                case ResultStatus.OK:
+                    break
+                case ResultStatus.ERROR:
+                    return error(findErr)
+                case SessionRepositoryFailuresEnum.NOT_FOUND:
+                    return failure(AuthServiceFailures.SESSION_NOT_FOUND)
             }
-            return {
+
+            if (new Date() > session.expiresAt) return failure(AuthServiceFailures.SESSION_EXPIRED)
+
+            return ok({
                 ...session,
                 user: parseUser(session.user)
-            }
+            })
         }
     }
 }

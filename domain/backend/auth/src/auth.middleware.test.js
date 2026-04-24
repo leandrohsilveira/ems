@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import Fastify from 'fastify'
 import { PERMISSIONS } from '@ems/domain-shared-auth'
 import authMiddleware from './auth.middleware.js'
+import { ok, error } from '@ems/utils'
 
 describe('authMiddleware', () => {
     /** @type {ReturnType<typeof Fastify>} */
@@ -99,10 +100,10 @@ describe('authMiddleware', () => {
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'USER' // USER role only has AUTH_ME permission
+                role: 'USER'
             }
 
-            mockMe.mockResolvedValue({ user: mockUser })
+            mockMe.mockResolvedValue(ok({ user: mockUser }))
 
             await fastify.ready()
 
@@ -124,10 +125,10 @@ describe('authMiddleware', () => {
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'MANAGER' // MANAGER role has USER_READ permission
+                role: 'MANAGER'
             }
 
-            mockMe.mockResolvedValue({ user: mockUser })
+            mockMe.mockResolvedValue(ok({ user: mockUser }))
 
             await fastify.ready()
 
@@ -149,10 +150,10 @@ describe('authMiddleware', () => {
                 firstName: 'Test',
                 lastName: 'User',
                 email: 'test@example.com',
-                role: 'ADMIN' // ADMIN role has both USER_READ and USER_WRITE
+                role: 'ADMIN'
             }
 
-            mockMe.mockResolvedValue({ user: mockUser })
+            mockMe.mockResolvedValue(ok({ user: mockUser }))
 
             await fastify.ready()
 
@@ -168,7 +169,6 @@ describe('authMiddleware', () => {
         })
 
         it('should return 403 when permissions array is empty', async () => {
-            // Add a route with empty permissions array
             await fastify.get(
                 '/test-empty-permissions',
                 {
@@ -188,7 +188,7 @@ describe('authMiddleware', () => {
                 role: 'ADMIN'
             }
 
-            mockMe.mockResolvedValue({ user: mockUser })
+            mockMe.mockResolvedValue(ok({ user: mockUser }))
 
             await fastify.ready()
 
@@ -204,7 +204,6 @@ describe('authMiddleware', () => {
         })
 
         it('should handle invalid permission strings gracefully', async () => {
-            // Add a route with invalid permission
             await fastify.get(
                 '/test-invalid-permission',
                 {
@@ -224,7 +223,7 @@ describe('authMiddleware', () => {
                 role: 'ADMIN'
             }
 
-            mockMe.mockResolvedValue({ user: mockUser })
+            mockMe.mockResolvedValue(ok({ user: mockUser }))
 
             await fastify.ready()
 
@@ -250,7 +249,7 @@ describe('authMiddleware', () => {
             role: 'USER'
         }
 
-        mockMe.mockResolvedValue({ user: mockUser })
+        mockMe.mockResolvedValue(ok({ user: mockUser }))
 
         await fastify.ready()
 
@@ -265,8 +264,8 @@ describe('authMiddleware', () => {
         expect(response.json()).toEqual({ user: mockUser })
     })
 
-    it('should return 401 when valid Bearer token but authService.me throws', async () => {
-        mockMe.mockRejectedValue(new Error('Invalid token'))
+    it('should return 401 when valid Bearer token but authService.me fails', async () => {
+        mockMe.mockResolvedValue(error(new Error('Invalid token')))
 
         await fastify.ready()
 
