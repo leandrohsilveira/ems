@@ -1,6 +1,7 @@
 <script>
     import { enhance } from '$app/forms'
     import { resolve } from '$app/paths'
+    import CenteredLayout from '@ems/ui/components/centered-layout'
     import SignupForm from '@ems/domain-frontend-auth/components/signup-form'
 
     /** @type {import('./$types.js').PageProps} */
@@ -14,7 +15,7 @@
     <title>{data.literals.title}</title>
 </svelte:head>
 
-<div class="bg-background flex min-h-screen items-center justify-center p-4">
+<CenteredLayout>
     <SignupForm
         literals={data.literals}
         errors={form?.errors}
@@ -22,4 +23,4 @@
         {enhance}
         {loginHref}
     />
-</div>
+</CenteredLayout>

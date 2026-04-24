@@ -1,5 +1,6 @@
 <script>
     import { resolve } from '$app/paths'
+    import CenteredLayout from '@ems/ui/components/centered-layout'
     import SignupSuccess from '@ems/domain-frontend-auth/components/signup-success'
 
     const { data } = $props()
@@ -12,6 +13,6 @@
     <title>{data.literals.title}</title>
 </svelte:head>
 
-<div class="bg-background flex min-h-screen items-center justify-center p-4">
+<CenteredLayout>
     <SignupSuccess literals={data.literals} {loginHref} />
-</div>
+</CenteredLayout>
