@@ -69,6 +69,7 @@ Account {
 ```
 
 Notes:
+
 - `type` is set to `BANK` initially; `CREDIT_CARD` will be added in a future iteration
 - `currency` defaults to the locale's currency (BRL for initial market)
 - `balance` uses `Decimal` for precision (no floating-point errors)
@@ -77,6 +78,7 @@ Notes:
 ### User Interface
 
 #### Account List Page (`/accounts`)
+
 - Page header: "Accounts" with a "New Account" button
 - List of account cards/rows showing:
   - Account name
@@ -86,12 +88,14 @@ Notes:
 - Empty state: "No accounts yet. Create your first account."
 
 #### Account Detail Page (`/accounts/:id`)
+
 - Account name (editable via inline edit or dedicated edit action)
 - Current balance (display only — balance changes happen through transactions)
 - Account metadata (type, currency, creation date)
 - Edit and Delete action buttons
 
 #### Create Account Form
+
 - Modal or inline form with fields:
   - Name (text input, required, max 100 chars)
   - Initial balance (currency input, optional, defaults to 0)
@@ -100,26 +104,28 @@ Notes:
 
 ### API Endpoints
 
-| Method | Endpoint              | Description                            |
-|--------|-----------------------|----------------------------------------|
-| POST   | /accounts             | Create a new bank account              |
-| GET    | /accounts             | List all accounts for the current user |
-| GET    | /accounts/:id         | Get account details by ID              |
-| PATCH  | /accounts/:id         | Update account name                    |
-| DELETE | /accounts/:id         | Delete an account (soft delete)        |
+| Method | Endpoint      | Description                            |
+| ------ | ------------- | -------------------------------------- |
+| POST   | /accounts     | Create a new bank account              |
+| GET    | /accounts     | List all accounts for the current user |
+| GET    | /accounts/:id | Get account details by ID              |
+| PATCH  | /accounts/:id | Update account name                    |
+| DELETE | /accounts/:id | Delete an account (soft delete)        |
 
 #### POST /accounts
 
 Request:
+
 ```json
 {
   "name": "Nubank Checking",
-  "initialBalance": 1000.00,
+  "initialBalance": 1000.0,
   "currency": "BRL"
 }
 ```
 
 Response (201):
+
 ```json
 {
   "account": {
@@ -127,7 +133,7 @@ Response (201):
     "name": "Nubank Checking",
     "type": "BANK",
     "currency": "BRL",
-    "balance": 1000.00,
+    "balance": 1000.0,
     "createdAt": "2026-04-25T00:00:00Z",
     "updatedAt": "2026-04-25T00:00:00Z"
   }
@@ -137,25 +143,29 @@ Response (201):
 #### GET /accounts
 
 Response (200):
+
 ```json
 {
-  "accounts": [
+  "items": [
     {
       "id": "uuid",
       "name": "Nubank Checking",
       "type": "BANK",
       "currency": "BRL",
-      "balance": 1000.00,
+      "balance": 1000.0,
       "createdAt": "2026-04-25T00:00:00Z",
       "updatedAt": "2026-04-25T00:00:00Z"
     }
-  ]
+  ],
+  "pageSize": 10,
+  "nextPageToken": null
 }
 ```
 
 #### GET /accounts/:id
 
 Response (200):
+
 ```json
 {
   "account": {
@@ -163,7 +173,7 @@ Response (200):
     "name": "Nubank Checking",
     "type": "BANK",
     "currency": "BRL",
-    "balance": 1000.00,
+    "balance": 1000.0,
     "createdAt": "2026-04-25T00:00:00Z",
     "updatedAt": "2026-04-25T00:00:00Z"
   }
@@ -173,6 +183,7 @@ Response (200):
 #### PATCH /accounts/:id
 
 Request:
+
 ```json
 {
   "name": "Nubank Joint Checking"
@@ -180,6 +191,7 @@ Request:
 ```
 
 Response (200):
+
 ```json
 {
   "account": {
@@ -187,7 +199,7 @@ Response (200):
     "name": "Nubank Joint Checking",
     "type": "BANK",
     "currency": "BRL",
-    "balance": 1000.00,
+    "balance": 1000.0,
     "createdAt": "2026-04-25T00:00:00Z",
     "updatedAt": "2026-04-26T00:00:00Z"
   }
@@ -197,6 +209,7 @@ Response (200):
 #### DELETE /accounts/:id
 
 Response (200):
+
 ```json
 {
   "message": "Account deleted successfully"
@@ -204,6 +217,7 @@ Response (200):
 ```
 
 Error (409) when account has transactions:
+
 ```json
 {
   "code": "HTTP",
@@ -265,11 +279,11 @@ Error (409) when account has transactions:
 
 ## Risks & Mitigations
 
-| Risk | Mitigation |
-|------|------------|
-| Deleting an account with existing transactions breaks financial history | Soft delete via `deletedAt`; block deletion if transactions exist |
-| Initial balance race condition if account creation and manual balance transaction are not atomic | Wrap both operations in a Prisma transaction |
-| Currency formatting varies by locale | Frontend formats currency based on account's currency field |
+| Risk                                                                                             | Mitigation                                                        |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| Deleting an account with existing transactions breaks financial history                          | Soft delete via `deletedAt`; block deletion if transactions exist |
+| Initial balance race condition if account creation and manual balance transaction are not atomic | Wrap both operations in a Prisma transaction                      |
+| Currency formatting varies by locale                                                             | Frontend formats currency based on account's currency field       |
 
 ## Acceptance Criteria
 
