@@ -461,5 +461,8 @@
       "type": "color",
       "value": "#ffffff"
     }
+  },
+  "imports": {
+    "O": "../../design-system.lib.pen"
   }
 }

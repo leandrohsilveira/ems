@@ -3029,7 +3029,8 @@
             },
             "FcSY0": {
               "width": "fill_container",
-              "height": "fit_content"
+              "height": "fit_content",
+              "y": 0
             },
             "SdDrF": {
               "width": "fill_container",
@@ -3124,7 +3125,8 @@
             },
             "J2yno": {
               "width": "fill_container",
-              "height": "fit_content"
+              "height": "fit_content",
+              "y": 0
             },
             "8mNGM": {
               "width": "fill_container",
