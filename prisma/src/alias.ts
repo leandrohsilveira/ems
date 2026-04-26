@@ -1,8 +1,12 @@
-import type { Prisma, Session, User } from './gen/client.js'
+import type { Account, Prisma, Session, User } from './gen/client.js'
 
 export interface PaginationCursor {
     size?: number
     cursor?: string | null
+}
+export interface PaginatedList<T> {
+    items: T[]
+    nextCursor: string | null
 }
 
 export type SessionWithUser = Session & { user: User }
@@ -16,9 +20,11 @@ export type UserUpdateInput = Prisma.UserUncheckedUpdateInput
 export type AccountCreateInput = Prisma.AccountUncheckedCreateInput
 export type AccountUpdateInput = Prisma.AccountUncheckedUpdateInput
 export interface AccountListFilterInput {
-    userId?: string
+    userId: string
 }
 export interface AccountListInput {
-    filter?: AccountListFilterInput
+    filter: AccountListFilterInput
     page?: PaginationCursor
 }
+
+export type AccountListPage = PaginatedList<Account>

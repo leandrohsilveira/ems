@@ -1,0 +1,38 @@
+{
+  "name": "@ems/domain-backend-account",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./testing": {
+      "types": "./src/testing/index.d.ts",
+      "default": "./src/testing/index.js"
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit --project jsconfig.json",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@ems/database": "*",
+    "@ems/domain-backend-auth": "*",
+    "@ems/domain-backend-schema": "*",
+    "@ems/domain-shared-account": "*",
+    "@ems/domain-shared-schema": "*",
+    "@ems/utils": "*",
+    "fastify": "^5.2.0",
+    "fastify-plugin": "^5.1.0",
+    "fastify-type-provider-zod": "^6.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

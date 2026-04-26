@@ -64,9 +64,9 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Steps:**
 
-- [ ] Create `domain/backend/account/` package structure with `package.json`
+- [x] Create `domain/backend/account/` package structure with `package.json`
 
-- [ ] **Account Repository** (`account.repository.js`):
+- [x] **Account Repository** (`account.repository.js`):
   - Factory function receiving PrismaClient
   - Create account (with initial balance via Prisma transaction)
   - Find all by user ID with cursor-based pagination (excluding soft-deleted); input type `AccountListInput` already defined in `prisma/src/alias.ts` (filter: `{ userId? }`, page: `{ size?, cursor? }`)
@@ -76,34 +76,34 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
   - Check if account has transactions (returns false initially — placeholder for future Transaction model)
   - Test file with mocked PrismaClient
 
-- [ ] **Account Service** (`account.service.js`):
+- [x] **Account Service** (`account.service.js`):
   - Factory function receiving repository
   - `create` — validates user ownership, creates account with MANUAL_BALANCE transaction seed
-  - `list` — returns paginated result: `{ items, pageSize, nextPageToken }` ordered by newest first
+  - `list` — returns paginated result: `{ items, size, nextPageCursor }` ordered by newest first
   - `getById` — returns single account, 404 for non-owner
   - `update` — rename account
   - `delete` — soft delete, 409 if has transactions
   - Test file with mocked repository
 
-- [ ] **Account Plugin** (`plugin.js`):
+- [x] **Account Plugin** (`plugin.js`):
   - Fastify plugin registered under `/accounts` prefix
-  - All routes protected by auth middleware
-  - POST `/accounts` — create, response schema: `{ account: AccountDTO }`
-  - GET `/accounts` — list, response schema: `{ items: AccountDTO[], pageSize: number, nextPageToken: string | null }`
-  - GET `/accounts/:id` — get by ID, response schema: `{ account: AccountDTO }`
-  - PATCH `/accounts/:id` — update, response schema: `{ account: AccountDTO }`
-  - DELETE `/accounts/:id` — delete, response schema: `{ message: string }`
+  - All routes protected via `app.allowOneOf` with `ACCOUNT_READ`/`ACCOUNT_WRITE` permissions
+  - POST `/` — create, response schema: `{ account: AccountDTO }`
+  - GET `/` — list, response schema: `{ items: AccountDTO[], size: number, nextPageCursor: string | null }`
+  - GET `/:id` — get by ID, response schema: `{ account: AccountDTO }`
+  - PATCH `/:id` — update, response schema: `{ account: AccountDTO }`
+  - DELETE `/:id` — delete, response schema: `{ message: string }`
   - Test file with mocked Fastify
 
-- [ ] Create `index.js` barrel export
+- [x] Create `index.js` barrel export
 
 **Dependencies:** Cycle 1, Cycle 2
 
 **Quality Gates:**
 
-- [ ] Lint passes
-- [ ] Tests pass
-- [ ] Type checking passes
+- [x] Lint passes
+- [x] Tests pass (41 tests)
+- [x] Type checking passes
 
 ### Cycle 4: UI Primitives — Modal & Sidebar in `@ems/ui`
 

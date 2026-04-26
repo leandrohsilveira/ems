@@ -1,4 +1,3 @@
-import './fastify.d.ts'
 export { default } from './plugin.js'
 export * from './user/index.js'
 export * from './session/index.js'

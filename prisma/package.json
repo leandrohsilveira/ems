@@ -5,7 +5,7 @@
     "scripts": {
         "build": "tsc",
         "dev": "tsc --watch",
-        "check": "tsc --noEmit --project jsconfig.json",
+        "check": "tsc --noEmit",
         "lint": "prettier --check . && eslint .",
         "format": "prettier --write ."
     },
@@ -13,6 +13,10 @@
         ".": {
             "types": "./dist/index.d.ts",
             "default": "./dist/index.js"
+        },
+        "./testing": {
+            "types": "./dist/testing/index.d.ts",
+            "default": "./dist/testing/index.js"
         }
     },
     "dependencies": {

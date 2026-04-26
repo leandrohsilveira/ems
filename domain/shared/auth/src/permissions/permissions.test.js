@@ -21,6 +21,8 @@ describe('Permissions Module', () => {
             expect(PERMISSIONS.USER_READ).toBe('user:read')
             expect(PERMISSIONS.USER_WRITE).toBe('user:write')
             expect(PERMISSIONS.USER_DELETE).toBe('user:delete')
+            expect(PERMISSIONS.ACCOUNT_READ).toBe('account:read')
+            expect(PERMISSIONS.ACCOUNT_WRITE).toBe('account:write')
         })
 
         it('should have all permission values as strings', () => {
@@ -56,7 +58,11 @@ describe('Permissions Module', () => {
 
         it('should have correct permissions for USER role', () => {
             const userPermissions = ROLE_PERMISSIONS[ROLES.USER]
-            expect(userPermissions).toEqual([PERMISSIONS.AUTH_ME])
+            expect(userPermissions).toEqual([
+                PERMISSIONS.AUTH_ME,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
+            ])
         })
 
         it('should have correct permissions for MANAGER role', () => {
@@ -64,7 +70,9 @@ describe('Permissions Module', () => {
             expect(managerPermissions).toEqual([
                 PERMISSIONS.AUTH_ME,
                 PERMISSIONS.USER_READ,
-                PERMISSIONS.USER_WRITE
+                PERMISSIONS.USER_WRITE,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
             ])
         })
 
@@ -75,7 +83,9 @@ describe('Permissions Module', () => {
                 PERMISSIONS.AUTH_REVOKE_ALL,
                 PERMISSIONS.USER_READ,
                 PERMISSIONS.USER_WRITE,
-                PERMISSIONS.USER_DELETE
+                PERMISSIONS.USER_DELETE,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
             ])
         })
     })
@@ -83,7 +93,11 @@ describe('Permissions Module', () => {
     describe('getPermissionsForRole', () => {
         it('should return permissions for USER role', () => {
             const permissions = getPermissionsForRole(ROLES.USER)
-            expect(permissions).toEqual([PERMISSIONS.AUTH_ME])
+            expect(permissions).toEqual([
+                PERMISSIONS.AUTH_ME,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
+            ])
         })
 
         it('should return permissions for MANAGER role', () => {
@@ -91,7 +105,9 @@ describe('Permissions Module', () => {
             expect(permissions).toEqual([
                 PERMISSIONS.AUTH_ME,
                 PERMISSIONS.USER_READ,
-                PERMISSIONS.USER_WRITE
+                PERMISSIONS.USER_WRITE,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
             ])
         })
 
@@ -102,7 +118,9 @@ describe('Permissions Module', () => {
                 PERMISSIONS.AUTH_REVOKE_ALL,
                 PERMISSIONS.USER_READ,
                 PERMISSIONS.USER_WRITE,
-                PERMISSIONS.USER_DELETE
+                PERMISSIONS.USER_DELETE,
+                PERMISSIONS.ACCOUNT_READ,
+                PERMISSIONS.ACCOUNT_WRITE
             ])
         })
 
@@ -139,12 +157,14 @@ describe('Permissions Module', () => {
     describe('getAllPermissions', () => {
         it('should return all permissions in the system', () => {
             const allPermissions = getAllPermissions()
-            expect(allPermissions).toHaveLength(5)
+            expect(allPermissions).toHaveLength(7)
             expect(allPermissions).toContain(PERMISSIONS.AUTH_ME)
             expect(allPermissions).toContain(PERMISSIONS.AUTH_REVOKE_ALL)
             expect(allPermissions).toContain(PERMISSIONS.USER_READ)
             expect(allPermissions).toContain(PERMISSIONS.USER_WRITE)
             expect(allPermissions).toContain(PERMISSIONS.USER_DELETE)
+            expect(allPermissions).toContain(PERMISSIONS.ACCOUNT_READ)
+            expect(allPermissions).toContain(PERMISSIONS.ACCOUNT_WRITE)
         })
 
         it('should return frozen array', () => {

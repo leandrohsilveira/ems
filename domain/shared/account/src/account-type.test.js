@@ -1,34 +1,26 @@
 import { describe, it, expect } from 'vitest'
-import { ACCOUNT_TYPE, getAllAccountTypes } from './account-type.js'
+import { AccountType } from './account-type.js'
 
 describe('account-type', () => {
-    describe('ACCOUNT_TYPE', () => {
-        it('should export account types as frozen object', () => {
-            expect(ACCOUNT_TYPE).toBeDefined()
-            expect(Object.isFrozen(ACCOUNT_TYPE)).toBe(true)
+    describe('AccountType', () => {
+        it('should export account types as enum', () => {
+            expect(AccountType).toBeDefined()
         })
 
         it('should have BANK account type', () => {
-            expect(ACCOUNT_TYPE.BANK).toBe('BANK')
+            expect(AccountType.BANK).toBe('BANK')
         })
 
         it('should have all values as strings', () => {
-            Object.values(ACCOUNT_TYPE).forEach((type) => {
+            AccountType.values().forEach((type) => {
                 expect(typeof type).toBe('string')
             })
         })
-    })
 
-    describe('getAllAccountTypes', () => {
-        it('should return all account types', () => {
-            const types = getAllAccountTypes()
+        it('should return values via values()', () => {
+            const types = AccountType.values()
             expect(types).toHaveLength(1)
-            expect(types).toContain(ACCOUNT_TYPE.BANK)
-        })
-
-        it('should return frozen array', () => {
-            const types = getAllAccountTypes()
-            expect(Object.isFrozen(types)).toBe(true)
+            expect(types).toContain(AccountType.BANK)
         })
     })
 })

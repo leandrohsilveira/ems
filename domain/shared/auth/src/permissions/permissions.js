@@ -11,6 +11,8 @@
  * - `user:read` - Read user information
  * - `user:write` - Create/update users
  * - `user:delete` - Delete users
+ * - `account:read` - View own bank accounts
+ * - `account:write` - Create/update/delete own bank accounts
  */
 
 /**
@@ -25,7 +27,11 @@ export const PERMISSIONS = Object.freeze({
     // User management permissions
     USER_READ: 'user:read',
     USER_WRITE: 'user:write',
-    USER_DELETE: 'user:delete'
+    USER_DELETE: 'user:delete',
+
+    // Account management permissions
+    ACCOUNT_READ: 'account:read',
+    ACCOUNT_WRITE: 'account:write'
 })
 
 /**
@@ -43,18 +49,26 @@ export const ROLES = Object.freeze({
  * @type {Readonly<Record<string, readonly string[]>>}
  */
 export const ROLE_PERMISSIONS = Object.freeze({
-    [ROLES.USER]: Object.freeze([PERMISSIONS.AUTH_ME]),
+    [ROLES.USER]: Object.freeze([
+        PERMISSIONS.AUTH_ME,
+        PERMISSIONS.ACCOUNT_READ,
+        PERMISSIONS.ACCOUNT_WRITE
+    ]),
     [ROLES.MANAGER]: Object.freeze([
         PERMISSIONS.AUTH_ME,
         PERMISSIONS.USER_READ,
-        PERMISSIONS.USER_WRITE
+        PERMISSIONS.USER_WRITE,
+        PERMISSIONS.ACCOUNT_READ,
+        PERMISSIONS.ACCOUNT_WRITE
     ]),
     [ROLES.ADMIN]: Object.freeze([
         PERMISSIONS.AUTH_ME,
         PERMISSIONS.AUTH_REVOKE_ALL,
         PERMISSIONS.USER_READ,
         PERMISSIONS.USER_WRITE,
-        PERMISSIONS.USER_DELETE
+        PERMISSIONS.USER_DELETE,
+        PERMISSIONS.ACCOUNT_READ,
+        PERMISSIONS.ACCOUNT_WRITE
     ])
 })
 

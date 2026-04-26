@@ -25,5 +25,8 @@
         "fastify-plugin": "^5.1.0",
         "fastify-type-provider-zod": "^6.1.0",
         "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@ems/domain-shared-auth": "*"
     }
 }
