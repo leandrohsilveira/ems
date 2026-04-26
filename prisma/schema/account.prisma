@@ -1,0 +1,18 @@
+enum AccountType {
+  BANK
+}
+
+model Account {
+  id        String      @id @default(uuid())
+  userId    String
+  name      String
+  type      AccountType
+  currency  String
+  balance   Decimal     @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  deletedAt DateTime?
+  user      User        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}

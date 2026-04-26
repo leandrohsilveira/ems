@@ -18,18 +18,18 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Steps:**
 
-- [ ] Create `prisma/schema/account.prisma` with `AccountType` enum and `Account` model
-- [ ] Add `deletedAt` (nullable), `balance` as Decimal, relation to User
-- [ ] Run `npm run db:generate` to generate Prisma client
-- [ ] Write tests verifying the generated model types
+- [x] Create `prisma/schema/account.prisma` with `AccountType` enum and `Account` model
+- [x] Add `deletedAt` (nullable), `balance` as Decimal, relation to User
+- [x] Run `npm run db:generate` to generate Prisma client
+- [x] Write tests verifying the generated model types
 
 **Dependencies:** None (innermost layer)
 
 **Quality Gates:**
 
-- [ ] Lint passes
-- [ ] Prisma generates successfully
-- [ ] Type checking passes
+- [x] Lint passes
+- [x] Prisma generates successfully
+- [x] Type checking passes
 
 ### Cycle 2: Shared Domain Package — `@ems/domain-shared-account`
 

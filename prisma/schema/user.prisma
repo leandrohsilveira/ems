@@ -13,4 +13,5 @@ model User {
   password  String
   role      Role
   sessions  Session[]
+  accounts  Account[]
 }
