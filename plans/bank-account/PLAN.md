@@ -124,14 +124,14 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
   - Different sizes/scenarios
 
 - [ ] **Sidebar component** (`packages/ui/src/lib/components/sidebar/`):
-  - Navigation sidebar with logo, nav items, user footer
-  - Active state for nav items
-  - Props: items, activeItem, user, onNavigate
+  - Uses component composition: `<Sidebar>` wraps children with header and footer snippets, `<SidebarItem>` for each nav entry
+  - `Sidebar` is the **default export** — handles layout shell: `{#snippet header()}`, `{#snippet footer()}`, and default slot for nav items
+  - `SidebarItem` is a **named export** — handles individual nav item (icon, label, active state, onclick, href)
   - TDD: write tests first
-  - Create `index.js` barrel export
+  - Create `index.js` barrel export re-exporting `Sidebar` (default) and `SidebarItem` (named)
 
 - [ ] **Sidebar Storybook stories** (`sidebar.stories.svelte`):
-  - Default sidebar with nav items
+  - Default sidebar with nav items via `<SidebarItem>` composition
   - With active item highlighted
 
 - [ ] Export both from `packages/ui/src/lib/index.js`

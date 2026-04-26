@@ -9,6 +9,8 @@ This document tracks all deviations from the approved implementation plan. Each 
 | Date | Cycle | Original Plan | Problem Identified | Proposed Solution | Impact | Approval | Implemented |
 |------|-------|---------------|-------------------|-------------------|--------|----------|-------------|
 
+| 2026-04-26 | 4 | Sidebar uses props `items`, `activeItem`, `onNavigate` accepting an array of item objects | Parameter object/array composition is inflexible for varying sidebar content (custom logos, user footers) | Use component composition: `Sidebar` as default export with `{#snippet header()}` and `{#snippet footer()}`, `SidebarItem` as named export for each nav entry. Consumer composes children declaratively instead of passing a config object. | Low — more flexible, aligns with Svelte idioms | Approved | Pending |
+
 ## Approved Deviations
 
 | Date | Cycle | Original Plan | Problem Identified | Proposed Solution | Impact | Approval | Implemented |
