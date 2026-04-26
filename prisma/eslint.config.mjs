@@ -32,7 +32,7 @@ export default defineConfig(
             languageOptions: {
                 parser: tsParser,
                 parserOptions: {
-                    project: path.resolve(import.meta.dirname, 'jsconfig.json'), // Enables type checking
+                    project: path.resolve(import.meta.dirname, 'tsconfig.json'), // Enables type checking
                     sourceType: 'module'
                 }
             },

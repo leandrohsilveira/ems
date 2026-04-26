@@ -1,28 +1,20 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": [
-      "ESNext"
-    ],
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "isolatedModules": true
-  },
-  "include": [
-    "src/*.ts",
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "lib": ["ESNext"],
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "isolatedModules": true
+    },
+    "include": ["src/*.ts", "src/**/*.ts", "src/*.js", "src/**/*.js"],
+    "exclude": ["node_modules", "dist"]
 }
