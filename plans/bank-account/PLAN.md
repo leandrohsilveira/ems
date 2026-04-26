@@ -35,13 +35,16 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Objective:** Create shared DTOs, Zod schemas, and i18n for the account domain.
 
+**Pre-condition:** A shared `pagination.dto.js` already exists in `@ems/domain-shared-schema` providing `createPageDtoSchema(items)` factory, `pageInputDtoSchema`, `PageInputDTO` and `PageDTO` types. This was created ahead of schedule and must be reused instead of rolling custom pagination.
+
 **Steps:**
 
 - [ ] Create `domain/shared/account/` package structure with `package.json`
 - [ ] Create `create-account.dto.js` — Zod schema with i18n (name, initialBalance, currency)
 - [ ] Create `update-account.dto.js` — Zod schema with i18n (name)
 - [ ] Create `account.dto.js` — response DTO with all account fields
-- [ ] Create `account-list.dto.js` — paginated list response: `{ items: AccountDTO[], pageSize: number, nextPageToken: string | null }`
+- [ ] Create `account-list.dto.js` — paginated list response using `createPageDtoSchema(accountDtoSchema)` from `@ems/domain-shared-schema` (yields `{ items: AccountDTO[], size: number, nextPageCursor: string | null }`; note that field names differ from the spec's `pageSize`/`nextPageToken`)
+- [ ] Create `account-list-input.dto.js` — input DTO using `pageInputDtoSchema` for cursor-based list requests (filter by userId, optional pagination)
 - [ ] Create `account-errors.i18n.js` — error literals for account operations
 - [ ] Create `account-type.js` — enum-like constants for AccountType (BANK)
 - [ ] Create `index.js` barrel export
@@ -66,7 +69,7 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 - [ ] **Account Repository** (`account.repository.js`):
   - Factory function receiving PrismaClient
   - Create account (with initial balance via Prisma transaction)
-  - Find all by user ID with cursor-based pagination (excluding soft-deleted)
+  - Find all by user ID with cursor-based pagination (excluding soft-deleted); input type `AccountListInput` already defined in `prisma/src/alias.ts` (filter: `{ userId? }`, page: `{ size?, cursor? }`)
   - Find by ID (excluding soft-deleted)
   - Update account name
   - Soft delete account (set `deletedAt`)
