@@ -39,24 +39,24 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Steps:**
 
-- [ ] Create `domain/shared/account/` package structure with `package.json`
-- [ ] Create `create-account.dto.js` — Zod schema with i18n (name, initialBalance, currency)
-- [ ] Create `update-account.dto.js` — Zod schema with i18n (name)
-- [ ] Create `account.dto.js` — response DTO with all account fields
-- [ ] Create `account-list.dto.js` — paginated list response using `createPageDtoSchema(accountDtoSchema)` from `@ems/domain-shared-schema` (yields `{ items: AccountDTO[], size: number, nextPageCursor: string | null }`; note that field names differ from the spec's `pageSize`/`nextPageToken`)
-- [ ] Create `account-list-input.dto.js` — input DTO using `pageInputDtoSchema` for cursor-based list requests (filter by userId, optional pagination)
-- [ ] Create `account-errors.i18n.js` — error literals for account operations
-- [ ] Create `account-type.js` — enum-like constants for AccountType (BANK)
-- [ ] Create `index.js` barrel export
-- [ ] Write tests for all schemas
+- [x] Create `domain/shared/account/` package structure with `package.json`
+- [x] Create `create-account.dto.js` — Zod schema with i18n (name, initialBalance, currency)
+- [x] Create `update-account.dto.js` — Zod schema with i18n (name)
+- [x] Create `account.dto.js` — response DTO with all account fields
+- [x] Create `account-list.dto.js` — paginated list response using `createPageDtoSchema(accountDtoSchema)` from `@ems/domain-shared-schema` (yields `{ items, size, nextPageCursor }`; note that field names differ from the spec's `pageSize`/`nextPageToken`)
+- [x] Create `account-list-input.dto.js` — input DTO using `pageInputDtoSchema` for cursor-based list requests (filter by userId, optional pagination)
+- [x] Create `account-errors.i18n.js` — error literals for account operations
+- [x] Create `account-type.js` — enum-like constants for AccountType (BANK)
+- [x] Create `index.js` barrel export
+- [x] Write tests for all schemas
 
 **Dependencies:** None (shared layer)
 
 **Quality Gates:**
 
-- [ ] Lint passes
-- [ ] Tests pass
-- [ ] Type checking passes
+- [x] Lint passes
+- [x] Tests pass (39 tests, 7 test files)
+- [x] Type checking passes
 
 ### Cycle 3: Backend Domain Package — `@ems/domain-backend-account`
 

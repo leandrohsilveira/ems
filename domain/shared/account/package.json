@@ -1,0 +1,28 @@
+{
+    "name": "@ems/domain-shared-account",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.js"
+        }
+    },
+    "scripts": {
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write .",
+        "test": "vitest run --passWithNoTests"
+    },
+    "devDependencies": {
+        "@types/node": "^25.5.0",
+        "typescript": "^5.9.3",
+        "vitest": "^4.1.0"
+    },
+    "dependencies": {
+        "@ems/domain-shared-schema": "*",
+        "@ems/i18n": "*",
+        "@ems/utils": "*",
+        "zod": "^4.3.6"
+    }
+}
