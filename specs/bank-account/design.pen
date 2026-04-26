@@ -29,40 +29,42 @@
               "x": 8,
               "y": 8,
               "descendants": {
+                "h:nm75J": {
+                  "width": "fill_container"
+                },
                 "h:sm4F5": {
                   "height": "fit_content",
-                  "y": 28
+                  "y": 24,
+                  "width": "fill_container"
                 },
                 "h:MOPTE": {
                   "type": "frame",
                   "id": "qFqAd",
                   "name": "emsBadge",
-                  "width": 32,
-                  "height": 32,
-                  "fill": "$h:--primary",
-                  "cornerRadius": 999,
+                  "width": 64,
+                  "height": 64,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../../design-assets/logo-asset.png",
+                    "mode": "fit"
+                  },
+                  "cornerRadius": 4,
                   "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "fkpNX",
-                      "fill": "$h:--primary-foreground",
-                      "content": "EMS",
-                      "fontFamily": "Inter",
-                      "fontSize": 11,
-                      "fontWeight": "600"
-                    }
-                  ]
+                  "alignItems": "center"
                 },
                 "h:Fpzpi": {
-                  "x": 40,
-                  "y": 2.5,
+                  "x": 72,
+                  "y": 18.5,
                   "content": "EMS",
                   "fontSize": 18
                 },
+                "h:Ubnpg": {
+                  "x": 184
+                },
                 "h:hYFpr": {
                   "height": "fill_container",
+                  "width": "fill_container",
                   "children": [
                     {
                       "id": "NsuLB",
@@ -160,7 +162,20 @@
                   ]
                 },
                 "h:d16lm": {
-                  "y": 784
+                  "y": 784,
+                  "width": "fill_container"
+                },
+                "h:Ztrx6": {
+                  "width": "fill_container"
+                },
+                "h:56YSe": {
+                  "width": "fill_container"
+                },
+                "h:95h3W": {
+                  "width": "fill_container"
+                },
+                "h:xqIDC": {
+                  "x": 200
                 }
               }
             }
@@ -816,7 +831,7 @@
                   "type": "ref",
                   "ref": "h:uUsbB",
                   "x": 0,
-                  "y": 4,
+                  "y": 12,
                   "descendants": {
                     "h:zF167": {
                       "iconFontName": "menu"
@@ -827,23 +842,17 @@
                   "type": "frame",
                   "id": "pZYB3",
                   "name": "emsLogo",
-                  "width": 48,
-                  "height": 48,
-                  "fill": "$h:--primary",
-                  "cornerRadius": 999,
+                  "width": 64,
+                  "height": 64,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../../design-assets/logo-asset.png",
+                    "mode": "fit"
+                  },
+                  "cornerRadius": 8,
                   "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "kjAJN",
-                      "fill": "$h:--primary-foreground",
-                      "content": "EMS",
-                      "fontFamily": "Inter",
-                      "fontSize": 16,
-                      "fontWeight": "600"
-                    }
-                  ]
+                  "alignItems": "center"
                 },
                 {
                   "type": "frame",
@@ -1273,40 +1282,42 @@
                   "x": 8,
                   "y": 8,
                   "descendants": {
+                    "h:nm75J": {
+                      "width": "fill_container"
+                    },
                     "h:sm4F5": {
                       "height": "fit_content",
-                      "y": 28
+                      "y": 24,
+                      "width": "fill_container"
                     },
                     "h:MOPTE": {
                       "type": "frame",
                       "id": "l1DmS",
                       "name": "emsBadge",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$h:--primary",
-                      "cornerRadius": 999,
+                      "width": 64,
+                      "height": 64,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../../design-assets/logo-asset.png",
+                        "mode": "fit"
+                      },
+                      "cornerRadius": 4,
                       "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "uyHUO",
-                          "fill": "$h:--primary-foreground",
-                          "content": "EMS",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "alignItems": "center"
                     },
                     "h:Fpzpi": {
-                      "x": 40,
-                      "y": 2.5,
+                      "x": 72,
+                      "y": 18.5,
                       "content": "EMS",
                       "fontSize": 18
                     },
+                    "h:Ubnpg": {
+                      "x": 184
+                    },
                     "h:hYFpr": {
                       "height": "fill_container",
+                      "width": "fill_container",
                       "children": [
                         {
                           "id": "F4S1H",
@@ -1404,7 +1415,20 @@
                       ]
                     },
                     "h:d16lm": {
-                      "y": 784
+                      "y": 784,
+                      "width": "fill_container"
+                    },
+                    "h:Ztrx6": {
+                      "width": "fill_container"
+                    },
+                    "h:56YSe": {
+                      "width": "fill_container"
+                    },
+                    "h:95h3W": {
+                      "width": "fill_container"
+                    },
+                    "h:xqIDC": {
+                      "x": 200
                     }
                   }
                 }
@@ -2118,7 +2142,11 @@
                   ]
                 },
                 "h:508Xp": {
-                  "y": 396
+                  "y": 396,
+                  "height": "fit_content"
+                },
+                "h:YWp6U": {
+                  "height": "fit_content"
                 },
                 "h:YWp6U/h:dwwx2": {
                   "x": 132.5,
@@ -2130,7 +2158,12 @@
                 },
                 "h:YWp6U/h:fIEfR": {
                   "content": "Create Account",
-                  "x": 147.5
+                  "x": 147.5,
+                  "y": 16
+                },
+                "h:wvFdE": {
+                  "height": "fit_content",
+                  "y": 102
                 },
                 "h:wvFdE/h:dwwx2": {
                   "x": 161.5,
@@ -2142,7 +2175,8 @@
                 },
                 "h:wvFdE/h:fIEfR": {
                   "content": "Cancel",
-                  "x": 176.5
+                  "x": 176.5,
+                  "y": 16
                 }
               }
             }
@@ -2190,40 +2224,42 @@
                   "x": 8,
                   "y": 8,
                   "descendants": {
+                    "h:nm75J": {
+                      "width": "fill_container"
+                    },
                     "h:sm4F5": {
                       "height": "fit_content",
-                      "y": 28
+                      "y": 24,
+                      "width": "fill_container"
                     },
                     "h:MOPTE": {
                       "type": "frame",
                       "id": "JoF3h",
                       "name": "emsBadge",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$h:--primary",
-                      "cornerRadius": 999,
+                      "width": 64,
+                      "height": 64,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../../design-assets/logo-asset.png",
+                        "mode": "fit"
+                      },
+                      "cornerRadius": 4,
                       "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "1mrnz",
-                          "fill": "$h:--primary-foreground",
-                          "content": "EMS",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "alignItems": "center"
                     },
                     "h:Fpzpi": {
-                      "x": 40,
-                      "y": 2.5,
+                      "x": 72,
+                      "y": 18.5,
                       "content": "EMS",
                       "fontSize": 18
                     },
+                    "h:Ubnpg": {
+                      "x": 184
+                    },
                     "h:hYFpr": {
                       "height": "fill_container",
+                      "width": "fill_container",
                       "children": [
                         {
                           "id": "wFSaV",
@@ -2321,7 +2357,20 @@
                       ]
                     },
                     "h:d16lm": {
-                      "y": 784
+                      "y": 784,
+                      "width": "fill_container"
+                    },
+                    "h:Ztrx6": {
+                      "width": "fill_container"
+                    },
+                    "h:56YSe": {
+                      "width": "fill_container"
+                    },
+                    "h:95h3W": {
+                      "width": "fill_container"
+                    },
+                    "h:xqIDC": {
+                      "x": 200
                     }
                   }
                 }
@@ -3036,40 +3085,42 @@
                   "x": 8,
                   "y": 8,
                   "descendants": {
+                    "h:nm75J": {
+                      "width": "fill_container"
+                    },
                     "h:sm4F5": {
                       "height": "fit_content",
-                      "y": 28
+                      "y": 24,
+                      "width": "fill_container"
                     },
                     "h:MOPTE": {
                       "type": "frame",
                       "id": "JYS4j",
                       "name": "emsBadge",
-                      "width": 32,
-                      "height": 32,
-                      "fill": "$h:--primary",
-                      "cornerRadius": 999,
+                      "width": 64,
+                      "height": 64,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../../design-assets/logo-asset.png",
+                        "mode": "fit"
+                      },
+                      "cornerRadius": 4,
                       "justifyContent": "center",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "2VVbY",
-                          "fill": "$h:--primary-foreground",
-                          "content": "EMS",
-                          "fontFamily": "Inter",
-                          "fontSize": 11,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "alignItems": "center"
                     },
                     "h:Fpzpi": {
-                      "x": 40,
-                      "y": 2.5,
+                      "x": 72,
+                      "y": 18.5,
                       "content": "EMS",
                       "fontSize": 18
                     },
+                    "h:Ubnpg": {
+                      "x": 184
+                    },
                     "h:hYFpr": {
                       "height": "fill_container",
+                      "width": "fill_container",
                       "children": [
                         {
                           "id": "nbQOB",
@@ -3167,7 +3218,20 @@
                       ]
                     },
                     "h:d16lm": {
-                      "y": 784
+                      "y": 784,
+                      "width": "fill_container"
+                    },
+                    "h:Ztrx6": {
+                      "width": "fill_container"
+                    },
+                    "h:56YSe": {
+                      "width": "fill_container"
+                    },
+                    "h:95h3W": {
+                      "width": "fill_container"
+                    },
+                    "h:xqIDC": {
+                      "x": 200
                     }
                   }
                 }
@@ -3881,7 +3945,11 @@
                   ]
                 },
                 "h:508Xp": {
-                  "y": 396
+                  "y": 396,
+                  "height": "fit_content"
+                },
+                "h:YWp6U": {
+                  "height": "fit_content"
                 },
                 "h:YWp6U/h:dwwx2": {
                   "x": 132.5,
@@ -3893,7 +3961,12 @@
                 },
                 "h:YWp6U/h:fIEfR": {
                   "content": "Save Changes",
-                  "x": 151.5
+                  "x": 151.5,
+                  "y": 16
+                },
+                "h:wvFdE": {
+                  "height": "fit_content",
+                  "y": 102
                 },
                 "h:wvFdE/h:dwwx2": {
                   "x": 161.5,
@@ -3905,7 +3978,8 @@
                 },
                 "h:wvFdE/h:fIEfR": {
                   "content": "Cancel",
-                  "x": 176.5
+                  "x": 176.5,
+                  "y": 16
                 }
               }
             }

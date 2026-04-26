@@ -56,25 +56,16 @@
                   "name": "Logo Badge",
                   "width": 48,
                   "height": 48,
-                  "fill": "#3b82f6",
-                  "cornerRadius": 9999,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../../design-assets/logo-asset.png",
+                    "mode": "fit"
+                  },
+                  "cornerRadius": 8,
                   "layout": "vertical",
                   "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "5JOjv",
-                      "name": "logoText",
-                      "fill": "#ffffff",
-                      "content": "EMS",
-                      "lineHeight": 1.4286,
-                      "textAlign": "center",
-                      "fontFamily": "Inter",
-                      "fontSize": 14,
-                      "fontWeight": "600"
-                    }
-                  ]
+                  "alignItems": "center"
                 },
                 {
                   "type": "text",

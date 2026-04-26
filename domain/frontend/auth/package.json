@@ -53,6 +53,7 @@
     ],
     "dependencies": {
         "@ems/http": "*",
+        "@ems/domain-frontend-assets": "*",
         "@ems/domain-shared-auth": "*",
         "@ems/domain-shared-schema": "*",
         "@ems/ui": "*",

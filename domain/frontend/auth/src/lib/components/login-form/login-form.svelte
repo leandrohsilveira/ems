@@ -3,6 +3,7 @@
     import Checkbox from '@ems/ui/components/checkbox'
     import Button from '@ems/ui/components/button'
     import Paper from '@ems/ui/components/paper'
+    import Logo from '@ems/domain-frontend-assets/logo.svg?component'
 
     /** @type {import('./types.js').LoginFormProps} */
     let { literals, errors, errorMessage, enhance, action = '/login', signupHref } = $props()
@@ -11,16 +12,15 @@
     let rememberMe = $state(false)
 </script>
 
-<Paper class="flex w-full max-w-[420px] flex-col gap-4">
+<Paper class="flex w-full max-w-105 flex-col gap-4">
     {#snippet header()}
         <!-- Header with logo and title -->
         <div class="flex flex-col items-center gap-4">
-            <div
-                class="bg-primary text-primary-foreground flex h-12 w-12 items-center justify-center rounded-full font-semibold"
-            >
-                {literals.headerApp}
+            <div class="flex flex-col items-center gap-2">
+                <Logo class="text-primary h-24 w-24" />
+                <h1 class="text-primary text-lg font-bold">{literals.headerApp}</h1>
             </div>
-            <h1 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h1>
+            <h2 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h2>
         </div>
     {/snippet}
 
