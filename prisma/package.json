@@ -1,20 +1,23 @@
 {
-  "name": "@ems/database",
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "name": "@ems/database",
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "check": "tsc --noEmit --project jsconfig.json",
+        "lint": "prettier --check . && eslint .",
+        "format": "prettier --write ."
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "dependencies": {
+        "@ems/utils": "*",
+        "@prisma/adapter-better-sqlite3": "^7.5.0",
+        "@prisma/client": "*"
     }
-  },
-  "dependencies": {
-    "@ems/utils": "*",
-    "@prisma/adapter-better-sqlite3": "^7.5.0",
-    "@prisma/client": "*"
-  }
 }
