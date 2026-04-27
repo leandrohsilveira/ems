@@ -144,6 +144,14 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
   - Default sidebar with nav items via `<SidebarHeader>`/`<SidebarContent>`/`<SidebarFooter>` composition
   - With active item highlighted
 
+- [x] **InputNumeric component** (`packages/ui/src/lib/components/input-numeric/`):
+  - Wraps Input with auto-formatting for numeric values (unit, decimal, currency, percent)
+  - Uses `Intl.NumberFormat.formatToParts` to separate value from unit/symbol (unit stored but not displayed in input)
+  - `format` prop accepts `Intl.NumberFormatOptions`; `locale` defaults to `'en'`
+  - `value` is `$bindable('')` via `normalizeFormatterOptions`
+  - TDD: tests cover unit (no digits), decimal, currency, percent (with/without digits), non-digit stripping, empty value, and default behavior
+  - Created `index.js`, `format.js`, `types.ts`, `input-numeric.stories.svelte`, `input-numeric.svelte.test.js`
+
 - [x] Export both from `packages/ui/src/lib/index.js`
 
 **Dependencies:** None (standalone UI package)
