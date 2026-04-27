@@ -1,13 +1,13 @@
 import type { Snippet } from 'svelte'
 
-export type PaperProps = {
+export type ModalProps = {
+    open?: boolean
     children?: Snippet
     class?: string
     testId?: string
-    element?: string
 }
 
-export type PaperSectionProps = {
+export type ModalSectionProps = {
     children?: Snippet
     class?: string
     testId?: string

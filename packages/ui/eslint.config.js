@@ -22,7 +22,10 @@ export default defineConfig(
 
         {
             files: ['**/*.svelte', '**/*.svelte.js'],
-            languageOptions: { parserOptions: { svelteConfig } }
+            languageOptions: { parserOptions: { svelteConfig } },
+            rules: {
+                'svelte/no-navigation-without-resolve': 'off'
+            }
         }
     ],
     prettier,

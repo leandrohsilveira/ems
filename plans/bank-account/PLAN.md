@@ -111,40 +111,50 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Steps:**
 
-- [ ] **Modal component** (`packages/ui/src/lib/components/modal/`):
+- [x] **Modal component** (`packages/ui/src/lib/components/modal/`):
   - Overlay (fixed inset, `bg-black/40`, centered content)
-  - Header slot (title + subtitle)
-  - Content slot (form body)
-  - Actions slot (primary/secondary buttons)
+  - Uses component composition: `<ModalHeader>`, `<ModalContent>`, `<ModalActions>` as section sub-components
+  - `Modal` is the **default export** — no snippet props, just `children`
+  - `ModalHeader`, `ModalContent`, `ModalActions` are **named exports** — each accepts `children`, `class`, `testId`
   - TDD: write tests first with vitest-browser-svelte
-  - Create `index.js` barrel export
+  - Create `index.js` barrel export re-exporting `Modal` (default), `ModalHeader`, `ModalContent`, `ModalActions` (named)
 
-- [ ] **Modal Storybook stories** (`modal.stories.svelte`):
-  - Default modal with sample content
-  - Different sizes/scenarios
+- [x] **Modal Storybook stories** (`modal.stories.svelte`):
+  - Default modal with sample content via `<ModalHeader>`/`<ModalContent>`/`<ModalActions>` composition
+  - Form layout scenario
 
-- [ ] **Sidebar component** (`packages/ui/src/lib/components/sidebar/`):
-  - Uses component composition: `<Sidebar>` wraps children with header and footer snippets, `<SidebarItem>` for each nav entry
-  - `Sidebar` is the **default export** — handles layout shell: `{#snippet header()}`, `{#snippet footer()}`, and default slot for nav items
+- [x] **Paper refactoring** (`packages/ui/src/lib/components/paper/`):
+  - Paper no longer has `header`/`footer` snippets — only renders `children` inside card container
+  - Create `PaperHeader`, `PaperContent`, `PaperFooter` as standalone sub-components (each with `children`, `class`, `testId`)
+  - Consumers compose sections declaratively and control padding via `class` instead of hardcoded values
+  - TDD: update existing tests, add tests for sub-components
+  - Update Storybook stories to use composition pattern
+  - Update all Paper consumers (login-form, signup-form, signup-success)
+
+- [x] **Sidebar component** (`packages/ui/src/lib/components/sidebar/`):
+  - Uses component composition: `<Sidebar>` renders children inside a Paper container, `<SidebarHeader>`, `<SidebarContent>`, `<SidebarFooter>` as section sub-components, `<SidebarItem>` for each nav entry
+  - `Sidebar` is the **default export** — no snippet props, just `children`
+  - `SidebarHeader`, `SidebarContent`, `SidebarFooter` are **named exports** — delegate to `PaperHeader`/`PaperContent`/`PaperFooter` internally
   - `SidebarItem` is a **named export** — handles individual nav item (icon, label, active state, onclick, href)
   - TDD: write tests first
-  - Create `index.js` barrel export re-exporting `Sidebar` (default) and `SidebarItem` (named)
+  - Create `index.js` barrel export re-exporting `Sidebar` (default), `SidebarHeader`, `SidebarContent`, `SidebarFooter`, `SidebarItem` (named)
+  - Note: Uses existing Tailwind theme tokens (`bg-accent`, `text-foreground`, `text-muted-foreground`, `border-border`) since `sidebar-*` tokens are not defined in `packages/ui/src/lib/index.css`
 
-- [ ] **Sidebar Storybook stories** (`sidebar.stories.svelte`):
-  - Default sidebar with nav items via `<SidebarItem>` composition
+- [x] **Sidebar Storybook stories** (`sidebar.stories.svelte`):
+  - Default sidebar with nav items via `<SidebarHeader>`/`<SidebarContent>`/`<SidebarFooter>` composition
   - With active item highlighted
 
-- [ ] Export both from `packages/ui/src/lib/index.js`
+- [x] Export both from `packages/ui/src/lib/index.js`
 
 **Dependencies:** None (standalone UI package)
 
 **Quality Gates:**
 
-- [ ] Lint passes
-- [ ] Tests pass
-- [ ] Svelte check passes
-- [ ] Storybook stories render correctly
-- [ ] Components match design spec tokens
+- [x] Lint passes
+- [x] Tests pass
+- [x] Svelte check passes
+- [x] Storybook stories render correctly
+- [x] Components match design spec tokens (using existing theme tokens)
 
 ### Cycle 5: Frontend Domain Package — `@ems/domain-frontend-account`
 

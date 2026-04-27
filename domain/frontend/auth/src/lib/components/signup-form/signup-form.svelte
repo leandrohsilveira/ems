@@ -2,6 +2,7 @@
     import Input from '@ems/ui/components/input'
     import Button from '@ems/ui/components/button'
     import Paper from '@ems/ui/components/paper'
+    import { PaperHeader } from '@ems/ui/components/paper'
     import Logo from '@ems/domain-frontend-assets/logo.svg?component'
 
     /** @type {import('./types.js').SignupFormProps} */
@@ -10,17 +11,15 @@
     let loading = $state(false)
 </script>
 
-<Paper class="flex w-full max-w-105 flex-col gap-4">
-    {#snippet header()}
+<Paper class="flex w-full max-w-105 flex-col">
+    <PaperHeader class="flex flex-col items-center gap-4 p-10 pb-0">
         <!-- Header with logo and title -->
-        <div class="flex flex-col items-center gap-4">
-            <div class="flex flex-col items-center gap-2">
-                <Logo class="text-primary h-24 w-24" />
-                <h1 class="text-primary text-lg font-bold">{literals.headerApp}</h1>
-            </div>
-            <h1 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h1>
+        <div class="flex flex-col items-center gap-2">
+            <Logo class="text-primary h-24 w-24" />
+            <h1 class="text-primary text-lg font-bold">{literals.headerApp}</h1>
         </div>
-    {/snippet}
+        <h1 class="text-foreground text-center text-2xl font-semibold">{literals.header}</h1>
+    </PaperHeader>
 
     <!-- Form -->
     <form
@@ -36,7 +35,7 @@
                 loading = false
             }
         }}
-        class="flex flex-col gap-4"
+        class="flex flex-col gap-4 p-10 pt-0"
         aria-label={literals.formAriaLabel}
         novalidate
     >

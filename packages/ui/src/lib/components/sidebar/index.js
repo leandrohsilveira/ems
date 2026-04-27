@@ -1,0 +1,6 @@
+export { default } from './sidebar.svelte'
+export { default as SidebarItem } from './sidebar-item.svelte'
+export { default as SidebarHeader } from './sidebar-header.svelte'
+export { default as SidebarContent } from './sidebar-content.svelte'
+export { default as SidebarFooter } from './sidebar-footer.svelte'
+export * from './types.js'

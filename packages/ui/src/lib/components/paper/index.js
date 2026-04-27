@@ -1,2 +1,5 @@
 export { default } from './paper.svelte'
+export { default as PaperHeader } from './paper-header.svelte'
+export { default as PaperContent } from './paper-content.svelte'
+export { default as PaperFooter } from './paper-footer.svelte'
 export * from './types.js'
