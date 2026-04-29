@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render } from 'vitest-browser-svelte'
+import { userEvent, page } from 'vitest/browser'
 import { createRawSnippet } from 'svelte'
 import Modal from './modal.svelte'
 import ModalHeader from './modal-header.svelte'
@@ -7,40 +8,173 @@ import ModalContent from './modal-content.svelte'
 import ModalActions from './modal-actions.svelte'
 
 describe('Modal', () => {
+    const label = 'Testing modal'
+
+    const children = createRawSnippet(() => ({
+        render: () => '<div>Modal Content</div>'
+    }))
+
     it('does not render when open is false', async () => {
-        const { container } = render(Modal, { props: { open: false } })
-        expect(container.querySelector('[data-testid="modal"]')).toBeNull()
+        const screen = render(Modal, { props: { open: false, children, label } })
+        const modal = screen.getByRole('dialog')
+        await expect.element(modal).not.toBeInTheDocument()
     })
 
     it('renders when open is true', async () => {
-        const screen = render(Modal, { props: { open: true } })
-        const modal = screen.getByTestId('modal')
-        await expect.element(modal).toBeInTheDocument()
+        const screen = render(Modal, { props: { open: true, children, label } })
+        const modal = screen.getByRole('dialog')
+        await expect.element(modal).toBeVisible()
     })
 
     it('renders with aria-modal role', async () => {
-        const screen = render(Modal, { props: { open: true } })
-        const modal = screen.getByTestId('modal')
-        await expect.element(modal).toHaveAttribute('role', 'dialog')
+        const screen = render(Modal, { props: { open: true, children, label } })
+        const modal = screen.getByRole('dialog')
         await expect.element(modal).toHaveAttribute('aria-modal', 'true')
     })
 
-    it('renders overlay container', async () => {
-        const screen = render(Modal, { props: { open: true } })
-        const container = screen.getByTestId('modal-container')
-        await expect.element(container).toBeInTheDocument()
+    it('renders overlay', async () => {
+        const screen = render(Modal, { props: { open: true, children, label } })
+        const container = screen.getByTestId('modal-overlay')
+        await expect.element(container).toBeVisible()
     })
 
     it('applies custom class', async () => {
-        const screen = render(Modal, { props: { open: true, class: 'custom-class' } })
-        const modal = screen.getByTestId('modal')
+        const screen = render(Modal, {
+            props: { open: true, class: 'custom-class', children, label }
+        })
+        const modal = screen.getByRole('dialog')
         await expect.element(modal).toHaveClass(/custom-class/)
     })
 
     it('applies custom testId', async () => {
-        const screen = render(Modal, { props: { open: true, testId: 'custom-modal' } })
-        const modal = screen.getByTestId('custom-modal')
-        await expect.element(modal).toBeInTheDocument()
+        const screen = render(Modal, {
+            props: { open: true, testId: 'custom-modal', children, label }
+        })
+        await expect.element(screen.getByTestId('custom-modal-overlay')).toBeVisible()
+        await expect.element(screen.getByTestId('custom-modal-container')).toBeVisible()
+    })
+
+    it('closes and calls onclose when overlay is clicked', async () => {
+        const onclose = vi.fn()
+        const screen = render(Modal, { props: { open: true, onclose, children, label } })
+
+        await page.viewport(1024, 768)
+
+        const overlay = screen.getByTestId('modal-overlay')
+
+        await expect.element(overlay).toBeVisible()
+
+        await overlay.click({ button: 'left', position: { x: 3, y: 3 } })
+
+        expect(onclose).toHaveBeenCalledTimes(1)
+        await expect.element(overlay).not.toBeInTheDocument()
+    })
+
+    it('does not close or call onclose when modal container is clicked', async () => {
+        const onclose = vi.fn()
+        const screen = render(Modal, { props: { open: true, onclose, children, label } })
+
+        const container = screen.getByRole('dialog')
+
+        await container.click()
+
+        expect(onclose).not.toHaveBeenCalled()
+        await expect.element(screen.getByTestId('modal-overlay')).toBeVisible()
+    })
+
+    it('closes and calls onclose when Escape key is pressed', async () => {
+        const onclose = vi.fn()
+        const screen = render(Modal, {
+            props: { open: true, onclose, children, label }
+        })
+        const modal = screen.getByRole('dialog')
+
+        await expect.element(modal).toBeVisible()
+
+        await modal.click()
+
+        await userEvent.keyboard('{Escape}')
+
+        expect(onclose).toHaveBeenCalledTimes(1)
+        await expect.element(modal).not.toBeInTheDocument()
+    })
+
+    it('does not close or call onclose for non-Escape key presses', async () => {
+        const onclose = vi.fn()
+        const screen = render(Modal, {
+            props: { open: true, onclose, children, label }
+        })
+
+        const modal = screen.getByRole('dialog')
+
+        await expect.element(modal).toBeVisible()
+
+        await modal.click()
+
+        await userEvent.keyboard('{Enter}')
+        await userEvent.keyboard('{Tab}')
+
+        expect(onclose).not.toHaveBeenCalled()
+        await expect.element(modal).toBeVisible()
+    })
+
+    it('applies custom tabindex', async () => {
+        const screen = render(Modal, {
+            props: { open: true, tabindex: 5, children, label }
+        })
+        const modal = screen.getByRole('dialog')
+
+        await expect.element(modal).toHaveAttribute('tabindex', '5')
+    })
+
+    it('renders with default tabindex of 0', async () => {
+        const screen = render(Modal, { props: { open: true, children, label } })
+        const modal = screen.getByRole('dialog')
+
+        await expect.element(modal).toHaveAttribute('tabindex', '0')
+    })
+
+    describe('focus trap', () => {
+        const focusableChildren = createRawSnippet(() => ({
+            render: () =>
+                '<div><button data-testid="btn-first">First</button><button data-testid="btn-last">Last</button></div>'
+        }))
+
+        it('focuses the dialog container when opened', async () => {
+            const screen = render(Modal, {
+                props: { open: true, children: focusableChildren, label }
+            })
+            const dialog = screen.getByRole('dialog')
+
+            await expect.element(dialog).toHaveFocus()
+        })
+
+        it('moves focus to first focusable child on Tab', async () => {
+            const screen = render(Modal, {
+                props: { open: true, children: focusableChildren, label }
+            })
+            const dialog = screen.getByRole('dialog')
+
+            await expect.element(dialog).toHaveFocus()
+
+            await userEvent.keyboard('{Tab}')
+
+            const firstButton = screen.getByTestId('btn-first')
+            await expect.element(firstButton).toHaveFocus()
+        })
+
+        it('traps focus when pressing Shift+Tab on the dialog', async () => {
+            const screen = render(Modal, {
+                props: { open: true, children: focusableChildren, label }
+            })
+            const dialog = screen.getByRole('dialog')
+
+            await expect.element(dialog).toHaveFocus()
+
+            await userEvent.keyboard('{Shift>}{Tab}{/Shift}')
+
+            await expect.element(dialog).toHaveFocus()
+        })
     })
 })
 

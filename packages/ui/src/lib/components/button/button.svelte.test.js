@@ -90,4 +90,39 @@ describe('Button', () => {
         const button = screen.getByRole('button')
         await expect.element(button).toHaveClass(/custom-class/)
     })
+
+    describe('anchor element', () => {
+        it('renders as anchor with href', async () => {
+            const screen = render(Button, { props: { element: 'a', href: '/test-path' } })
+            const anchor = screen.getByRole('button')
+            const element = anchor.element()
+
+            expect(element.tagName).toBe('A')
+            await expect.element(anchor).toHaveAttribute('href', '/test-path')
+        })
+
+        it('omits href when disabled', async () => {
+            const screen = render(Button, {
+                props: { element: 'a', href: '/test-path', disabled: true }
+            })
+            const anchor = screen.getByRole('button')
+            const element = anchor.element()
+
+            expect(element.tagName).toBe('A')
+            await expect.element(anchor).not.toHaveAttribute('href')
+            await expect.element(anchor).toHaveAttribute('aria-disabled', 'true')
+        })
+
+        it('omits href when loading', async () => {
+            const screen = render(Button, {
+                props: { element: 'a', href: '/test-path', loading: true }
+            })
+            const anchor = screen.getByRole('button')
+            const element = anchor.element()
+
+            expect(element.tagName).toBe('A')
+            await expect.element(anchor).not.toHaveAttribute('href')
+            await expect.element(anchor).toHaveAttribute('aria-disabled', 'true')
+        })
+    })
 })

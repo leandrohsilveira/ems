@@ -9,7 +9,10 @@
     const { Story } = defineMeta({
         title: 'Components/Modal',
         component: Modal,
-        tags: ['autodocs']
+        tags: ['autodocs'],
+        args: {
+            label: 'Example dialog'
+        }
     })
 </script>
 

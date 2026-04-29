@@ -14,7 +14,7 @@ export interface I18n<L extends string, T extends I18nInput, I extends Imports<L
     alternatives: Record<L, Literals<L, T, I>>
 }
 
-export type Imports<L extends string = string> = Record<string, I18n<L, I18nInput, Imports<L>>>
+export type Imports<L extends string = string> = Record<string, I18n<L, any, any>>
 
 export interface I18nOptions<
     L extends string,

@@ -1,3 +1,8 @@
 @import '../src/lib/index.css';
 
 @source '../src/**/*.{svelte,js}';
+
+.docs-story,
+body {
+    background: var(--color-background);
+}

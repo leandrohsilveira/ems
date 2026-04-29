@@ -25,10 +25,10 @@
             bind:checked
             {disabled}
             class={cn(
-                'border-input bg-background h-4 w-4 rounded border',
+                'border-input bg-background h-4 w-4 cursor-pointer rounded border',
                 'checked:bg-primary checked:border-primary',
                 'focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
-                'disabled:cursor-not-allowed disabled:opacity-50',
+                'disabled:not-checked:bg-muted disabled:cursor-not-allowed disabled:opacity-50',
                 'transition-colors'
             )}
             {...restProps}
@@ -53,7 +53,7 @@
             {#if label}
                 <label
                     for={checkboxId}
-                    class="cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    class="text-foreground cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                     {label}
                 </label>

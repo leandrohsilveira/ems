@@ -8,6 +8,10 @@
         component: Button,
         tags: ['autodocs'],
         argTypes: {
+            element: {
+                control: { type: 'select' },
+                options: ['button', 'a']
+            },
             variant: {
                 control: { type: 'select' },
                 options: ['default', 'secondary', 'destructive', 'outline', 'ghost']
@@ -17,7 +21,8 @@
                 options: ['default', 'large', 'icon']
             },
             loading: { control: 'boolean' },
-            disabled: { control: 'boolean' }
+            disabled: { control: 'boolean' },
+            href: { control: 'text' }
         }
     })
 </script>

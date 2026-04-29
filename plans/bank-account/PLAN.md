@@ -170,39 +170,43 @@ Enable users to create, view, edit, and delete bank accounts within the Expense 
 
 **Steps:**
 
-- [ ] Create `domain/frontend/account/` package structure with `package.json`
+- [x] Create `domain/frontend/account/` package structure with `package.json`
 
-- [ ] **API Client** (`api/account.api.js`):
+- [x] **API Client** (`api/account.api.js`):
   - Factory function receiving HttpClient
   - `createAccount`, `listAccounts`, `getAccountById`, `updateAccount`, `deleteAccount`
 
-- [ ] **Server Actions** (`server/actions/`):
+- [x] **Server Actions** (`server/actions/`):
   - `create-account.js` — form validation, API call, return result
   - `update-account.js` — form validation, API call, return result
   - `delete-account.js` — API call, return result
 
-- [ ] **Server Loaders** (`server/loaders/`):
-  - `account-list.js` — loads accounts list data + i18n
-  - `account-detail.js` — loads single account data + i18n
-  - `account-form.js` — loads i18n for create/edit form
+- [x] **Server Loaders** (`server/loaders/`):
+  - `account-list.js` — loads accounts list data + i18n, maps API errors
+  - `account-detail.js` — **deferred to Cycle 6**
+  - `account-create.js` — loads i18n for create form (renamed from `account-form.js`)
+  - `account-edit.js` — loads account data + i18n for edit form (split from `account-form.js`, expanded with data fetching)
+  - `account-delete.js` — loads account data + i18n for delete confirmation (new loader, not in original plan)
 
-- [ ] **UI Components** (`components/`):
+- [x] **UI Components** (`components/`):
   - `account-card/` — Single account row/card for desktop + mobile
   - `account-list/` — List of account cards (empty state, loading, populated)
-  - `account-form/` — Create/Edit account form modal with validation
-  - `account-detail/` — Account detail view with actions
+  - `account-form-modal/` — Create/Edit account form modal with validation (renamed from `account-form/`)
+  - `account-detail/` — **deferred to Cycle 6**
   - `delete-dialog/` — Delete confirmation dialog
   - Tests for each component (no Storybook — domain packages don't have it)
 
-- [ ] Create `index.js` barrel export
+- [x] Create `index.js` barrel export
 
 **Dependencies:** Cycle 2 (shared schemas), Cycle 3 (API endpoints), Cycle 4 (UI primitives)
 
+**Deviations from plan:** See `DECISIONS.md` for details on loader splits, new loaders, component renames, and deferrals.
+
 **Quality Gates:**
 
-- [ ] Lint passes
-- [ ] Tests pass
-- [ ] Svelte check passes
+- [x] Lint passes (verified in CI)
+- [x] Tests pass — 72 frontend-account tests (12 files) + 99 UI tests (8 files)
+- [x] Svelte check passes
 
 ### Cycle 6: Application Integration
 
